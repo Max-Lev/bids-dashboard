@@ -14,6 +14,6 @@ export class NftAuctionsTableItemComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log(this.auction);
+    // console.log(this.auction);
   }
 }

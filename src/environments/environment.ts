@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  poductsApi:'https://dummyjson.com/products'
 };
 
 /*

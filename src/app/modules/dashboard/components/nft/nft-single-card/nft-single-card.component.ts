@@ -1,6 +1,7 @@
 import { CurrencyPipe, NgStyle } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input, Input, OnInit } from '@angular/core';
 import { Nft } from '../../../models/nft';
+import { Product } from 'src/app/core/models/products';
 
 @Component({
   selector: '[nft-single-card]',
@@ -9,6 +10,8 @@ import { Nft } from '../../../models/nft';
 })
 export class NftSingleCardComponent implements OnInit {
   @Input() nft: Nft = <Nft>{};
+
+  product = input<Product>();
 
   constructor() {}
 

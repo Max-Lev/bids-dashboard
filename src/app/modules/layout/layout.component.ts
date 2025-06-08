@@ -9,7 +9,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.css'],
   imports: [SidebarComponent, NavbarComponent, RouterOutlet, 
-    FooterComponent
+    // FooterComponent
   ],
 })
 export class LayoutComponent implements OnInit {
@@ -27,5 +27,6 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.mainContent = document.getElementById('main-content');
+    console.log('mainContent ',this.mainContent);
   }
 }
