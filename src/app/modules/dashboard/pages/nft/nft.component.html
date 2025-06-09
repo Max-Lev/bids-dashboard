@@ -1,8 +1,3 @@
-@if(!isLoadingProducts()){
-
-<button class="lex-none 
-rounded-md bg-primary px-4 py-2.5 text-xs 
-font-semibold text-primary-foreground" (click)="getCategory()">Get Category</button>
 
 <div>
   <!-- Header -->
@@ -14,26 +9,30 @@ font-semibold text-primary-foreground" (click)="getCategory()">Get Category</but
 
     <!-- Dual Card -->
     @if(isProductsExists()){
-    <div nft-dual-card [product]="isProductsExists()![0]" class="md:col-span-2"></div>
+    <div nft-dual-card [product]="productsHighDiscount()![0]" class="md:col-span-2"></div>
     <!-- end Dual Card -->
     }
 
     <!-- Single Card -->
     <!-- <div nft-single-card [nft]="nft[1]"></div> -->
-    <div nft-single-card [product]="isProductsExists()![1]" ></div>
+    <div nft-single-card [product]="productsHighDiscount()![1]" ></div>
     <!-- end Single Card -->
 
     <!-- Single Card -->
-    <div nft-single-card [product]="isProductsExists()![2]" ></div>
+    <div nft-single-card [product]="productsHighDiscount()![2]" ></div>
     <!-- <div nft-single-card [nft]="nft[2]"></div> -->
     <!-- end Single Card -->
 
     <!-- Single Card -->
     <div nft-chart-card class="md:col-span-2 xl:col-span-1"></div>
     <!-- end Single Card -->
+    
+    <!-- <div class="w-48">
+      <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs 
+    font-semibold text-primary-foreground" (click)="addCategory('beauty')">Get Category</button>
+    </div> -->
 
     <!-- Auctions Table -->
-    <div nft-auctions-table class="md:col-span-2 xl:col-span-3"></div>
+    <div nft-auctions-table [productsHighRating]="defaultProductsHighRating()" class="md:col-span-2 xl:col-span-3"></div>
   </div>
 </div>
-}

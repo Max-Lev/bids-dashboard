@@ -27,6 +27,5 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.mainContent = document.getElementById('main-content');
-    console.log('mainContent ',this.mainContent);
   }
 }

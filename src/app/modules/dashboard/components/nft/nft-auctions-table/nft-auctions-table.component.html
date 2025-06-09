@@ -1,11 +1,30 @@
 <div class="flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
   <div class="mb-4 flex items-center justify-between">
     <div class="flex-col items-center">
-      <h3 class="text-md font-bold text-foreground">Active Auctions</h3>
-      <span class="text-xs text-muted-foreground">Updated 37 minutes ago</span>
+      <h3 class="text-md font-bold text-foreground">High Rating Products</h3>
+      <!-- <span class="text-xs text-muted-foreground">Updated 37 minutes ago</span> -->
     </div>
+    <!-- <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs 
+    font-semibold text-primary-foreground">Get Category</button>
+    <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs 
+    font-semibold text-primary-foreground">Get Category</button> -->
+    <form>
+    <div class="flex flex-wrap gap-2.5">
+      
+      <select name="status" 
+      [(ngModel)]="selected"
+      class="text-muted-foreground w-28! p-2" (change)="onStatusChange($event)">
+        <option value="">All</option>
+        <option value="Active">Active</option>
+        <option value="Disabled">Disabled</option>
+        <option value="Pending">Pending</option>
+      </select>
+    </div>
+  </form>
+
     <button
-      class="flex-none rounded-md bg-card px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground">
+      class="flex-none rounded-md bg-card px-4 py-2.5 text-xs font-semibold 
+      text-muted-foreground hover:bg-muted hover:text-foreground">
       History
     </button>
   </div>
@@ -16,21 +35,20 @@
       <thead class="text-xs uppercase text-muted-foreground">
         <tr>
           <th class="py-3 text-left">Item</th>
-          <th class="py-3 text-right">Open Price</th>
-          <th class="py-3 text-right">Price $</th>
-          <th class="py-3 text-right">Recent Offer</th>
-          <th class="py-3 text-right">Time Left</th>
+          <th class="py-3 text-right">Rating</th>
+          <th class="py-3 text-right">Stock</th>
+          <th class="py-3 text-right">Discount</th>
+          <th class="py-3 text-right">Discount Price</th>
           <th class="py-3 text-right">View</th>
         </tr>
       </thead>
       <!--end Table head-->
       <!--Table body-->
       <tbody>
-        <tr
-          *ngFor="let auction of activeAuction"
-          [auction]="auction"
-          nft-auctions-table-item
-          class="border-b border-dashed border-border hover:bg-card"></tr>
+        <ng-container *ngIf="productsHighRating() && productsHighRating()?.length">
+          <tr *ngFor="let product of productsHighRating()" [product]="product" nft-auctions-table-item
+            class="border-b border-dashed border-border hover:bg-card"></tr>
+        </ng-container>
       </tbody>
       <!--end::Table body-->
     </table>

@@ -1,15 +1,26 @@
-import { NgFor } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, effect, input, model, OnInit, signal } from '@angular/core';
 import { Nft } from '../../../models/nft';
 import { NftAuctionsTableItemComponent } from '../nft-auctions-table-item/nft-auctions-table-item.component';
+import { Product } from 'src/app/core/models/products';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: '[nft-auctions-table]',
   templateUrl: './nft-auctions-table.component.html',
-  imports: [NgFor, NftAuctionsTableItemComponent],
+  imports: [
+    NgFor, 
+    NftAuctionsTableItemComponent,
+    NgIf,
+    FormsModule
+  ],
 })
 export class NftAuctionsTableComponent implements OnInit {
   public activeAuction: Nft[] = [];
+
+  productsHighRating = input<Product[]>();
+  selected = model('');
+  
 
   constructor() {
     this.activeAuction = [
@@ -74,7 +85,18 @@ export class NftAuctionsTableComponent implements OnInit {
         instant_price: 0.35,
       },
     ];
+
+    effect(()=>{
+      console.log(this.selected())
+    })
+
   }
 
   ngOnInit(): void {}
+
+  onStatusChange(event:Event){
+    const value = (event.target as HTMLSelectElement).value
+    console.log('Selected value:', value);
+    console.log(this.selected())
+  }
 }

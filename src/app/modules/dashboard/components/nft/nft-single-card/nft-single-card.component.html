@@ -18,7 +18,7 @@
     <span>Price: {{ product()!.price | currency }}</span>
   </div>
   <div class="dflex items-end justify-between text-sm font-semibold text-muted-foreground">
-    <span>Discount: {{ product()!.discountPercentage}}%</span>
+    <span>Discount: <span class="text-green-500">{{ product()!.discountPercentage}}%</span></span>
   </div>
   <!-- Buttons -->
   <div class="mt-6 flex items-center justify-between">

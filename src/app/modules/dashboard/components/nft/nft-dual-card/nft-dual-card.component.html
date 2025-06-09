@@ -46,7 +46,7 @@
 
     <div class="border-border rounded-md border border-dashed p-4 text-center">
       <small class="text-muted-foreground">Discount</small>
-      <h1 class="text-foreground text-3xl font-semibold">{{ product()?.discountPercentage }} %</h1>
+      <h1 class="text-3xl font-semibold text-green-500">{{ product()?.discountPercentage }} %</h1>
       <span class="text-muted-foreground text-lg font-semibold">{{ product()! | discount:product() | currency }}</span>
       <!-- <div class="text-muted-foreground mt-3 text-xs">Ending in</div>
       <div class="text-foreground font-semibold">{{ nft.ending_in }}</div> -->
