@@ -1,6 +1,7 @@
 <form #form="ngForm">
 
-    <select [(ngModel)]="categoryOption" name="category" class="text-muted-foreground w-28! p-2 mr-1.5"
+    <select [(ngModel)]="categoryOption" name="category" 
+    class="text-muted-foreground w-36! p-2 mr-1.5"
         (change)="onStatusChange($event)">
         <option value="">Category</option>
         @for (category of categoryOptions(); track $index) {
@@ -9,7 +10,7 @@
     </select>
 
     <select [(ngModel)]="detailsOption" name="productDetails" 
-    class="text-muted-foreground w-28! p-2"
+    class="text-muted-foreground w-36! p-2"
         (change)="onProductDetailsChange($event)">
         <option value="">Product Details</option>
         @for (item of productDetailsOptions(); track item.id) {

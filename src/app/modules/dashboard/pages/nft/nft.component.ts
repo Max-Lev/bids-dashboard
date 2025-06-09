@@ -9,6 +9,7 @@ import { ProductsService } from 'src/app/core/services/products.service';
 import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-nft',
@@ -19,7 +20,7 @@ import { Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/
     NftSingleCardComponent,
     NftChartCardComponent,
     NftAuctionsTableComponent,
-
+JsonPipe
   ],
   providers: [
 
@@ -42,7 +43,7 @@ export class NftComponent implements OnInit {
   products = computed(() => this.filteredProductsCategories().products);
 
 
-  readonly defaultProductsHighRating = computed(() => this.productsService.defaultProductsHighRating());
+  readonly defaultProductsHighRating = computed(() => this.productsService.topProducts());
 
   readonly productsHighDiscount = computed(() => this.productsService.productsHighDiscount());
 
@@ -51,38 +52,38 @@ export class NftComponent implements OnInit {
     return Array.isArray(items) && items.length > 0 ? items : null;
   });
 
-  filterType(prop: keyof Product, category: string[]) {
+  // filterType(prop: keyof Product, category: string[]) {
 
-    return computed(() => {
+  //   return computed(() => {
 
-      const products = this.filteredProductsCategories().products;
+  //     const products = this.filteredProductsCategories().products;
 
-      if (!Array.isArray(products) || products.length === 0) {
-        return [];
-      }
+  //     if (!Array.isArray(products) || products.length === 0) {
+  //       return [];
+  //     }
 
-      // Sort safely by numeric or string property
-      const sorted = [...products].sort((a, b) => {
-        const aVal = a[prop];
-        const bVal = b[prop];
+  //     // Sort safely by numeric or string property
+  //     const sorted = [...products].sort((a, b) => {
+  //       const aVal = a[prop];
+  //       const bVal = b[prop];
 
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          return bVal - aVal; // descending numeric
-        }
+  //       if (typeof aVal === 'number' && typeof bVal === 'number') {
+  //         return bVal - aVal; // descending numeric
+  //       }
 
-        if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return bVal.localeCompare(aVal); // descending string
-        }
+  //       if (typeof aVal === 'string' && typeof bVal === 'string') {
+  //         return bVal.localeCompare(aVal); // descending string
+  //       }
 
-        return 0;
-      });
+  //       return 0;
+  //     });
 
-      // Filter and slice
-      const filtered = sorted.filter((item) => category.includes(item.category)).slice(0, 5);
-      console.log('filterType', filtered)
-      return filtered;
-    });
-  }
+  //     // Filter and slice
+  //     const filtered = sorted.filter((item) => category.includes(item.category)).slice(0, 5);
+  //     console.log('filterType', filtered)
+  //     return filtered;
+  //   });
+  // }
 
   constructor() {
     this.nft = [
@@ -123,7 +124,9 @@ export class NftComponent implements OnInit {
 
       // console.log('productsHighDiscount ',this.productsHighDiscount());
 
-      this.filterType('price', ['beauty', 'fragrances'])();
+      // this.filterType('price', ['beauty', 'fragrances'])();
+
+      // console.log(this.productsService.filterType())
 
     });
 
@@ -135,9 +138,9 @@ export class NftComponent implements OnInit {
 
   }
 
-  addCategory(category: string) {
-    this.productsService.updateProductsHighRating(category);
-  }
+  // addCategory(category: string) {
+  //   this.productsService.updateProductsHighRating(category);
+  // }
 
 
 }

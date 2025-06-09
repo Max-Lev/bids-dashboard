@@ -64,75 +64,139 @@ export class ProductsService {
     return allowedCategories;
   }
 
-  readonly defaultProductsHighRating = computed(() => {
+  private readonly defaultCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
+  updateTopProductsCategories(categoryToDisplay: string) {
+    const current = this.defaultCategories();
+    console.log('current', current);
+    console.log('new', categoryToDisplay);
+    if (categoryToDisplay.length > 0) {
+      const index = current.indexOf(categoryToDisplay);
+      const updated = [...current];
+      debugger;
+      // if (index > -1) {
+      //   updated.splice(index, 1); // remove
+      if (index > -1) {
+        this.defaultCategories.set([]); // update signal
+        this.defaultCategories.set(updated); // update signal
+        // this.defaultCategories.update((v)=>v=updated); // update signal
+      } else {
+        updated.push(categoryToDisplay); // add
+      }
+
+      this.defaultCategories.set(updated); // update signal
+    }
+    console.log('Updated categories:', this.defaultCategories());
+    return this.defaultCategories();
+  }
+
+  readonly topProducts = computed(() => {
     const products = this.products();
     if (Array.isArray(products) && products.length > 0) {
 
-      const defaultCategories = this.updateProductsHighRating('');
+      // const defaultCategories = this.updateTopProductsCategories('');
+      const defaultCategories = this.defaultCategories();
+      const prop = this.prop();
+      console.log('prop', prop);
+      const _products = products.filter(prod => prod.stock > 0)
+        .sort((a, b) => {
+          const aVal = a[prop];
+          const bVal = b[prop];
 
-      return products.filter(prod => prod.stock > 0).sort((a, b) => b.rating - a.rating)
+          if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return bVal - aVal; // descending order
+          }
+
+          // Fallback for non-numbers
+          return 0;
+        })
         .filter((item) => defaultCategories.includes(item.category))
-        .slice(0, 5);
+        .slice(0, 15);
+      console.log('topProducts', _products);
+      return _products;
     } else {
       return [];
     }
   });
 
-  readonly defaultCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
 
-  updateProductsHighRating(categoryToDisplay: string) {
-    const current = this.defaultCategories();
-  
-    if (categoryToDisplay.length > 0) {
-      const index = current.indexOf(categoryToDisplay);
-      const updated = [...current];
-  
-      if (index > -1) {
-        updated.splice(index, 1); // remove
-      } else {
-        updated.push(categoryToDisplay); // add
-      }
-  
-      this.defaultCategories.set(updated); // update signal
+  prop = signal<keyof Product>('rating');
+  filterType(category: string, prop: keyof Product) {
+
+    const products = this.products();
+    debugger
+    // this.updateTopProductsCategories(category);
+    const ctg = this.defaultCategories();
+    console.log('ctg', ctg)
+    console.log('prop', prop)
+    this.prop.set(prop);
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return [];
     }
-  
-    console.log('Updated categories:', this.defaultCategories());
-    return this.defaultCategories();
-  }
 
-  filterType(prop: keyof Product, category: string[]) {
+    // Sort safely by numeric or string property
+    const sortedProducts = [...products].sort((a, b) => {
+      const aVal = a[prop];
+      const bVal = b[prop];
 
-    return computed(() => {
-
-      const products = this.products();
-
-      if (!Array.isArray(products) || products.length === 0) {
-        return [];
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return bVal - aVal; // descending numeric
       }
 
-      // Sort safely by numeric or string property
-      const sortedProducts = [...products].sort((a, b) => {
-        const aVal = a[prop];
-        const bVal = b[prop];
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return bVal.localeCompare(aVal); // descending string
+      }
 
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          return bVal - aVal; // descending numeric
-        }
-
-        if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return bVal.localeCompare(aVal); // descending string
-        }
-
-        return 0;
-      });
-
-      // Filter and slice
-      const filtered = sortedProducts.filter((item) => category.includes(item.category)).slice(0, 5);
-      console.log('filterType', filtered)
-      return filtered;
+      return 0;
     });
+
+    // Filter and slice
+    const filtered = sortedProducts.filter(prod => prod.stock > 0)
+      .filter((product: Product) => ctg.includes(product.category)).slice(0, 15);
+    console.log('filterType products', filtered)
+    console.log('category', category)
+    return filtered;
+    
   }
- 
+  // filterType(category: string, prop: keyof Product) {
+
+  //   // return computed(() => {
+
+  //   const products = this.products();
+  //   debugger
+  //   this.updateTopProductsCategories(category);
+  //   const ctg = this.defaultCategories();
+  //   console.log('ctg', ctg)
+
+  //   if (!Array.isArray(products) || products.length === 0) {
+  //     return [];
+  //   }
+
+  //   // Sort safely by numeric or string property
+  //   const sortedProducts = [...products].sort((a, b) => {
+  //     const aVal = a[prop];
+  //     const bVal = b[prop];
+
+  //     if (typeof aVal === 'number' && typeof bVal === 'number') {
+  //       return bVal - aVal; // descending numeric
+  //     }
+
+  //     if (typeof aVal === 'string' && typeof bVal === 'string') {
+  //       return bVal.localeCompare(aVal); // descending string
+  //     }
+
+  //     return 0;
+  //   });
+
+  //   // Filter and slice
+  //   const filtered = sortedProducts.filter((product: Product) =>
+  //     category.includes(product.category)).slice(0, 5);
+  //   console.log('filterType products', filtered)
+  //   console.log('category', category)
+  //   return filtered;
+  //   // });
+  // }
+
 
   readonly productsHighDiscount = computed(() => {
     const items = this.products();

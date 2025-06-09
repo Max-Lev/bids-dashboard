@@ -1,10 +1,11 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, effect, input, model, OnInit, Signal, signal } from '@angular/core';
+import { Component, effect, inject, input, model, OnInit, Signal, signal } from '@angular/core';
 import { Nft } from '../../../models/nft';
 import { NftAuctionsTableItemComponent } from '../nft-auctions-table-item/nft-auctions-table-item.component';
 import { Product } from 'src/app/core/models/products';
 import { FormsModule } from '@angular/forms';
 import { ProductsTableFormComponent } from 'src/app/shared/forms/products-table-form/products-table-form.component';
+import { ProductsService } from 'src/app/core/services/products.service';
 
 @Component({
   selector: '[nft-auctions-table]',
@@ -19,6 +20,8 @@ import { ProductsTableFormComponent } from 'src/app/shared/forms/products-table-
 })
 export class NftAuctionsTableComponent implements OnInit {
   public activeAuction: Nft[] = [];
+
+  productsService = inject(ProductsService);
 
   productsHighRating = input<Product[]>();
   categoryOptions = input<string[]>();
@@ -100,9 +103,13 @@ export class NftAuctionsTableComponent implements OnInit {
 
   }
 
-  filterChangeHandler(event:Signal<{category: string;details: string;}>){
-    console.log(event());
-
+  
+  filterChangeHandler(event:{category: string;details: string;}){
+    
+    const { category, details } = event;
+    this.productsService.updateTopProductsCategories(category);
+    this.productsService.filterType(category,details as keyof Product);
+    
   }
 
 
