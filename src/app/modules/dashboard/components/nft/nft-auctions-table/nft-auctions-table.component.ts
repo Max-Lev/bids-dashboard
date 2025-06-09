@@ -1,9 +1,10 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, effect, input, model, OnInit, signal } from '@angular/core';
+import { Component, effect, input, model, OnInit, Signal, signal } from '@angular/core';
 import { Nft } from '../../../models/nft';
 import { NftAuctionsTableItemComponent } from '../nft-auctions-table-item/nft-auctions-table-item.component';
 import { Product } from 'src/app/core/models/products';
 import { FormsModule } from '@angular/forms';
+import { ProductsTableFormComponent } from 'src/app/shared/forms/products-table-form/products-table-form.component';
 
 @Component({
   selector: '[nft-auctions-table]',
@@ -12,17 +13,24 @@ import { FormsModule } from '@angular/forms';
     NgFor, 
     NftAuctionsTableItemComponent,
     NgIf,
-    FormsModule
+    FormsModule,
+    ProductsTableFormComponent
   ],
 })
 export class NftAuctionsTableComponent implements OnInit {
   public activeAuction: Nft[] = [];
 
   productsHighRating = input<Product[]>();
-  selected = model('');
+  categoryOptions = input<string[]>();
+  productDetailsOptions  = input<{id:number,value:string}[]>();
   
 
   constructor() {
+
+    effect(()=>{
+      console.log(this.categoryOptions())
+    })
+
     this.activeAuction = [
       {
         id: 1346771,
@@ -86,17 +94,16 @@ export class NftAuctionsTableComponent implements OnInit {
       },
     ];
 
-    effect(()=>{
-      console.log(this.selected())
-    })
+  }
+
+  ngOnInit(): void {
 
   }
 
-  ngOnInit(): void {}
+  filterChangeHandler(event:Signal<{category: string;details: string;}>){
+    console.log(event());
 
-  onStatusChange(event:Event){
-    const value = (event.target as HTMLSelectElement).value
-    console.log('Selected value:', value);
-    console.log(this.selected())
   }
+
+
 }

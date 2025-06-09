@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { NftAuctionsTableComponent } from '../../components/nft/nft-auctions-table/nft-auctions-table.component';
 import { NftChartCardComponent } from '../../components/nft/nft-chart-card/nft-chart-card.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
@@ -8,7 +8,7 @@ import { Nft } from '../../models/nft';
 import { ProductsService } from 'src/app/core/services/products.service';
 import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Product } from 'src/app/core/models/products';
+import { Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
 
 @Component({
   selector: 'app-nft',
@@ -29,10 +29,12 @@ import { Product } from 'src/app/core/models/products';
 export class NftComponent implements OnInit {
   nft: Array<Nft>;
 
+  productDetailsOptions = signal(ProductDetailsOptions);
+
   productsService = inject(ProductsService);
 
-
-  filteredProductsCategories = toSignal(this.productsService.getFilteredProductsCategories(), {
+  filteredProductsCategories = toSignal(
+    this.productsService.getFilteredProductsCategories(), {
     initialValue: { products: [], categories: [] }
   });
 
@@ -129,7 +131,7 @@ export class NftComponent implements OnInit {
   }
 
   ngOnInit(): void {
- 
+
 
   }
 

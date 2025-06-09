@@ -1,0 +1,23 @@
+<form #form="ngForm">
+
+    <select [(ngModel)]="categoryOption" name="category" class="text-muted-foreground w-28! p-2 mr-1.5"
+        (change)="onStatusChange($event)">
+        <option value="">Category</option>
+        @for (category of categoryOptions(); track $index) {
+        <option [value]="category">{{category | titlecase}}</option>
+        }
+    </select>
+
+    <select [(ngModel)]="detailsOption" name="productDetails" 
+    class="text-muted-foreground w-28! p-2"
+        (change)="onProductDetailsChange($event)">
+        <option value="">Product Details</option>
+        @for (item of productDetailsOptions(); track item.id) {
+        <option [value]="item.value">{{item.value | titlecase}}</option>
+        
+        }
+    </select>
+
+
+
+</form>

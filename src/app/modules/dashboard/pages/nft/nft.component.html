@@ -1,4 +1,3 @@
-
 <div>
   <!-- Header -->
   <app-nft-header></app-nft-header>
@@ -15,24 +14,27 @@
 
     <!-- Single Card -->
     <!-- <div nft-single-card [nft]="nft[1]"></div> -->
-    <div nft-single-card [product]="productsHighDiscount()![1]" ></div>
+    <div nft-single-card [product]="productsHighDiscount()![1]"></div>
     <!-- end Single Card -->
 
     <!-- Single Card -->
-    <div nft-single-card [product]="productsHighDiscount()![2]" ></div>
+    <div nft-single-card [product]="productsHighDiscount()![2]"></div>
     <!-- <div nft-single-card [nft]="nft[2]"></div> -->
     <!-- end Single Card -->
 
     <!-- Single Card -->
     <div nft-chart-card class="md:col-span-2 xl:col-span-1"></div>
     <!-- end Single Card -->
-    
+
     <!-- <div class="w-48">
       <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs 
     font-semibold text-primary-foreground" (click)="addCategory('beauty')">Get Category</button>
     </div> -->
 
     <!-- Auctions Table -->
-    <div nft-auctions-table [productsHighRating]="defaultProductsHighRating()" class="md:col-span-2 xl:col-span-3"></div>
+    <div nft-auctions-table [categoryOptions]="category()" 
+    [productDetailsOptions]="productDetailsOptions()"
+    [productsHighRating]="defaultProductsHighRating()"
+      class="md:col-span-2 xl:col-span-3"></div>
   </div>
 </div>

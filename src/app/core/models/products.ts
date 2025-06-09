@@ -46,5 +46,13 @@ export type ProductsDTO = {
   weight: number;
 };
 
+export const ProductDetailsOption:{id:number,value:string}[] = [
+  {id:2,value:'price'},
+  {id:3,value:'rating'},
+  {id:1,value:'discountPercentage'},
+  {id:4,value:'stock'},
+  
+]
+
 export type Products = ProductsDTO[];
 export type Product = ProductsDTO;

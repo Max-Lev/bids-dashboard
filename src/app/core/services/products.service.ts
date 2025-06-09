@@ -59,51 +59,10 @@ export class ProductsService {
     );
   }
 
-  excludeCategories(categories: string[], exclude: string[]): string[] {
+  private excludeCategories(categories: string[], exclude: string[]): string[] {
     const allowedCategories = categories.filter(cat => !exclude.includes(cat));
     return allowedCategories;
   }
-
-  // getFilteredProductsCategories():Observable<{products: Products;categories: string[];}> {
-  //   if(this.products().length > 0) {
-  //     return of({products: this.products(),categories: this.categories()});
-  //   }
-
-  //   return forkJoin({
-  //     categories: this.#http.get<string[]>(`${environment.productsApi}/category-list`),
-  //     products: this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`)
-  //   }).pipe(
-  //     map(({ categories, products }) => {
-  //       // Filter categories (exclude groceries)
-  //       const allowedCategories = categories.filter(cat => cat !== 'groceries' 
-  //         && cat !== 'furniture' && cat !== 'tops'
-  //       );
-
-  //       // Filter products by allowed categories
-  //       const filteredProducts = products.products.filter(product => 
-  //         allowedCategories.includes(product.category)
-  //       );
-  //       console.log('filteredProducts ',filteredProducts);
-  //       this.products.set(filteredProducts);
-  //       this.categories.set(allowedCategories);
-  //       return {
-  //         categories: allowedCategories,
-  //         products: filteredProducts
-  //       };
-  //     })
-  //   );
-  // }
-
-
-  readonly productsHighDiscount = computed(() => {
-    const items = this.products();
-    if (Array.isArray(items) && items.length > 0) {
-      return items.sort((a, b) => b.discountPercentage - a.discountPercentage);
-    } else {
-      return [];
-    }
-  });
-
 
   readonly defaultProductsHighRating = computed(() => {
     const products = this.products();
@@ -174,6 +133,15 @@ export class ProductsService {
     });
   }
  
+
+  readonly productsHighDiscount = computed(() => {
+    const items = this.products();
+    if (Array.isArray(items) && items.length > 0) {
+      return items.sort((a, b) => b.discountPercentage - a.discountPercentage);
+    } else {
+      return [];
+    }
+  });
 
 
   // rxProducts = rxResource<Products, string | undefined>({

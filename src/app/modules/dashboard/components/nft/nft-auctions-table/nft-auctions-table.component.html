@@ -1,32 +1,24 @@
 <div class="flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
-  <div class="mb-4 flex items-center justify-between">
-    <div class="flex-col items-center">
+  <!-- <div class="mb-4 flex items-center justify-between"> -->
+  <div class="mb-4 flex items-center">
+    <div class="flex-col items-center justify-start">
       <h3 class="text-md font-bold text-foreground">High Rating Products</h3>
-      <!-- <span class="text-xs text-muted-foreground">Updated 37 minutes ago</span> -->
+      <span class="text-xs text-muted-foreground">Updated 35 minutes ago</span>
     </div>
-    <!-- <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs 
-    font-semibold text-primary-foreground">Get Category</button>
-    <button class="flex-none rounded-md bg-primary px-4 py-2.5 text-xs 
-    font-semibold text-primary-foreground">Get Category</button> -->
-    <form>
-    <div class="flex flex-wrap gap-2.5">
-      
-      <select name="status" 
-      [(ngModel)]="selected"
-      class="text-muted-foreground w-28! p-2" (change)="onStatusChange($event)">
-        <option value="">All</option>
-        <option value="Active">Active</option>
-        <option value="Disabled">Disabled</option>
-        <option value="Pending">Pending</option>
-      </select>
-    </div>
-  </form>
 
-    <button
-      class="flex-none rounded-md bg-card px-4 py-2.5 text-xs font-semibold 
+    <div class="flex-1 justify-end">
+      <div class="flex flex-wrap gap-2.5 justify-end">
+        <app-products-table-form 
+        (onFilterChange)="filterChangeHandler($event)"
+        [productDetailsOptions]="productDetailsOptions()"
+        [categoryOptions]="categoryOptions()"></app-products-table-form>
+        <!-- <button class="flex-none rounded-md bg-card px-4 py-2.5 text-xs font-semibold 
       text-muted-foreground hover:bg-muted hover:text-foreground">
-      History
-    </button>
+        History
+      </button> -->
+      </div>
+    </div>
+
   </div>
 
   <div class="relative overflow-x-auto">
