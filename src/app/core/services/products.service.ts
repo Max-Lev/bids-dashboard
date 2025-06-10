@@ -16,6 +16,14 @@ export class ProductsService {
   private products = signal<Product[]>([]);
   private categories = signal<string[]>([]);
 
+  private readonly selectedCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
+  // private readonly selectedCategories = signal<string[]>([]);
+  productProperty = signal<keyof Product>('rating');
+
+  selectedCategory = computed(()=>this.selectedCategories());
+
+  itemsSize = signal(5);
+
   constructor() { }
 
   getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[]; }> {
@@ -64,37 +72,52 @@ export class ProductsService {
     return allowedCategories;
   }
 
-  private readonly defaultCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
+  
   // private readonly defaultCategories = signal<string[]>([]);
+  // This function updates the top products categories
   updateTopProductsCategories(categoryToDisplay: string) {
-    const current = this.defaultCategories();
-    console.log('current', current);
-    console.log('new', categoryToDisplay);
+    // Get the current categories
+    const current = this.selectedCategories();
+    
+    // Check if the category to display is not empty
     if (categoryToDisplay.length > 0) {
+      // Get the index of the category to display
       const index = current.indexOf(categoryToDisplay);
+      // Create a new array with the current categories
       const updated = [...current];
       
+      // Check if the category to display is already in the array
       if (index > -1) {
-        this.defaultCategories.set(updated); // update signal
+        // If it is, update the signal
+        this.selectedCategories.set(updated); // update signal
       } else {
+        // If it is not, add it to the array
         updated.push(categoryToDisplay); // add
       }
 
-      this.defaultCategories.set(updated); // update signal
+      // Update the signal with the new array
+      this.selectedCategories.set(updated); // update signal
     }
-    console.log('Updated categories:', this.defaultCategories());
-    return this.defaultCategories();
+    // Log the updated categories
+    console.log('Updated categories:', this.selectedCategories());
+    // Return the updated categories
+    return this.selectedCategories();
   }
 
   readonly filteredProducts = computed(() => {
     const products = this.products();
+    const _selectedCategories = this.selectedCategories();
+    const prop = this.productProperty();
+
+    if(_selectedCategories.length === 0){
+      return products.slice(0,this.itemsSize());
+    }
+
     if (Array.isArray(products) && products.length > 0) {
 
-      const defaultCategories = this.defaultCategories();
-      const prop = this.productProperty();
+      
       console.log('prop', prop);
-      const _products = products.filter(prod => prod.stock > 0)
-        .sort((a, b) => {
+      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
           const aVal = a[prop];
           const bVal = b[prop];
 
@@ -104,57 +127,19 @@ export class ProductsService {
           // Fallback for non-numbers
           return 0;
         })
-        .filter((item) => defaultCategories.includes(item.category))
-        .slice(0, 15);
-      console.log('topProducts', _products);
+        .filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
+      
       return _products;
     } else {
-      return [];
+      return this.products();
     }
   });
 
 
-  productProperty = signal<keyof Product>('rating');
+  
   updateFilter(category: string, prop: keyof Product) {
     this.updateTopProductsCategories(category);
     this.productProperty.set(prop);
-    console.log('prop', this.productProperty());
-    
-
-    // const products = this.products();
-
-    // const ctg = this.defaultCategories();
-    // console.log('ctg', ctg)
-    // console.log('prop', prop)
-    // this.prop.set(prop);
-
-    // if (!Array.isArray(products) || products.length === 0) {
-    //   return [];
-    // }
-
-    // // Sort safely by numeric or string property
-    // const sortedProducts = [...products].sort((a, b) => {
-    //   const aVal = a[prop];
-    //   const bVal = b[prop];
-
-    //   if (typeof aVal === 'number' && typeof bVal === 'number') {
-    //     return bVal - aVal; // descending numeric
-    //   }
-
-    //   if (typeof aVal === 'string' && typeof bVal === 'string') {
-    //     return bVal.localeCompare(aVal); // descending string
-    //   }
-
-    //   return 0;
-    // });
-
-    // // Filter and slice
-    // const filtered = sortedProducts.filter(prod => prod.stock > 0)
-    //   .filter((product: Product) => ctg.includes(product.category)).slice(0, 15);
-    // console.log('filterType products', filtered)
-    // console.log('category', category)
-    // return filtered;
-
   }
 
   readonly productsHighDiscount = computed(() => {
@@ -165,6 +150,16 @@ export class ProductsService {
       return [];
     }
   });
+
+  removeSelectedCategory(category: string) {
+    const current = this.selectedCategories();
+    const index = current.indexOf(category);
+    if (index > -1) {
+      const updated = [...current];
+      updated.splice(index, 1);
+      this.selectedCategories.set(updated);
+    }
+  }
 
 
   // rxProducts = rxResource<Products, string | undefined>({

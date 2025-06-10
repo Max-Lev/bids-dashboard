@@ -1,12 +1,15 @@
 import { TitleCasePipe } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, input, model, output, Signal, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
-
+import {MatSelectModule} from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
 @Component({
   selector: 'app-products-table-form',
   imports: [
     FormsModule,
-    TitleCasePipe
+    TitleCasePipe,
+    MatSelectModule,
+    MatChipsModule
   ],
   templateUrl: './products-table-form.component.html',
   styleUrl: './products-table-form.component.css'
@@ -17,7 +20,8 @@ export class ProductsTableFormComponent implements AfterViewInit {
   productDetailsOptions = input<{ title: string, value: string }[]>();
 
   categoryOption = model('');
-  detailsOption = model('');
+  detailsOption = model('rating');
+  // detailsOption = model('');
 
   
   onFilterChange = output<{ category: string; details: string; }>();
@@ -34,6 +38,7 @@ export class ProductsTableFormComponent implements AfterViewInit {
   constructor() {
     effect(() => {
       this.onFilterChange.emit(this.filterModel());
+      console.log(this.filterModel().category.length);
     });
   }
   ngAfterViewInit(): void {

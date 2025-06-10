@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component, effect, inject, input, model, OnInit, Signal, signal } from '@angular/core';
 import { Nft } from '../../../models/nft';
 import { NftAuctionsTableItemComponent } from '../nft-auctions-table-item/nft-auctions-table-item.component';
@@ -6,6 +6,8 @@ import { Product } from 'src/app/core/models/products';
 import { FormsModule } from '@angular/forms';
 import { ProductsTableFormComponent } from 'src/app/shared/forms/products-table-form/products-table-form.component';
 import { ProductsService } from 'src/app/core/services/products.service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { ChipsComponent } from 'src/app/shared/components/chips/chips.component';
 
 @Component({
   selector: '[nft-auctions-table]',
@@ -15,18 +17,22 @@ import { ProductsService } from 'src/app/core/services/products.service';
     NftAuctionsTableItemComponent,
     NgIf,
     FormsModule,
-    ProductsTableFormComponent
+    ProductsTableFormComponent,
+    ChipsComponent
   ],
 })
 export class NftAuctionsTableComponent implements OnInit {
+
   public activeAuction: Nft[] = [];
 
   productsService = inject(ProductsService);
 
-  productsHighRating = input<Product[]>();
+  filteredProducts = input<Product[]>();
   categoryOptions = input<string[]>();
   productDetailsOptions = input<{ title: string, value: string }[]>();
 
+
+  selectedCategory = this.productsService.selectedCategory;
 
   constructor() {
 
@@ -107,6 +113,10 @@ export class NftAuctionsTableComponent implements OnInit {
   filterChangeHandler(event: { category: string; details: string; }) {
     const { category, details } = event;
     this.productsService.updateFilter(category, details as keyof Product);
+  }
+
+  onChipsSelected(item:string){
+    this.productsService.removeSelectedCategory(item);
   }
 
 
