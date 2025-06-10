@@ -9,8 +9,13 @@
     <div class="flex-1 justify-end">
       <div class="flex flex-wrap gap-2.5 justify-end">
         <app-products-table-form (onFilterChange)="filterChangeHandler($event)"
-          [productDetailsOptions]="productDetailsOptions()"
-          [categoryOptions]="categoryOptions()"></app-products-table-form>
+        [selectedCategory]="selectedCategory()"
+        [selectedLastDefaultCategory]="selectedLastDefaultCategory()"
+        [productDetailsOptions]="productDetailsOptions()"
+        [isCategoryDisabled]="isCategoryDisabled()"
+        [selectedOrder]="selectedOrder()"
+        [orderOptions]="orderOptions()"
+        [categoryOptions]="categoryOptions()"></app-products-table-form>
       </div>
     </div>
 

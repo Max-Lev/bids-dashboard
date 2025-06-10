@@ -1,5 +1,5 @@
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
-import { Component, effect, inject, input, model, OnInit, Signal, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, model, OnInit, Signal, signal } from '@angular/core';
 import { Nft } from '../../../models/nft';
 import { NftAuctionsTableItemComponent } from '../nft-auctions-table-item/nft-auctions-table-item.component';
 import { Product } from 'src/app/core/models/products';
@@ -29,10 +29,14 @@ export class NftAuctionsTableComponent implements OnInit {
 
   filteredProducts = input<Product[]>();
   categoryOptions = input<string[]>();
+  orderOptions = input<{ title: string, value: string }[]>([]);
   productDetailsOptions = input<{ title: string, value: string }[]>();
 
 
   selectedCategory = this.productsService.selectedCategory;
+  selectedOrder = this.productsService.orderProp;
+  selectedLastDefaultCategory = this.productsService.selectedLastDefaultCategory;
+  isCategoryDisabled = computed(() => (this.productsService.selectedCategory().length > 4) ? true : false);
 
   constructor() {
 
@@ -110,12 +114,12 @@ export class NftAuctionsTableComponent implements OnInit {
   }
 
 
-  filterChangeHandler(event: { category: string; details: string; }) {
-    const { category, details } = event;
-    this.productsService.updateFilter(category, details as keyof Product);
+  filterChangeHandler(event: { category: string; details: string;order:string }) {
+    const { category, details,order } = event;
+    this.productsService.updateFilter(category, details as keyof Product,order);
   }
 
-  onChipsSelected(item:string){
+  onChipsSelected(item: string) {
     this.productsService.removeSelectedCategory(item);
   }
 

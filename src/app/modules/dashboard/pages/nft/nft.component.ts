@@ -8,7 +8,7 @@ import { Nft } from '../../models/nft';
 import { ProductsService } from 'src/app/core/services/products.service';
 import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
+import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
 
 
 @Component({
@@ -30,6 +30,7 @@ export class NftComponent implements OnInit {
   nft: Array<Nft>;
 
   productDetailsOptions = signal(ProductDetailsOptions);
+  orderOptions = signal(OrderOptions);
 
   productsService = inject(ProductsService);
 

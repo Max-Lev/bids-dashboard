@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from 'src/environments/environment';
+import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +12,28 @@ import { environment } from 'src/environments/environment';
 export class ProductsService {
 
   #http = inject(HttpClient);
+  excludedCategories = ['groceries', 'furniture', 'tops'];
 
   private allProducts = signal<Product[]>([]);
   private products = signal<Product[]>([]);
   private categories = signal<string[]>([]);
 
   private readonly selectedCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
-  // private readonly selectedCategories = signal<string[]>([]);
+
   productProperty = signal<keyof Product>('rating');
 
-  selectedCategory = computed(()=>this.selectedCategories());
+  orderProp = signal<{ title: string, value: string }>({ title: 'High', value: 'desc' }); // 'asc' | 'desc';
 
   itemsSize = signal(5);
+
+  selectedCategory = computed(() => this.selectedCategories());
+
+  selectedLastDefaultCategory = computed(() => {
+    const all = this.selectedCategories();
+    const last = all.length - 1;
+    return (last === -1) ? '' : all[last];
+  });
+
 
   constructor() { }
 
@@ -45,8 +56,8 @@ export class ProductsService {
     }).pipe(
       map(({ categories, products }) => {
         this.allProducts.set(products.products);
-        const excludedCategories = ['groceries', 'furniture', 'tops'];
-        const allowedCategories = this.excludeCategories(categories, excludedCategories);
+
+        const allowedCategories = this.excludeCategories(categories, this.excludedCategories);
 
         // Filter products by allowed categories
         const filteredProducts = products.products.filter(
@@ -72,20 +83,20 @@ export class ProductsService {
     return allowedCategories;
   }
 
-  
+
   // private readonly defaultCategories = signal<string[]>([]);
   // This function updates the top products categories
   updateTopProductsCategories(categoryToDisplay: string) {
     // Get the current categories
     const current = this.selectedCategories();
-    
+
     // Check if the category to display is not empty
     if (categoryToDisplay.length > 0) {
       // Get the index of the category to display
       const index = current.indexOf(categoryToDisplay);
       // Create a new array with the current categories
       const updated = [...current];
-      
+
       // Check if the category to display is already in the array
       if (index > -1) {
         // If it is, update the signal
@@ -108,38 +119,43 @@ export class ProductsService {
     const products = this.products();
     const _selectedCategories = this.selectedCategories();
     const prop = this.productProperty();
+    const order = this.orderProp();
 
-    if(_selectedCategories.length === 0){
-      return products.slice(0,this.itemsSize());
+    if (_selectedCategories.length === 0) {
+      return products.slice(0, this.itemsSize());
     }
 
     if (Array.isArray(products) && products.length > 0) {
 
-      
-      console.log('prop', prop);
       const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
-          const aVal = a[prop];
-          const bVal = b[prop];
+        const aVal = a[prop];
+        const bVal = b[prop];
 
-          if (typeof aVal === 'number' && typeof bVal === 'number') {
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          if (order.value === 'desc') {
             return bVal - aVal; // descending order
+          } else {
+            return aVal - bVal; // ascending order
           }
-          // Fallback for non-numbers
-          return 0;
-        })
+
+        }
+        // Fallback for non-numbers
+        return 0;
+      })
         .filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
-      
+
       return _products;
     } else {
       return this.products();
     }
   });
 
-
-  
-  updateFilter(category: string, prop: keyof Product) {
+  updateFilter(category: string, prop: keyof Product, order: string) {
     this.updateTopProductsCategories(category);
     this.productProperty.set(prop);
+    const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
+    this.orderProp.set(_orderProp);
+
   }
 
   readonly productsHighDiscount = computed(() => {

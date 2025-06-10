@@ -52,7 +52,9 @@ export const ProductDetailsOption:{title:string,value:string}[] = [
   {title:'Discount',value:'discountPercentage'},
   {title:'Stock',value:'stock'},
   
-]
+];
+
+export const OrderOptions = [{title: 'High', value: 'desc'},{title: 'Low', value: 'asc'}];
 
 export type Products = ProductsDTO[];
 export type Product = ProductsDTO;

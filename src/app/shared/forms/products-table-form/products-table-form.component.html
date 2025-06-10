@@ -1,6 +1,8 @@
 <form #form="ngForm">
 
-    <select [(ngModel)]="categoryOption" name="category" class="text-muted-foreground w-36! p-2 mr-1.5"
+    <select [disabled]="isCategoryDisabled()" 
+    [class.disabled:text-gray-500!]="isCategoryDisabled()"
+    [(ngModel)]="categoryOption" name="category" class="w-36! p-2 mr-1.5"
         (change)="onStatusChange($event)">
         <option value="">Category</option>
         @for (category of categoryOptions(); track $index) {
@@ -8,7 +10,7 @@
         }
     </select>
 
-    <select [(ngModel)]="detailsOption" name="productDetails" class="text-muted-foreground w-36! p-2"
+    <select [(ngModel)]="detailsOption" name="productDetails" class="w-36! p-2 mr-1.5"
         (change)="onProductDetailsChange($event)">
         <option value="">Product Details</option>
         @for (item of productDetailsOptions(); track item.title) {
@@ -17,26 +19,14 @@
         }
     </select>
 
+    <select [(ngModel)]="orderOption" name="order" class="w-36! p-2">
+        @for (item of orderOptions(); track item.title) {
+        <option [value]="item.value">{{item.title | titlecase}}</option>
 
-    
-    <!-- <div class="w-36! p-2">
-        <mat-chip-set aria-label="Fish selection">
-            <mat-chip class="border">One fish</mat-chip>
-            <mat-chip>Two fish</mat-chip>
-            <mat-chip>Three fish</mat-chip>
-            <mat-chip disabled>Four fish</mat-chip>
-        </mat-chip-set>
-    </div> -->
+        }
+    </select>
 
-    <!-- <mat-select class="text-muted-foreground w-36! p-2"> -->
-    <!-- panelClass="native-styled-panel" -->
-    <!-- <div class="w-36">
-        <mat-select class="text-muted-foreground p-2!">
-            @for (food of productDetailsOptions(); track food) {
-            <mat-option [value]="food.value">{{food.title}}</mat-option>
-            }
-        </mat-select>
-    </div> -->
+
 
 
 </form>
