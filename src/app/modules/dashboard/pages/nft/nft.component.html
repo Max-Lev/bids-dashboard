@@ -32,10 +32,10 @@
     </div> -->
 
     <!-- Auctions Table -->
-     <!-- <div class="text-foreground">{{defaultProductsHighRating() | json}}</div> -->
+     
     <div nft-auctions-table [categoryOptions]="category()" 
     [productDetailsOptions]="productDetailsOptions()"
-    [productsHighRating]="defaultProductsHighRating()"
-      class="md:col-span-2 xl:col-span-3"></div>
+    [productsHighRating]="filteredProducts()"
+      class="md:col-span-2 xl:col-span-4"></div>
   </div>
 </div>

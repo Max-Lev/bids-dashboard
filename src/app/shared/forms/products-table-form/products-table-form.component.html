@@ -13,8 +13,8 @@
     class="text-muted-foreground w-36! p-2"
         (change)="onProductDetailsChange($event)">
         <option value="">Product Details</option>
-        @for (item of productDetailsOptions(); track item.id) {
-        <option [value]="item.value">{{item.value | titlecase}}</option>
+        @for (item of productDetailsOptions(); track item.title) {
+        <option [value]="item.value">{{item.title | titlecase}}</option>
         
         }
     </select>

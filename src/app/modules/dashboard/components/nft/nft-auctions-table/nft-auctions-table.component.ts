@@ -11,7 +11,7 @@ import { ProductsService } from 'src/app/core/services/products.service';
   selector: '[nft-auctions-table]',
   templateUrl: './nft-auctions-table.component.html',
   imports: [
-    NgFor, 
+    NgFor,
     NftAuctionsTableItemComponent,
     NgIf,
     FormsModule,
@@ -25,12 +25,12 @@ export class NftAuctionsTableComponent implements OnInit {
 
   productsHighRating = input<Product[]>();
   categoryOptions = input<string[]>();
-  productDetailsOptions  = input<{id:number,value:string}[]>();
-  
+  productDetailsOptions = input<{ title: string, value: string }[]>();
+
 
   constructor() {
 
-    effect(()=>{
+    effect(() => {
       console.log(this.categoryOptions())
     })
 
@@ -103,13 +103,10 @@ export class NftAuctionsTableComponent implements OnInit {
 
   }
 
-  
-  filterChangeHandler(event:{category: string;details: string;}){
-    
+
+  filterChangeHandler(event: { category: string; details: string; }) {
     const { category, details } = event;
-    this.productsService.updateTopProductsCategories(category);
-    this.productsService.filterType(category,details as keyof Product);
-    
+    this.productsService.updateFilter(category, details as keyof Product);
   }
 
 

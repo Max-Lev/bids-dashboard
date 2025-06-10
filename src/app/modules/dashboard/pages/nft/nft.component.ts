@@ -9,7 +9,7 @@ import { ProductsService } from 'src/app/core/services/products.service';
 import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
-import { JsonPipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-nft',
@@ -20,7 +20,6 @@ import { JsonPipe } from '@angular/common';
     NftSingleCardComponent,
     NftChartCardComponent,
     NftAuctionsTableComponent,
-JsonPipe
   ],
   providers: [
 
@@ -43,7 +42,7 @@ export class NftComponent implements OnInit {
   products = computed(() => this.filteredProductsCategories().products);
 
 
-  readonly defaultProductsHighRating = computed(() => this.productsService.topProducts());
+  readonly filteredProducts = computed(() => this.productsService.filteredProducts());
 
   readonly productsHighDiscount = computed(() => this.productsService.productsHighDiscount());
 

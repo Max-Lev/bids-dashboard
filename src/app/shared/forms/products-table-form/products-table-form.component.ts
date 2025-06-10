@@ -14,12 +14,12 @@ import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 export class ProductsTableFormComponent implements AfterViewInit {
 
   categoryOptions = input<string[]>();
-  productDetailsOptions = input<{ id: number, value: string }[]>();
+  productDetailsOptions = input<{ title: string, value: string }[]>();
 
   categoryOption = model('');
   detailsOption = model('');
 
-  // onFilterChange = output<Signal<{ category: string; details: string; }>>();
+  
   onFilterChange = output<{ category: string; details: string; }>();
 
   filterModel: Signal<{ category: string; details: string; }> = computed(() => {
@@ -33,9 +33,7 @@ export class ProductsTableFormComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      // const model = this.filterModel;
       this.onFilterChange.emit(this.filterModel());
-      // console.log(this.filterModel());
     });
   }
   ngAfterViewInit(): void {
