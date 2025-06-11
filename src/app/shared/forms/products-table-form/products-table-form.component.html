@@ -2,7 +2,7 @@
 
     <select [disabled]="isCategoryDisabled()" 
     [class.disabled:text-gray-500!]="isCategoryDisabled()"
-    [(ngModel)]="categoryOption" name="category" class="w-36! p-2 mr-1.5"
+    [(ngModel)]="categoryOption" name="category" class="w-full mb-0.5 md:w-36! p-2 mr-1.5"
         (change)="onStatusChange($event)">
         <option value="">Category</option>
         @for (category of categoryOptions(); track $index) {
@@ -10,7 +10,7 @@
         }
     </select>
 
-    <select [(ngModel)]="detailsOption" name="productDetails" class="w-36! p-2 mr-1.5"
+    <select [(ngModel)]="detailsOption" name="productDetails" class="w-full mb-0.5 md:w-36! p-2 mr-1.5"
         (change)="onProductDetailsChange($event)">
         <option value="">Product Details</option>
         @for (item of productDetailsOptions(); track item.title) {
@@ -19,7 +19,7 @@
         }
     </select>
 
-    <select [(ngModel)]="orderOption" name="order" class="w-36! p-2">
+    <select [(ngModel)]="orderOption" name="order" class="w-full mb-0.5 md:w-36! p-2">
         @for (item of orderOptions(); track item.title) {
         <option [value]="item.value">{{item.title | titlecase}}</option>
 

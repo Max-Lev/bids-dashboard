@@ -43,7 +43,7 @@ export class NftComponent implements OnInit {
   products = computed(() => this.filteredProductsCategories().products);
 
   readonly filteredProducts = computed(() => this.productsService.filteredProducts());
-
+  
   readonly productsHighDiscount = computed(() => this.productsService.productsHighDiscount());
 
   readonly isProductsExists = computed(() => {

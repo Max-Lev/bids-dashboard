@@ -84,31 +84,54 @@ export class ProductsService {
   }
 
   readonly filteredProducts = computed(() => {
-    const products = this.products();
-    const _selectedCategories = this.selectedCategories();
-    const _productProperty = this.productProperty();
-    const _orderProp = this.orderProp();
+    const products = this.products(); // signal
+    const selectedCategories = this.selectedCategories(); // signal
+    const sortBy = this.productProperty(); // signal
+    const order = this.orderProp().value as 'asc' | 'desc'; // signal
 
-    // if (_selectedCategories.length === 0) {
-    //   return products.slice(0, this.itemsSize());
-    // }
-
-    if (_selectedCategories.length && _productProperty) {
-      debugger;
-      return this.filterByCategoryProperty(products, _selectedCategories, _productProperty, _orderProp);
-    } else if (_selectedCategories.length === 0 && _productProperty) {
-      debugger;
-      return this.filterByProperty(products, _productProperty, _orderProp);
-    }else if(_selectedCategories.length && !_productProperty){
-      debugger;
-      return this.filterByCategory(products, _selectedCategories, _orderProp);
-    }else{
-      debugger;
-      return this.filterDefault(products, _orderProp);
-    }
-    // this.filterByCategoryProperty(products, _selectedCategories, _productProperty, _orderProp);
-
+    return this.filterProducts(products, {
+      categories: selectedCategories.length ? selectedCategories : undefined,
+      sortBy: sortBy ?? 'id', // fallback to 'id' if null
+      order,
+    });
   });
+
+  filterProducts(products: Products,
+    options: {categories?: string[];sortBy?: keyof Product;order?: 'asc' | 'desc';}): Products {
+    if (!Array.isArray(products) || products.length === 0) return [];
+
+    let result = products.filter(p => p.stock > 0);
+
+    if (options.categories?.length) {
+      result = result.filter(p => options.categories!.includes(p.category));
+    }
+
+    if (options.sortBy) {
+      result = this.sortByProperty(result, options.sortBy, options.order ?? 'desc');
+    } else {
+      // fallback to sorting by id
+      result = result.sort((a, b) =>
+        options.order === 'asc' ? a.id - b.id : b.id - a.id
+      );
+    }
+
+    return result.slice(0, this.itemsSize());
+  }
+  private sortByProperty<T>(products: T[], prop: keyof T, order: 'asc' | 'desc'): T[] {
+    return [...products].sort((a, b) => {
+      const aVal = a[prop];
+      const bVal = b[prop];
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return order === 'desc' ? bVal - aVal : aVal - bVal;
+      }
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return order === 'desc' ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+      }
+      return 0;
+    });
+  }
+
+
 
   filterByCategoryProperty(products: Products,
     _selectedCategories: string[],
@@ -159,7 +182,7 @@ export class ProductsService {
       return this.products();
     }
   }
-  filterByCategory(products: Products,_selectedCategories: string[],_orderProp: { title: string; value: string; }) {
+  filterByCategory(products: Products, _selectedCategories: string[], _orderProp: { title: string; value: string; }) {
     if (Array.isArray(products) && products.length > 0) {
 
       const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
@@ -176,14 +199,14 @@ export class ProductsService {
         // Fallback for non-numbers
         return 0;
       }).filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
-      
+
       return _products;
     } else {
       return this.products();
     }
   }
 
-  filterDefault(products: Products,_orderProp: { title: string; value: string; }) {
+  filterDefault(products: Products, _orderProp: { title: string; value: string; }) {
     if (Array.isArray(products) && products.length > 0) {
 
       const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
@@ -191,11 +214,11 @@ export class ProductsService {
         const bVal = b;
 
         // if (typeof aVal === 'number' && typeof bVal === 'number') {
-          if (_orderProp.value === 'desc') {
-            return bVal.id - aVal.id; // descending order
-          } else {
-            return aVal.id - bVal.id; // ascending order
-          }
+        if (_orderProp.value === 'desc') {
+          return bVal.id - aVal.id; // descending order
+        } else {
+          return aVal.id - bVal.id; // ascending order
+        }
         // }
 
         // Fallback for non-numbers

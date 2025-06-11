@@ -1,24 +1,25 @@
-<div class="flex-col rounded-lg bg-background px-8 py-8 sm:flex-row">
-  <!-- <div class="mb-4 flex items-center justify-between"> -->
-  <div class="mb-4 flex items-center">
-    <div class="flex-col items-center justify-start">
+<div class="flex-col rounded-lg bg-background px-8 py-8">
+  <div class="mb-4 flex flex-col md:flex-row items-start md:items-center xl:items-center gap-3">
+    <div class="flex flex-col items-start justify-start">
       <h3 class="text-md font-bold text-foreground">High Rating Products</h3>
       <!-- <span class="text-xs text-muted-foreground">Updated 35 minutes ago</span> -->
     </div>
-
-    <div class="flex-1 justify-end">
-      <div class="flex flex-wrap gap-2.5 justify-end">
-        <app-products-table-form (onFilterChange)="filterChangeHandler($event)"
-        [selectedCategory]="selectedCategory()"
-        [selectedLastDefaultCategory]="selectedLastDefaultCategory()"
-        [productDetailsOptions]="productDetailsOptions()"
-        [isCategoryDisabled]="isCategoryDisabled()"
-        [selectedOrder]="selectedOrder()"
-        [orderOptions]="orderOptions()"
-        [categoryOptions]="categoryOptions()"></app-products-table-form>
+  
+    <div class="flex flex-col w-full md:w-auto md:flex-1 md:justify-end">
+      <div class="flex flex-wrap gap-2.5 justify-end md:justify-end w-full">
+        <app-products-table-form
+          class="w-full md:w-auto"
+          (onFilterChange)="filterChangeHandler($event)"
+          [selectedCategory]="selectedCategory()"
+          [selectedLastDefaultCategory]="selectedLastDefaultCategory()"
+          [productDetailsOptions]="productDetailsOptions()"
+          [isCategoryDisabled]="isCategoryDisabled()"
+          [selectedOrder]="selectedOrder()"
+          [orderOptions]="orderOptions()"
+          [categoryOptions]="categoryOptions()"
+        ></app-products-table-form>
       </div>
     </div>
-
   </div>
 
 
