@@ -63,7 +63,7 @@ export class ProductsService {
         const filteredProducts = products.products.filter(
           product => allowedCategories.includes(product.category));
 
-        // console.log('filteredProducts ', filteredProducts);
+        console.log('filteredProducts ', filteredProducts);
         // console.log('allProducts ', this.allProducts());
         // console.log('allowedCategories ', allowedCategories);
 
@@ -83,6 +83,52 @@ export class ProductsService {
     return allowedCategories;
   }
 
+  readonly filteredProducts = computed(() => {
+    const products = this.products();
+    const _selectedCategories = this.selectedCategories();
+    const _productProperty = this.productProperty();
+    const _orderProp = this.orderProp();
+
+    if (_selectedCategories.length === 0) {
+      return products.slice(0, this.itemsSize());
+    }
+
+    if (Array.isArray(products) && products.length > 0) {
+
+      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
+        const aVal = a[_productProperty];
+        const bVal = b[_productProperty];
+
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          if (_orderProp.value === 'desc') {
+            return bVal - aVal; // descending order
+          } else {
+            return aVal - bVal; // ascending order
+          }
+        }
+        // Fallback for non-numbers
+        return 0;
+      })
+        .filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
+
+      return _products;
+    } else {
+      return this.products();
+    }
+  });
+
+  updateFilter(category: string, prop: keyof Product, order: string) {
+    
+    if (category === '') {
+      this.selectedCategories.set([]);
+    }
+
+    this.updateTopProductsCategories(category);
+    this.productProperty.set(prop);
+    const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
+    this.orderProp.set(_orderProp);
+    
+  }
 
   // private readonly defaultCategories = signal<string[]>([]);
   // This function updates the top products categories
@@ -115,47 +161,14 @@ export class ProductsService {
     return this.selectedCategories();
   }
 
-  readonly filteredProducts = computed(() => {
-    const products = this.products();
-    const _selectedCategories = this.selectedCategories();
-    const prop = this.productProperty();
-    const order = this.orderProp();
-
-    if (_selectedCategories.length === 0) {
-      return products.slice(0, this.itemsSize());
+  removeSelectedCategory(category: string) {
+    const current = this.selectedCategories();
+    const index = current.indexOf(category);
+    if (index > -1) {
+      const updated = [...current];
+      updated.splice(index, 1);
+      this.selectedCategories.set(updated);
     }
-
-    if (Array.isArray(products) && products.length > 0) {
-
-      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
-        const aVal = a[prop];
-        const bVal = b[prop];
-
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          if (order.value === 'desc') {
-            return bVal - aVal; // descending order
-          } else {
-            return aVal - bVal; // ascending order
-          }
-
-        }
-        // Fallback for non-numbers
-        return 0;
-      })
-        .filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
-
-      return _products;
-    } else {
-      return this.products();
-    }
-  });
-
-  updateFilter(category: string, prop: keyof Product, order: string) {
-    this.updateTopProductsCategories(category);
-    this.productProperty.set(prop);
-    const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
-    this.orderProp.set(_orderProp);
-
   }
 
   readonly productsHighDiscount = computed(() => {
@@ -166,16 +179,6 @@ export class ProductsService {
       return [];
     }
   });
-
-  removeSelectedCategory(category: string) {
-    const current = this.selectedCategories();
-    const index = current.indexOf(category);
-    if (index > -1) {
-      const updated = [...current];
-      updated.splice(index, 1);
-      this.selectedCategories.set(updated);
-    }
-  }
 
 
   // rxProducts = rxResource<Products, string | undefined>({

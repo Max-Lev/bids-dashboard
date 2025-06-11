@@ -55,7 +55,10 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
     this.orderOption.set(this.selectedOrder()?.value!);
   }
   ngAfterViewInit(): void {
-
+    
+    this.form.statusChanges?.subscribe(v=>{
+      console.log('isDirty: ',this.form.dirty);
+    })
   }
 
   onStatusChange(event: Event) {

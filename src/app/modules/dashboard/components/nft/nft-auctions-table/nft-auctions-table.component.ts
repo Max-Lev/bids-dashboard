@@ -41,7 +41,7 @@ export class NftAuctionsTableComponent implements OnInit {
   constructor() {
 
     effect(() => {
-      console.log(this.categoryOptions())
+      
     })
 
     this.activeAuction = [
