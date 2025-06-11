@@ -89,10 +89,31 @@ export class ProductsService {
     const _productProperty = this.productProperty();
     const _orderProp = this.orderProp();
 
-    if (_selectedCategories.length === 0) {
-      return products.slice(0, this.itemsSize());
-    }
+    // if (_selectedCategories.length === 0) {
+    //   return products.slice(0, this.itemsSize());
+    // }
 
+    if (_selectedCategories.length && _productProperty) {
+      debugger;
+      return this.filterByCategoryProperty(products, _selectedCategories, _productProperty, _orderProp);
+    } else if (_selectedCategories.length === 0 && _productProperty) {
+      debugger;
+      return this.filterByProperty(products, _productProperty, _orderProp);
+    }else if(_selectedCategories.length && !_productProperty){
+      debugger;
+      return this.filterByCategory(products, _selectedCategories, _orderProp);
+    }else{
+      debugger;
+      return this.filterDefault(products, _orderProp);
+    }
+    // this.filterByCategoryProperty(products, _selectedCategories, _productProperty, _orderProp);
+
+  });
+
+  filterByCategoryProperty(products: Products,
+    _selectedCategories: string[],
+    _productProperty: keyof Product,
+    _orderProp: { title: string; value: string; }) {
     if (Array.isArray(products) && products.length > 0) {
 
       const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
@@ -108,17 +129,87 @@ export class ProductsService {
         }
         // Fallback for non-numbers
         return 0;
-      })
-        .filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
+      }).filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
 
       return _products;
     } else {
       return this.products();
     }
-  });
+  }
+  filterByProperty(products: Products, _productProperty: keyof Product, _orderProp: { title: string; value: string; }) {
+    if (Array.isArray(products) && products.length > 0) {
+
+      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
+        const aVal = a[_productProperty];
+        const bVal = b[_productProperty];
+
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          if (_orderProp.value === 'desc') {
+            return bVal - aVal; // descending order
+          } else {
+            return aVal - bVal; // ascending order
+          }
+        }
+        // Fallback for non-numbers
+        return 0;
+      }).slice(0, this.itemsSize());
+
+      return _products;
+    } else {
+      return this.products();
+    }
+  }
+  filterByCategory(products: Products,_selectedCategories: string[],_orderProp: { title: string; value: string; }) {
+    if (Array.isArray(products) && products.length > 0) {
+
+      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
+        const aVal = a;
+        const bVal = b;
+
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+          if (_orderProp.value === 'desc') {
+            return bVal - aVal; // descending order
+          } else {
+            return aVal - bVal; // ascending order
+          }
+        }
+        // Fallback for non-numbers
+        return 0;
+      }).filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
+      
+      return _products;
+    } else {
+      return this.products();
+    }
+  }
+
+  filterDefault(products: Products,_orderProp: { title: string; value: string; }) {
+    if (Array.isArray(products) && products.length > 0) {
+
+      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
+        const aVal = a;
+        const bVal = b;
+
+        // if (typeof aVal === 'number' && typeof bVal === 'number') {
+          if (_orderProp.value === 'desc') {
+            return bVal.id - aVal.id; // descending order
+          } else {
+            return aVal.id - bVal.id; // ascending order
+          }
+        // }
+
+        // Fallback for non-numbers
+        // return 0;
+      }).slice(0, this.itemsSize());
+      console.log(_products);
+      return _products;
+    } else {
+      return this.products();
+    }
+  }
 
   updateFilter(category: string, prop: keyof Product, order: string) {
-    
+
     if (category === '') {
       this.selectedCategories.set([]);
     }
@@ -127,7 +218,7 @@ export class ProductsService {
     this.productProperty.set(prop);
     const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
     this.orderProp.set(_orderProp);
-    
+
   }
 
   // private readonly defaultCategories = signal<string[]>([]);
