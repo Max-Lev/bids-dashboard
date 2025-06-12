@@ -9,6 +9,7 @@ import { ProductsService } from 'src/app/core/services/products.service';
 import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
+import { ColumnsChartComponent } from 'src/app/shared/graphs/columns-chart/columns-chart.component';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions } 
     NftSingleCardComponent,
     NftChartCardComponent,
     NftAuctionsTableComponent,
+    ColumnsChartComponent
   ],
   providers: [
 

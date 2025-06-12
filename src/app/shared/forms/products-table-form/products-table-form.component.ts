@@ -10,7 +10,6 @@ import { MatChipsModule } from '@angular/material/chips';
     TitleCasePipe,
     MatSelectModule,
     MatChipsModule,
-    NgClass
   ],
   templateUrl: './products-table-form.component.html',
   styleUrl: './products-table-form.component.css'
@@ -57,7 +56,7 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
     
     this.form.statusChanges?.subscribe(v=>{
-      console.log('isDirty: ',this.form.dirty);
+      
     })
   }
 

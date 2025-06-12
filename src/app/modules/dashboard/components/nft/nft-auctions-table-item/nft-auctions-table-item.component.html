@@ -2,7 +2,7 @@
   <div class="flex items-center">
     <img [src]="product()!.images[0]" class="rounded-xs h-10 w-10 flex-none ltr:mr-2 rtl:ml-2" [alt]="product()!.title" />
     <div class="flex flex-col justify-items-start">
-      <a href="#" class="text-foreground mb-1 text-sm font-semibold">{{ product()!.title }} ({{product()!.id}})</a>
+      <a href="#" class="text-foreground mb-1 text-sm font-semibold">{{ product()!.title }}</a>
       <span class="text-muted-foreground/50 text-xs font-semibold">{{ product()?.price | currency }}</span>
     </div>
   </div>

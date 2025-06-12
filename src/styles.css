@@ -305,3 +305,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .border-color-gray{
   border-color:#383838;
 }
+
+.apexcharts-tooltip-marker {
+  width: 12px !important;       /* Default is 12px */
+  height: 12px !important;      /* Default is 12px */
+  border-radius: 50% !important;/* Circle */
+  /* border: 1px solid #e11d48 !important; */
+  background-color: #00c951 !important;
+  /* box-shadow: 0 0 3px #0002; */
+  margin-right: 7px !important; /* Spacing before label */
+  /* You can also use filter for glow effects */
+}

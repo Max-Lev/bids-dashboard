@@ -1,10 +1,11 @@
-import { computed, inject, Injectable, resource, ResourceRef, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, resource, ResourceRef, signal } from '@angular/core';
 import { Product, Products } from '../models/products';
 import { HttpClient } from '@angular/common/http';
 import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from 'src/environments/environment';
 import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
+import { GraphUtilService } from '../utils/graph-util.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,20 +13,16 @@ import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
 export class ProductsService {
 
   #http = inject(HttpClient);
+  #graphUtilService = inject(GraphUtilService);
   excludedCategories = ['groceries', 'furniture', 'tops'];
 
   private allProducts = signal<Product[]>([]);
   private products = signal<Product[]>([]);
   private categories = signal<string[]>([]);
-
   private readonly selectedCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
-
   productProperty = signal<keyof Product>('rating');
-
   orderProp = signal<{ title: string, value: string }>({ title: 'High', value: 'desc' }); // 'asc' | 'desc';
-
-  itemsSize = signal(5);
-
+  itemsSize = signal(10);
   selectedCategory = computed(() => this.selectedCategories());
 
   selectedLastDefaultCategory = computed(() => {
@@ -35,7 +32,13 @@ export class ProductsService {
   });
 
 
-  constructor() { }
+ 
+
+  constructor() {
+    effect(() =>{
+      console.log(this.graphData())
+    })
+  }
 
   getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[]; }> {
     return defer(() => {
@@ -63,10 +66,6 @@ export class ProductsService {
         const filteredProducts = products.products.filter(
           product => allowedCategories.includes(product.category));
 
-        console.log('filteredProducts ', filteredProducts);
-        // console.log('allProducts ', this.allProducts());
-        // console.log('allowedCategories ', allowedCategories);
-
         this.products.set(filteredProducts);
         this.categories.set(allowedCategories);
         return {
@@ -89,15 +88,18 @@ export class ProductsService {
     const sortBy = this.productProperty(); // signal
     const order = this.orderProp().value as 'asc' | 'desc'; // signal
 
-    return this.filterProducts(products, {
+    const _filterProducts = this.filterProducts(products, {
       categories: selectedCategories.length ? selectedCategories : undefined,
       sortBy: sortBy ?? 'id', // fallback to 'id' if null
       order,
     });
+    return _filterProducts;
+
   });
 
-  filterProducts(products: Products,
-    options: {categories?: string[];sortBy?: keyof Product;order?: 'asc' | 'desc';}): Products {
+  filterProducts(products: Products, options: {
+    categories?: string[]; sortBy?: keyof Product; order?: 'asc' | 'desc';
+  }): Products {
     if (!Array.isArray(products) || products.length === 0) return [];
 
     let result = products.filter(p => p.stock > 0);
@@ -110,12 +112,11 @@ export class ProductsService {
       result = this.sortByProperty(result, options.sortBy, options.order ?? 'desc');
     } else {
       // fallback to sorting by id
-      result = result.sort((a, b) =>
-        options.order === 'asc' ? a.id - b.id : b.id - a.id
-      );
+      result = result.sort((a, b) =>options.order === 'asc' ? a.id - b.id : b.id - a.id);
     }
-
-    return result.slice(0, this.itemsSize());
+    
+    const _result =  result.slice(0, this.itemsSize());    
+    return _result;
   }
   private sortByProperty<T>(products: T[], prop: keyof T, order: 'asc' | 'desc'): T[] {
     return [...products].sort((a, b) => {
@@ -132,106 +133,7 @@ export class ProductsService {
   }
 
 
-
-  filterByCategoryProperty(products: Products,
-    _selectedCategories: string[],
-    _productProperty: keyof Product,
-    _orderProp: { title: string; value: string; }) {
-    if (Array.isArray(products) && products.length > 0) {
-
-      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
-        const aVal = a[_productProperty];
-        const bVal = b[_productProperty];
-
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          if (_orderProp.value === 'desc') {
-            return bVal - aVal; // descending order
-          } else {
-            return aVal - bVal; // ascending order
-          }
-        }
-        // Fallback for non-numbers
-        return 0;
-      }).filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
-
-      return _products;
-    } else {
-      return this.products();
-    }
-  }
-  filterByProperty(products: Products, _productProperty: keyof Product, _orderProp: { title: string; value: string; }) {
-    if (Array.isArray(products) && products.length > 0) {
-
-      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
-        const aVal = a[_productProperty];
-        const bVal = b[_productProperty];
-
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          if (_orderProp.value === 'desc') {
-            return bVal - aVal; // descending order
-          } else {
-            return aVal - bVal; // ascending order
-          }
-        }
-        // Fallback for non-numbers
-        return 0;
-      }).slice(0, this.itemsSize());
-
-      return _products;
-    } else {
-      return this.products();
-    }
-  }
-  filterByCategory(products: Products, _selectedCategories: string[], _orderProp: { title: string; value: string; }) {
-    if (Array.isArray(products) && products.length > 0) {
-
-      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
-        const aVal = a;
-        const bVal = b;
-
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          if (_orderProp.value === 'desc') {
-            return bVal - aVal; // descending order
-          } else {
-            return aVal - bVal; // ascending order
-          }
-        }
-        // Fallback for non-numbers
-        return 0;
-      }).filter((item) => _selectedCategories.includes(item.category)).slice(0, this.itemsSize());
-
-      return _products;
-    } else {
-      return this.products();
-    }
-  }
-
-  filterDefault(products: Products, _orderProp: { title: string; value: string; }) {
-    if (Array.isArray(products) && products.length > 0) {
-
-      const _products = products.filter(prod => prod.stock > 0).sort((a, b) => {
-        const aVal = a;
-        const bVal = b;
-
-        // if (typeof aVal === 'number' && typeof bVal === 'number') {
-        if (_orderProp.value === 'desc') {
-          return bVal.id - aVal.id; // descending order
-        } else {
-          return aVal.id - bVal.id; // ascending order
-        }
-        // }
-
-        // Fallback for non-numbers
-        // return 0;
-      }).slice(0, this.itemsSize());
-      console.log(_products);
-      return _products;
-    } else {
-      return this.products();
-    }
-  }
-
-  updateFilter(category: string, prop: keyof Product, order: string) {
+  updateFilterHandler(category: string, prop: keyof Product, order: string) {
 
     if (category === '') {
       this.selectedCategories.set([]);
@@ -270,7 +172,6 @@ export class ProductsService {
       this.selectedCategories.set(updated); // update signal
     }
     // Log the updated categories
-    console.log('Updated categories:', this.selectedCategories());
     // Return the updated categories
     return this.selectedCategories();
   }
@@ -293,6 +194,13 @@ export class ProductsService {
       return [];
     }
   });
+
+  readonly graphData = this.#graphUtilService.createGraphData(
+    this.filteredProducts,
+    this.productProperty,
+    this.orderProp
+  );
+
 
 
   // rxProducts = rxResource<Products, string | undefined>({

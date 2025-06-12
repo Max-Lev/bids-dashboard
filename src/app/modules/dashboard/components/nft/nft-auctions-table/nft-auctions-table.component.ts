@@ -116,7 +116,7 @@ export class NftAuctionsTableComponent implements OnInit {
 
   filterChangeHandler(event: { category: string; details: string;order:string }) {
     const { category, details,order } = event;
-    this.productsService.updateFilter(category, details as keyof Product,order);
+    this.productsService.updateFilterHandler(category, details as keyof Product,order);
   }
 
   onChipsSelected(item: string) {
