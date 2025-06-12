@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, resource, ResourceRef, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, resource, ResourceRef, Signal, signal } from '@angular/core';
 import { Product, Products } from '../models/products';
 import { HttpClient } from '@angular/common/http';
 import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay } from 'rxjs';
@@ -6,6 +6,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from 'src/environments/environment';
 import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
 import { GraphUtilService } from '../utils/graph-util.service';
+import { ChartProducts } from '../models/chart-products.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,9 +31,6 @@ export class ProductsService {
     const last = all.length - 1;
     return (last === -1) ? '' : all[last];
   });
-
-
- 
 
   constructor() {
     effect(() =>{
@@ -195,7 +193,7 @@ export class ProductsService {
     }
   });
 
-  readonly graphData = this.#graphUtilService.createGraphData(
+  readonly graphData:Signal<ChartProducts> = this.#graphUtilService.createGraphData(
     this.filteredProducts,
     this.productProperty,
     this.orderProp

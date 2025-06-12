@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { NftAuctionsTableComponent } from '../../components/nft/nft-auctions-table/nft-auctions-table.component';
 import { NftChartCardComponent } from '../../components/nft/nft-chart-card/nft-chart-card.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
@@ -21,12 +21,10 @@ import { ColumnsChartComponent } from 'src/app/shared/graphs/columns-chart/colum
     NftSingleCardComponent,
     NftChartCardComponent,
     NftAuctionsTableComponent,
-    ColumnsChartComponent
+    ColumnsChartComponent,
   ],
-  providers: [
-
-  ],
-  // standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class NftComponent implements OnInit {
   nft: Array<Nft>;
@@ -45,7 +43,7 @@ export class NftComponent implements OnInit {
   products = computed(() => this.filteredProductsCategories().products);
 
   readonly filteredProducts = computed(() => this.productsService.filteredProducts());
-  
+
   readonly productsHighDiscount = computed(() => this.productsService.productsHighDiscount());
 
   readonly isProductsExists = computed(() => {
@@ -53,38 +51,9 @@ export class NftComponent implements OnInit {
     return Array.isArray(items) && items.length > 0 ? items : null;
   });
 
-  // filterType(prop: keyof Product, category: string[]) {
+  graphData = this.productsService.graphData;
+  cdr = inject(ChangeDetectorRef);
 
-  //   return computed(() => {
-
-  //     const products = this.filteredProductsCategories().products;
-
-  //     if (!Array.isArray(products) || products.length === 0) {
-  //       return [];
-  //     }
-
-  //     // Sort safely by numeric or string property
-  //     const sorted = [...products].sort((a, b) => {
-  //       const aVal = a[prop];
-  //       const bVal = b[prop];
-
-  //       if (typeof aVal === 'number' && typeof bVal === 'number') {
-  //         return bVal - aVal; // descending numeric
-  //       }
-
-  //       if (typeof aVal === 'string' && typeof bVal === 'string') {
-  //         return bVal.localeCompare(aVal); // descending string
-  //       }
-
-  //       return 0;
-  //     });
-
-  //     // Filter and slice
-  //     const filtered = sorted.filter((item) => category.includes(item.category)).slice(0, 5);
-  //     console.log('filterType', filtered)
-  //     return filtered;
-  //   });
-  // }
 
   constructor() {
     this.nft = [
@@ -117,31 +86,13 @@ export class NftComponent implements OnInit {
 
     effect(() => {
 
-      const categoryData = this.category();
-      // console.log('Categories:', categoryData);
-
-      const productData = this.products();
-      // console.log('Products:', productData);
-
-      // console.log('productsHighDiscount ',this.productsHighDiscount());
-
-      // this.filterType('price', ['beauty', 'fragrances'])();
-
-      // console.log(this.productsService.filterType())
-
     });
 
 
   }
 
   ngOnInit(): void {
-
-
+    // this.cdr.detectChanges();
   }
-
-  // addCategory(category: string) {
-  //   this.productsService.updateProductsHighRating(category);
-  // }
-
 
 }

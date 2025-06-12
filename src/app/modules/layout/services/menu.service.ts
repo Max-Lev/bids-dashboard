@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, signal } from '@angular/core';
+import { computed, Injectable, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';
@@ -8,7 +8,8 @@ import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
   providedIn: 'root',
 })
 export class MenuService implements OnDestroy {
-  private _showSidebar = signal(true);
+  private _showSidebarState = JSON.parse(localStorage.getItem('showSidebar') || 'true');
+  private _showSidebar = signal(this._showSidebarState);
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
@@ -57,6 +58,7 @@ export class MenuService implements OnDestroy {
 
   public toggleSidebar() {
     this._showSidebar.set(!this._showSidebar());
+    localStorage.setItem('showSidebar', JSON.stringify(this._showSidebar()));
   }
 
   public toggleMenu(menu: any) {

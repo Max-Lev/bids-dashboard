@@ -19,6 +19,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {}
 
   public toggleSidebar() {
+    
     this.menuService.toggleSidebar();
   }
 }

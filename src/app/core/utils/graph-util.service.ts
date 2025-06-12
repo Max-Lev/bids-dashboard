@@ -1,15 +1,13 @@
 import { Injectable, Signal, computed, signal } from "@angular/core";
 import { Products, Product } from "../models/products";
+import { ChartProducts } from "../models/chart-products.model";
 
 @Injectable({ providedIn: 'root' })
 export class GraphUtilService {
 
 
-  createGraphData(
-    products: Signal<Products>,
-    prop: Signal<keyof Product>,
-    order: Signal<{ title: string, value: string }>
-  ) {
+  createGraphData(products: Signal<Products>, prop: Signal<keyof Product>,
+    order: Signal<{ title: string, value: string }>): Signal<ChartProducts> {
     return computed(() => {
       const currentProducts = products();
       const currentProp = prop();

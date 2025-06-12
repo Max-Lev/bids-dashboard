@@ -1,150 +1,81 @@
-import { Component, computed, effect, inject, ViewChild } from '@angular/core';
-import { ApexAxisChartSeries, ApexChart, ApexDataLabels, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ChartComponent } from 'ng-apexcharts';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
+import { ChartComponent } from 'ng-apexcharts';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartOptions } from '../../models/chart-options';
 import { ThemeService } from 'src/app/core/services/theme.service';
-import { GraphUtilService } from 'src/app/core/utils/graph-util.service';
-import { ProductsService } from 'src/app/core/services/products.service';
-import { TitleCasePipe } from '@angular/common';
+import { DecimalPipe, TitleCasePipe } from '@angular/common';
+import { ChartProducts, EmptyChartProduct } from 'src/app/core/models/chart-products.model';
+import { GraphConf } from './graph.config';
+import { MiniTableComponent } from '../../components/mini-table/mini-table.component';
+import { Product } from 'src/app/core/models/products';
 
-// export type ChartOptions = {
-//   series: ApexAxisChartSeries;
-//   chart: ApexChart;
-//   xaxis: ApexXAxis;
-//   dataLabels: ApexDataLabels;
-//   plotOptions: ApexPlotOptions;
-//   title: ApexTitleSubtitle;
-// };
 
 @Component({
   selector: '[app-columns-chart]',
   imports: [
     NgApexchartsModule,
-    TitleCasePipe
+    TitleCasePipe,
+    MiniTableComponent,
+    DecimalPipe
   ],
   providers: [TitleCasePipe],
+  changeDetection:ChangeDetectionStrategy.OnPush,
   templateUrl: './columns-chart.component.html',
   styleUrl: './columns-chart.component.css'
 })
 export class ColumnsChartComponent {
 
-  #productsService = inject(ProductsService);
   #titleCasePipe = inject(TitleCasePipe);
+  
 
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
-  graphData = computed(() => this.#productsService.graphData());
+  graphData = input<ChartProducts>({ ...EmptyChartProduct });
+
+  selectedItem = signal<Product | {}>({});
+
+  data = computed(()=>{
+    const dataMin = this.graphData().products[0];
+    const dataMax = this.graphData().products[this.graphData().products.length - 1];
+    const data = {
+      dataMin,
+      dataMax,
+      selectedItem:this.selectedItem()
+    };
+    console.log(dataMax,dataMin);
+    console.log(this.graphData().products);
+    console.log(data);
+    console.log(this.totalValue())
+    return data;
+  });
+
+  totalValue = computed(() => {
+    const val =  this.graphData().products.reduce((acc, product) => acc + product.price, 0).toFixed(2);
+    console.log(this.graphData().products);
+    console.log(val);
+    return val;
+  })
 
 
   constructor(private themeService: ThemeService) {
     let baseColor = '#FFFFFF';
-    const categories: string[] = [];
+    const categories: string[] = this.graphData().titles ?? []
     const data = this.graphData().dataNum ?? [];
+    this.chartOptions = GraphConf(data, categories, baseColor);
 
-    this.chartOptions = {
+    this.chartEventListener();
+    this.setChartOptions();
 
-      series: [
-        {
-          name: 'Products',
-          data: data,
-        },
-      ],
-      chart: {
-        fontFamily: 'inherit',
-        // type: 'area',
-        type: 'bar',
-        height: 150,
-        toolbar: {
-          show: false, // hide zoon ect...
-        },
-        sparkline: {
-          // enabled: false,//! show x/y axis labels
-          enabled: true, //! show x/y axis labels
-        },
-        events: {
-          dataPointSelection: (event, chartContext, config) => {
-            const seriesIndex = config.seriesIndex;
-            const dataPointIndex = config.dataPointIndex;
-            const value = this.chartOptions?.series?.[seriesIndex]?.data?.[dataPointIndex];
-            const category = this.chartOptions?.xaxis?.categories?.[dataPointIndex];
-            console.log(value)
-            console.log(category)
-            console.log(this.graphData().products[config.dataPointIndex]);
+    effect(()=>{
+      this.data();
+      
+    });
+    
 
-          }
-        }
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: '35%',
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      fill: {
-        // opacity: 1,
-        // colors:['#a3a3a3']
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.4,
-          opacityTo: 0.2,
-          stops: [15, 120, 100],
-        },
-      },
-      stroke: {
-        curve: 'smooth',
-        show: true,
-        width: 2,
-        colors: [baseColor], // line color
-      },
-      grid: {
-        // show: false,
-        show: true,
-        borderColor: 'lightgray', // background horizontal grids
-        strokeDashArray: 1,
-      },
+  }
 
-      xaxis: {
-        categories: categories,
-        labels: {
-          show: true,
-        },
-        crosshairs: {
-          position: 'front',
-          stroke: {
-            color: baseColor,
-            width: 1,
-            dashArray: 4,
-          },
-        },
-        tooltip: {
-          enabled: true,
-        },
-      },
-      yaxis: {
-        title: {
-          text: '$ (thousands)'
-        }
-      },
-      tooltip: {
-        theme: 'light',
-        // marker: {
-        //  show:true,
-        //  fillColors:['blue','yellow'] 
-        // },
-        y: {
-          formatter: (val: number) => `${val}`
-        }
-
-      },
-      colors: [baseColor], //line colors
-    };
-
-
+  setChartOptions() {
     effect(() => {
       /** change chart theme */
       let primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary');
@@ -156,19 +87,10 @@ export class ColumnsChartComponent {
 
     effect(() => {
       const graph = this.graphData();
-      console.log('[GRAPH]', graph);
-
+      const name = (graph.prop === 'discountPercentage') ? 'Discount' : this.#titleCasePipe.transform(graph.prop);
       if (graph?.dataNum?.length) {
-        this.chartOptions.series = [
-          {
-            name: (graph.prop === 'discountPercentage') ? 'Discount' : this.#titleCasePipe.transform(graph.prop),
-            data: graph.dataNum,
-          },
-        ];
-        this.chartOptions.xaxis = {
-          ...this.chartOptions.xaxis,
-          categories: graph.titles,
-        };
+        this.chartOptions.series = [{ name: name, data: graph.dataNum }];
+        this.chartOptions.xaxis = { ...this.chartOptions.xaxis, categories: graph.titles, };
         // const min = Math.min(...this.graphData().dataNum);
         // const max = Math.max(...this.graphData().dataNum);
         // this.chartOptions.colors = this.graphData().dataNum.map(val =>
@@ -177,41 +99,29 @@ export class ColumnsChartComponent {
         // console.log(this.chartOptions.colors);
       }
     });
+  }
 
-
-
+  chartEventListener() {
+    this.chartOptions = {
+      ...this.chartOptions,
+      chart: {
+        ...this.chartOptions.chart!,
+        events: {
+          dataPointSelection: (event, chartContext, config) => {
+            const seriesIndex = config.seriesIndex;
+            const dataPointIndex = config.dataPointIndex;
+            const value = this.chartOptions?.series?.[seriesIndex]?.data?.[dataPointIndex];
+            const category = this.chartOptions?.xaxis?.categories?.[dataPointIndex];
+            console.log(value, category);
+            console.log(this.graphData().products[dataPointIndex]);
+            this.selectedItem.set(this.graphData().products[dataPointIndex]);
+          }
+        }
+      }
+    }
   }
 
 
-  transform(value: unknown): string | null {
-    return null;
-  }
+
 }
 
-// this.chartOptions = {
-//   series: [
-//     {
-//       name: "Sales",
-//       data: data
-//     }
-//   ],
-//   chart: {
-//     type: "bar",
-//     height: 350
-//   },
-//   plotOptions: {
-//     bar: {
-//       borderRadius: 4,
-//       horizontal: false,
-//     }
-//   },
-//   dataLabels: {
-//     enabled: false
-//   },
-//   xaxis: {
-//     categories: categories
-//   },
-//   title: {
-//     text: "Column Chart Example"
-//   }
-// };
