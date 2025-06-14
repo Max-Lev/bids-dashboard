@@ -20,19 +20,20 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   productDetailsOptions = input<{ title: string, value: string }[]>();
   selectedCategory = input<string[]>();
   selectedOrder = input<{ title: string, value: string }>();
-
   selectedLastDefaultCategory = input<string>('');
+  productProperty = input<string>();
 
-  detailsOption = model('rating');
+  
+  propOption = model('');
   categoryOption = model('');
   orderOption = model('');
 
-  onFilterChange = output<{ category: string; details: string; order: string }>();
+  onFilterChange = output<{ category: string; prop: string; order: string }>();
 
-  filterModel: Signal<{ category: string; details: string; order: string; }> = computed(() => {
+  filterModel: Signal<{ category: string; prop: string; order: string; }> = computed(() => {
     return {
       category: this.categoryOption(),
-      details: this.detailsOption(),
+      prop: this.propOption(),
       order: this.orderOption()
     }
   });
@@ -47,17 +48,21 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
 
     effect(() => {
       this.onFilterChange.emit(this.filterModel());
+      console.log(this.categoryOption()),this.orderOption();
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.categoryOption.set(this.selectedLastDefaultCategory());
     this.orderOption.set(this.selectedOrder()?.value!);
+    this.propOption.set(this.productProperty() ?? '');
+    console.log(this.categoryOption(),this.orderOption(),this.productProperty());
+    
   }
   ngAfterViewInit(): void {
     
     this.form.statusChanges?.subscribe(v=>{
       
-    })
+    });
   }
 
   onStatusChange(event: Event) {
@@ -68,7 +73,7 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   }
   onProductDetailsChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
-    this.detailsOption.set(value);
+    this.propOption.set(value);
 
   }
 

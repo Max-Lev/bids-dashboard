@@ -198,6 +198,11 @@ export class ProductsService {
     this.productProperty,
     this.orderProp
   );
+  // readonly graphData= computed(()=>this.#graphUtilService.createGraphData(
+  //   this.filteredProducts,
+  //   this.productProperty,
+  //   this.orderProp
+  // ));
 
 
 

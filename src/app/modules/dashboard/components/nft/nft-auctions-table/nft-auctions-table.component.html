@@ -1,7 +1,21 @@
 <div class="flex-col rounded-lg bg-background px-8 py-8 cursor-pointer">
   <div class="mb-4 flex flex-col md:flex-row items-start md:items-center xl:items-center gap-3">
     <div class="flex flex-col items-start justify-start">
-      <h3 class="text-md font-bold text-foreground">High Rating Products</h3>
+      <!-- <h3 class="text-md font-bold text-foreground">High Rating Products</h3> -->
+      <h3 class="text-md font-bold text-foreground text-sm flex items-center">
+        <!-- @if(selectedOrder().value ==='desc'){
+          <svg-icon class="text-green-500" src="assets/icons/heroicons/outline/arrow-sm-up.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        }@else{
+          <svg-icon class="text-red-500" src="assets/icons/heroicons/outline/arrow-sm-down.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        } -->
+        Products
+        {{(productProperty() === 'discountPercentage') ? 'Discount' : productProperty() | titlecase}}
+        @if(selectedOrder().value ==='desc'){
+          <svg-icon class="text-green-500" src="assets/icons/heroicons/outline/arrow-sm-up.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        }@else{
+          <svg-icon class="text-red-500" src="assets/icons/heroicons/outline/arrow-sm-down.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+        }
+      </h3>
       <!-- <span class="text-xs text-muted-foreground">Updated 35 minutes ago</span> -->
     </div>
   
@@ -9,6 +23,7 @@
       <div class="flex flex-wrap gap-2.5 justify-end md:justify-end w-full">
         <app-products-table-form
           class="w-full md:w-auto"
+          [productProperty]="productProperty()"
           (onFilterChange)="filterChangeHandler($event)"
           [selectedCategory]="selectedCategory()"
           [selectedLastDefaultCategory]="selectedLastDefaultCategory()"

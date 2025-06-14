@@ -18,7 +18,9 @@ import { ChipsComponent } from 'src/app/shared/components/chips/chips.component'
     NgIf,
     FormsModule,
     ProductsTableFormComponent,
-    ChipsComponent
+    ChipsComponent,
+    TitleCasePipe,
+    AngularSvgIconModule
   ],
   // changeDetection:ChangeDetectionStrategy.OnPush
 })
@@ -34,7 +36,7 @@ export class NftAuctionsTableComponent implements OnInit {
   categoryOptions = input<string[]>();
   orderOptions = input<{ title: string, value: string }[]>([]);
   productDetailsOptions = input<{ title: string, value: string }[]>();
-
+  productProperty = this.productsService.productProperty;
 
   selectedCategory = this.productsService.selectedCategory;
   selectedOrder = this.productsService.orderProp;
@@ -44,18 +46,18 @@ export class NftAuctionsTableComponent implements OnInit {
   constructor() {
 
     effect(() => {
-      
-    })
+      console.log('productProperty() ', this.productProperty())
+    });
   }
 
   ngOnInit(): void {
-      // this.cdr.detectChanges();
+    // this.cdr.detectChanges();
   }
 
 
-  filterChangeHandler(event: { category: string; details: string;order:string }) {
-    const { category, details,order } = event;
-    this.productsService.updateFilterHandler(category, details as keyof Product,order);
+  filterChangeHandler(event: { category: string; prop: string; order: string }) {
+    const { category, prop, order } = event;
+    this.productsService.updateFilterHandler(category, prop as keyof Product, order);
   }
 
   onChipsSelected(item: string) {

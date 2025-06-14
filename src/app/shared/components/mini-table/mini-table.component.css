@@ -1,0 +1,10 @@
+.elipsis{
+    width: 175px;
+    overflow-x: hidden;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    /* max-width: 200px; */
+    /* color: white; */
+}

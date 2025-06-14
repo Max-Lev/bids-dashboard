@@ -8,6 +8,7 @@ import { ChartProducts, EmptyChartProduct } from 'src/app/core/models/chart-prod
 import { GraphConf } from './graph.config';
 import { MiniTableComponent } from '../../components/mini-table/mini-table.component';
 import { Product } from 'src/app/core/models/products';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 
 @Component({
@@ -16,17 +17,18 @@ import { Product } from 'src/app/core/models/products';
     NgApexchartsModule,
     TitleCasePipe,
     MiniTableComponent,
-    DecimalPipe
+    DecimalPipe,
+    AngularSvgIconModule
   ],
   providers: [TitleCasePipe],
-  changeDetection:ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './columns-chart.component.html',
   styleUrl: './columns-chart.component.css'
 })
 export class ColumnsChartComponent {
 
   #titleCasePipe = inject(TitleCasePipe);
-  
+
 
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
@@ -35,27 +37,22 @@ export class ColumnsChartComponent {
 
   selectedItem = signal<Product | {}>({});
 
-  data = computed(()=>{
-    const dataMin = this.graphData().products[0];
-    const dataMax = this.graphData().products[this.graphData().products.length - 1];
-    const data = {
+  totalValue = computed(() => this.graphData().products.reduce((acc, product) => acc + product.price, 0).toFixed(2));
+
+  additionalData = computed(() => {
+    const dataMax = this.graphData().products[0];
+    const dataMin = this.graphData().products[this.graphData().products.length - 1];
+    return {
       dataMin,
       dataMax,
-      selectedItem:this.selectedItem()
-    };
-    console.log(dataMax,dataMin);
-    console.log(this.graphData().products);
-    console.log(data);
-    console.log(this.totalValue())
-    return data;
+      prop: this.graphData().prop,
+      selectedItem: this.selectedItem(),
+      order: this.graphData().order,
+      list: [dataMax, dataMin]
+    }
   });
 
-  totalValue = computed(() => {
-    const val =  this.graphData().products.reduce((acc, product) => acc + product.price, 0).toFixed(2);
-    console.log(this.graphData().products);
-    console.log(val);
-    return val;
-  })
+  
 
 
   constructor(private themeService: ThemeService) {
@@ -67,11 +64,10 @@ export class ColumnsChartComponent {
     this.chartEventListener();
     this.setChartOptions();
 
-    effect(()=>{
-      this.data();
-      
+    effect(() => {
+      this.additionalData();
     });
-    
+
 
   }
 
