@@ -1,8 +1,11 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, input, model, OnChanges, output, Signal, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, DestroyRef, effect, inject, input, model, OnChanges, output, Signal, SimpleChanges, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MenuService } from 'src/app/modules/layout/services/menu.service';
+import { debounceTime } from 'rxjs';
 @Component({
   selector: 'app-products-table-form',
   imports: [
@@ -23,7 +26,7 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   selectedLastDefaultCategory = input<string>('');
   productProperty = input<string>();
 
-  
+
   propOption = model('');
   categoryOption = model('');
   orderOption = model('');
@@ -44,28 +47,38 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
 
   @ViewChild('form') form!: NgForm;
 
+  destroy = inject(DestroyRef);
+  menuService = inject(MenuService);
+
   constructor() {
 
     effect(() => {
       this.onFilterChange.emit(this.filterModel());
-      console.log(this.categoryOption()),this.orderOption();
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.categoryOption.set(this.selectedLastDefaultCategory());
     this.orderOption.set(this.selectedOrder()?.value!);
     this.propOption.set(this.productProperty() ?? '');
-    console.log(this.categoryOption(),this.orderOption(),this.productProperty());
-    
   }
   ngAfterViewInit(): void {
-    
-    this.form.statusChanges?.subscribe(v=>{
-      
+
+    this.form.valueChanges?.pipe(debounceTime(100), takeUntilDestroyed(this.destroy)).subscribe(v => {
+      console.log(v);
+      const isDirty = this.form.dirty;
+      console.log(this.form.dirty);
+      if (isDirty && !this.menuService.isNftSaveActive().active) {
+        this.menuService.isNftSaveActive.update((value: { active: boolean; count: number; }) => {
+          value = { ...value, ...{active: isDirty, 
+            count: value.count+1
+          } };
+          return value;
+        });
+      }
     });
   }
 
-  onStatusChange(event: Event) {
+  onCategoryChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value
     this.categoryOption.set(value);
 

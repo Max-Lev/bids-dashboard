@@ -10,7 +10,15 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Dashboard',
           route: '/dashboard',
-          children: [{ label: 'Nfts', route: '/dashboard/nfts' }],
+          children: [
+            { label: 'Nfts', route: '/dashboard/nfts' },
+            { label: 'Save' }
+          ],
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Users',
+          route: '/users',
         },
         {
           icon: 'assets/icons/heroicons/outline/lock-closed.svg',
@@ -55,11 +63,11 @@ export class Menu {
           label: 'Gift Card',
           route: '/gift',
         },
-        {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Users',
-          route: '/users',
-        },
+        // {
+        //   icon: 'assets/icons/heroicons/outline/users.svg',
+        //   label: 'Users',
+        //   route: '/users',
+        // },
       ],
     },
     {

@@ -46,7 +46,7 @@ export class NftAuctionsTableComponent implements OnInit {
   constructor() {
 
     effect(() => {
-      console.log('productProperty() ', this.productProperty())
+      
     });
   }
 

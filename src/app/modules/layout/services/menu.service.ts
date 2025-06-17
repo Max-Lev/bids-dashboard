@@ -1,4 +1,4 @@
-import { computed, Injectable, OnDestroy, signal } from '@angular/core';
+import { computed, effect, Injectable, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Menu } from 'src/app/core/constants/menu';
@@ -14,10 +14,23 @@ export class MenuService implements OnDestroy {
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
 
+  isNftSaveActive = signal<{ active: boolean, count: number }>({ active: false, count: 0 });
+
+  get isNftSaveActiveState() {
+    return this.isNftSaveActive();
+  }
+  set isNftSaveActiveState(value: { active: boolean, count: number }) {
+    this.isNftSaveActive.set(value);
+  }
+
   constructor(private router: Router) {
+
+    effect(()=>{
+      console.log('isSaveActive ',this.isNftSaveActive());
+    })
+
     /** Set dynamic menu */
     this._pagesMenu.set(Menu.pages);
-    console.log(this._pagesMenu());
     let sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         /** Expand menu base on active route */

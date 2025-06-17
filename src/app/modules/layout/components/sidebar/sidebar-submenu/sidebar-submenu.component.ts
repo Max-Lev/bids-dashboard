@@ -1,5 +1,5 @@
 import { NgClass, NgFor, NgTemplateOutlet } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, computed, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
@@ -11,10 +11,18 @@ import { MenuService } from '../../../services/menu.service';
   styleUrls: ['./sidebar-submenu.component.css'],
   imports: [NgClass, NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, AngularSvgIconModule],
 })
-export class SidebarSubmenuComponent implements OnInit {
+export class SidebarSubmenuComponent implements OnInit,OnChanges {
   @Input() public submenu = <SubMenuItem>{};
 
-  constructor(public menuService: MenuService) {}
+  constructor(public menuService: MenuService) {
+
+  }
+
+  isNftSaveActive = computed(()=>this.menuService.isNftSaveActive());
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.submenu)
+  }
 
   ngOnInit(): void {}
 

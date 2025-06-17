@@ -33,8 +33,6 @@ export class MiniTableComponent {
   get dataMaxPropValue(): string {
     const data = this.additionalData();
     if (data && data.prop && data.dataMax) {
-
-
       return data.dataMax[data.prop] as string;
     } return '';
   }
@@ -47,7 +45,7 @@ export class MiniTableComponent {
 
   constructor(){
     effect(()=>{
-      console.log(this.additionalData());
+      
     })
   }
 
