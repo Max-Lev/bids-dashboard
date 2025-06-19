@@ -14,20 +14,8 @@ export class MenuService implements OnDestroy {
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
 
-  isNftSaveActive = signal<{ active: boolean, count: number }>({ active: false, count: 0 });
-
-  get isNftSaveActiveState() {
-    return this.isNftSaveActive();
-  }
-  set isNftSaveActiveState(value: { active: boolean, count: number }) {
-    this.isNftSaveActive.set(value);
-  }
 
   constructor(private router: Router) {
-
-    effect(()=>{
-      console.log('isSaveActive ',this.isNftSaveActive());
-    })
 
     /** Set dynamic menu */
     this._pagesMenu.set(Menu.pages);

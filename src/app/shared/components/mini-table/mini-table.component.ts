@@ -8,8 +8,6 @@ import { MinMaxPipe } from 'src/app/core/pipes/min-max.pipe';
   selector: 'app-mini-table',
   imports: [
     CurrencyPipe,
-    TitleCasePipe,
-    MinMaxPipe,
     AngularSvgIconModule
   ],
   templateUrl: './mini-table.component.html',
@@ -30,24 +28,7 @@ export class MiniTableComponent {
 
   prop = this.additionalData()?.prop;
 
-  get dataMaxPropValue(): string {
-    const data = this.additionalData();
-    if (data && data.prop && data.dataMax) {
-      return data.dataMax[data.prop] as string;
-    } return '';
-  }
-  get dataMinPropValue(): number {
-    const data = this.additionalData();
-    if (data && data.prop && data.dataMin) {
-      return data.dataMin[data.prop] as number;
-    } return 0;
-  }
 
-  constructor(){
-    effect(()=>{
-      
-    })
-  }
 
 
 }

@@ -12,6 +12,7 @@ export class GraphUtilService {
       const currentProducts = products();
       const currentProp = (prop().length !== 0) ? prop() : 'price';
       const currentOrder = order().value as 'asc' | 'desc';
+      const totalValue = currentProducts.reduce((acc, product) => acc + product.price, 0).toFixed(2);
 
       const dataNum: number[] = [];
       const titles: string[] = [];
@@ -23,12 +24,13 @@ export class GraphUtilService {
       
       let sum = currentProducts.reduce((acc, curr) => acc + Number(curr[currentProp]), 0);
       sum = Number((sum / currentProducts.length).toFixed(2));
-
+      
       return {
         products: currentProducts,
         sum,
         dataNum,
         titles,
+        totalValue,
         prop: currentProp,
         order: currentOrder
       };

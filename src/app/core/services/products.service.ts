@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
 import { GraphUtilService } from '../utils/graph-util.service';
 import { ChartProducts } from '../models/chart-products.model';
+import { MessageService } from 'src/app/shared/providers/message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,27 +16,42 @@ export class ProductsService {
 
   #http = inject(HttpClient);
   #graphUtilService = inject(GraphUtilService);
+  #messageService = inject(MessageService);
+
   excludedCategories = ['groceries', 'furniture', 'tops'];
 
   private allProducts = signal<Product[]>([]);
   private products = signal<Product[]>([]);
   private categories = signal<string[]>([]);
-  private readonly selectedCategories = signal<string[]>(['laptops', 'smartphones', 'tablets']);
+
+
+  // private readonly 
+  selectedCategoriesList = signal<string[]>(['laptops', 'smartphones', 'tablets']);
   productProperty = signal<keyof Product>('rating');
   orderProp = signal<{ title: string, value: string }>({ title: 'High', value: 'desc' }); // 'asc' | 'desc';
   itemsSize = signal(10);
-  selectedCategory = computed(() => this.selectedCategories());
+
+  selectedCategory = computed(() => this.selectedCategoriesList());
 
   selectedLastDefaultCategory = computed(() => {
-    const all = this.selectedCategories();
+    const all = this.selectedCategoriesList();
     const last = all.length - 1;
     return (last === -1) ? '' : all[last];
   });
 
+  savedState = signal<{ order: string; prop: keyof Product; categories: string[]; }[]>([]);
   constructor() {
-    effect(() =>{
-      console.log(this.graphData())
-    })
+this.savedFilter();
+    // effect(() => {
+    //   console.log(this.graphData());
+    //   console.log('state:', {
+    //     order: this.orderProp(),
+    //     prop: this.productProperty(),
+    //     categories: this.selectedCategoriesList()
+    //   });
+    //   console.log('updateProducts ',this.#messageService.notifyProductsSrv())
+    //   console.log('saveStateList ',this.saveStateList());
+    // });
   }
 
   getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[]; }> {
@@ -82,13 +98,14 @@ export class ProductsService {
 
   readonly filteredProducts = computed(() => {
     const products = this.products(); // signal
-    const selectedCategories = this.selectedCategories(); // signal
-    const sortBy = this.productProperty(); // signal
+    const selectedCategories = this.selectedCategoriesList(); // signal
+    const prop = this.productProperty(); // signal
+    debugger
     const order = this.orderProp().value as 'asc' | 'desc'; // signal
 
     const _filterProducts = this.filterProducts(products, {
       categories: selectedCategories.length ? selectedCategories : undefined,
-      sortBy: sortBy ?? 'id', // fallback to 'id' if null
+      sortBy: prop ?? 'id', // fallback to 'id' if null
       order,
     });
     return _filterProducts;
@@ -110,10 +127,10 @@ export class ProductsService {
       result = this.sortByProperty(result, options.sortBy, options.order ?? 'desc');
     } else {
       // fallback to sorting by id
-      result = result.sort((a, b) =>options.order === 'asc' ? a.id - b.id : b.id - a.id);
+      result = result.sort((a, b) => options.order === 'asc' ? a.id - b.id : b.id - a.id);
     }
-    
-    const _result =  result.slice(0, this.itemsSize());    
+
+    const _result = result.slice(0, this.itemsSize());
     return _result;
   }
   private sortByProperty<T>(products: T[], prop: keyof T, order: 'asc' | 'desc'): T[] {
@@ -134,11 +151,12 @@ export class ProductsService {
   updateFilterHandler(category: string, prop: keyof Product, order: string) {
 
     if (category === '') {
-      this.selectedCategories.set([]);
+      this.selectedCategoriesList.set([]);
     }
 
     this.updateTopProductsCategories(category);
     this.productProperty.set(prop);
+    debugger
     const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
     this.orderProp.set(_orderProp);
 
@@ -148,7 +166,7 @@ export class ProductsService {
   // This function updates the top products categories
   updateTopProductsCategories(categoryToDisplay: string) {
     // Get the current categories
-    const current = this.selectedCategories();
+    const current = this.selectedCategoriesList();
 
     // Check if the category to display is not empty
     if (categoryToDisplay.length > 0) {
@@ -160,29 +178,33 @@ export class ProductsService {
       // Check if the category to display is already in the array
       if (index > -1) {
         // If it is, update the signal
-        this.selectedCategories.set(updated); // update signal
+        this.selectedCategoriesList.set(updated);
+        // update signal
       } else {
         // If it is not, add it to the array
         updated.push(categoryToDisplay); // add
+
       }
 
       // Update the signal with the new array
-      this.selectedCategories.set(updated); // update signal
+      this.selectedCategoriesList.set(updated); // update signal
     }
     // Log the updated categories
     // Return the updated categories
-    return this.selectedCategories();
+    return this.selectedCategoriesList();
   }
 
   removeSelectedCategory(category: string) {
-    const current = this.selectedCategories();
+    const current = this.selectedCategoriesList();
     const index = current.indexOf(category);
     if (index > -1) {
       const updated = [...current];
       updated.splice(index, 1);
-      this.selectedCategories.set(updated);
+      this.selectedCategoriesList.set(updated);
     }
   }
+
+
 
   readonly productsHighDiscount = computed(() => {
     const items = this.products();
@@ -193,11 +215,40 @@ export class ProductsService {
     }
   });
 
-  readonly graphData:Signal<ChartProducts> = this.#graphUtilService.createGraphData(
+  readonly graphData: Signal<ChartProducts> = this.#graphUtilService.createGraphData(
     this.filteredProducts,
     this.productProperty,
     this.orderProp
   );
+
+
+ private savedFilter(){
+    effect(() => {
+      if (this.#messageService.notifyProductsSrv()) {
+        const snapshot = {
+          order: this.orderProp().value,
+          prop: this.productProperty(),
+          categories: this.selectedCategoriesList(),
+        };
+        debugger
+        if(this.savedState().length <= 4){
+          const index = this.savedState().length + 1;
+          localStorage.setItem(`data-${index}`, JSON.stringify(snapshot));
+  
+          this.savedState.update(states => [...states, snapshot]);
+        }
+        
+        // Reset flag
+        this.#messageService.notifyProductsHandler(false);
+        debugger;
+        
+        console.log('savedStates ', this.savedState());
+      }
+    });
+  }
+
+
+
   // readonly graphData= computed(()=>this.#graphUtilService.createGraphData(
   //   this.filteredProducts,
   //   this.productProperty,

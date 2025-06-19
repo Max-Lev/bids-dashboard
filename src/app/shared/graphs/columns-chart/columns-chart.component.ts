@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, OnChanges, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { ChartComponent } from 'ng-apexcharts';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartOptions } from '../../models/chart-options';
@@ -25,10 +25,9 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
   templateUrl: './columns-chart.component.html',
   styleUrl: './columns-chart.component.css'
 })
-export class ColumnsChartComponent {
+export class ColumnsChartComponent implements OnChanges {
 
   #titleCasePipe = inject(TitleCasePipe);
-
 
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
@@ -37,8 +36,8 @@ export class ColumnsChartComponent {
 
   selectedItem = signal<Product | {}>({});
 
-  totalValue = computed(() => this.graphData().products.reduce((acc, product) => acc + product.price, 0).toFixed(2));
-
+  totalValue = computed(()=>this.graphData().totalValue);
+  
   additionalData = computed(() => {
     const dataMax = this.graphData().products[0];
     const dataMin = this.graphData().products[this.graphData().products.length - 1];
@@ -52,9 +51,6 @@ export class ColumnsChartComponent {
     }
   });
 
-  
-
-
   constructor(private themeService: ThemeService) {
     let baseColor = '#FFFFFF';
     const categories: string[] = this.graphData().titles ?? []
@@ -66,9 +62,13 @@ export class ColumnsChartComponent {
 
     effect(() => {
       this.additionalData();
+      console.log('graphData ',this.graphData());
     });
 
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('graphData ',this.graphData());
   }
 
   setChartOptions() {

@@ -1,9 +1,10 @@
 import { NgClass, NgFor, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, computed, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { MenuService } from '../../../services/menu.service';
+import { MessageService } from 'src/app/shared/providers/message.service';
 
 @Component({
   selector: 'app-sidebar-submenu',
@@ -11,20 +12,22 @@ import { MenuService } from '../../../services/menu.service';
   styleUrls: ['./sidebar-submenu.component.css'],
   imports: [NgClass, NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, AngularSvgIconModule],
 })
-export class SidebarSubmenuComponent implements OnInit,OnChanges {
+export class SidebarSubmenuComponent implements OnInit, OnChanges {
   @Input() public submenu = <SubMenuItem>{};
+
+  #messageService = inject(MessageService);
+
+  saveBtnState = computed(() => this.#messageService.saveBtnState());
 
   constructor(public menuService: MenuService) {
 
   }
 
-  isNftSaveActive = computed(()=>this.menuService.isNftSaveActive());
-
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.submenu)
+    
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public toggleMenu(menu: any) {
     this.menuService.toggleSubMenu(menu);
@@ -36,4 +39,15 @@ export class SidebarSubmenuComponent implements OnInit,OnChanges {
       if (item.children) this.collapse(item.children);
     });
   }
+
+  //This function is used to save data
+
+  saveHandler() {
+    this.#messageService.updateSaveState(false);
+    this.#messageService.notifyProductsHandler(true);
+    setTimeout(() => {
+      this.#messageService.notifyProductsHandler(false);
+    },250);
+  }
+
 }

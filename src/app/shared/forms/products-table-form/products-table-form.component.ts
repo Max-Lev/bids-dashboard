@@ -5,7 +5,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MenuService } from 'src/app/modules/layout/services/menu.service';
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { ProductsService } from 'src/app/core/services/products.service';
+import { MessageService } from '../../providers/message.service';
 @Component({
   selector: 'app-products-table-form',
   imports: [
@@ -27,17 +29,17 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   productProperty = input<string>();
 
 
-  propOption = model('');
-  categoryOption = model('');
-  orderOption = model('');
+  propertyModel = model('');
+  categoryModel = model<string>('');
+  orderModel = model('');
 
   onFilterChange = output<{ category: string; prop: string; order: string }>();
 
   filterModel: Signal<{ category: string; prop: string; order: string; }> = computed(() => {
     return {
-      category: this.categoryOption(),
-      prop: this.propOption(),
-      order: this.orderOption()
+      category: this.categoryModel(),
+      prop: this.propertyModel(),
+      order: this.orderModel()
     }
   });
 
@@ -48,46 +50,54 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   @ViewChild('form') form!: NgForm;
 
   destroy = inject(DestroyRef);
-  menuService = inject(MenuService);
+  #messageService = inject(MessageService);
+
+  // isActive = true;
 
   constructor() {
 
     effect(() => {
       this.onFilterChange.emit(this.filterModel());
+      // this.isActive = this.#messageService.isActive();
+      // console.log(this.isActive, 'isActive');
+      if(this.#messageService.resetFormState()){
+        debugger
+        this.form.form.markAsPristine();
+        console.log(this.form.form)
+      }
+      // console.log('filterModel: ', this.filterModel());
     });
   }
   ngOnChanges(changes: SimpleChanges): void {
-    this.categoryOption.set(this.selectedLastDefaultCategory());
-    this.orderOption.set(this.selectedOrder()?.value!);
-    this.propOption.set(this.productProperty() ?? '');
+    this.categoryModel.set(this.selectedLastDefaultCategory());
+    this.orderModel.set(this.selectedOrder()?.value!);
+    this.propertyModel.set(this.productProperty() ?? '');
   }
   ngAfterViewInit(): void {
 
-    this.form.valueChanges?.pipe(debounceTime(100), takeUntilDestroyed(this.destroy)).subscribe(v => {
-      console.log(v);
-      const isDirty = this.form.dirty;
-      console.log(this.form.dirty);
-      if (isDirty && !this.menuService.isNftSaveActive().active) {
-        this.menuService.isNftSaveActive.update((value: { active: boolean; count: number; }) => {
-          value = { ...value, ...{active: isDirty, 
-            count: value.count+1
-          } };
-          return value;
-        });
+    this.form.valueChanges?.pipe(takeUntilDestroyed(this.destroy)).subscribe(v => {
+      // if (this.form.dirty && this.isActive) {
+      // if (this.form.dirty && this.#messageService.isActive()) {
+      if (this.form.dirty) {
+        this.#messageService.updateSaveState(true);
       }
     });
   }
 
   onCategoryChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value
-    this.categoryOption.set(value);
+    this.categoryModel.set(value);
+    // this.#messageService.updateSaveState(true);
 
 
   }
   onProductDetailsChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
-    this.propOption.set(value);
+    this.propertyModel.set(value);
+    // this.#messageService.updateSaveState(true);
 
   }
+
+
 
 }

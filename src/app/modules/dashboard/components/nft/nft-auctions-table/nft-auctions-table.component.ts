@@ -8,6 +8,7 @@ import { ProductsTableFormComponent } from 'src/app/shared/forms/products-table-
 import { ProductsService } from 'src/app/core/services/products.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ChipsComponent } from 'src/app/shared/components/chips/chips.component';
+import { MessageService } from 'src/app/shared/providers/message.service';
 
 @Component({
   selector: '[nft-auctions-table]',
@@ -22,31 +23,30 @@ import { ChipsComponent } from 'src/app/shared/components/chips/chips.component'
     TitleCasePipe,
     AngularSvgIconModule
   ],
-  // changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NftAuctionsTableComponent implements OnInit {
 
   cdr = inject(ChangeDetectorRef);
+  #messageService = inject(MessageService);
 
-  public activeAuction: Nft[] = [];
-
-  productsService = inject(ProductsService);
+  #productsService = inject(ProductsService);
 
   filteredProducts = input<Product[]>();
   categoryOptions = input<string[]>();
   orderOptions = input<{ title: string, value: string }[]>([]);
   productDetailsOptions = input<{ title: string, value: string }[]>();
-  productProperty = this.productsService.productProperty;
 
-  selectedCategory = this.productsService.selectedCategory;
-  selectedOrder = this.productsService.orderProp;
-  selectedLastDefaultCategory = this.productsService.selectedLastDefaultCategory;
-  isCategoryDisabled = computed(() => (this.productsService.selectedCategory().length > 4) ? true : false);
+  productProperty = this.#productsService.productProperty;
+  selectedCategory = this.#productsService.selectedCategory;
+  selectedOrder = this.#productsService.orderProp;
+  selectedLastDefaultCategory = this.#productsService.selectedLastDefaultCategory;
+  isCategoryDisabled = computed(() => (this.#productsService.selectedCategory().length > 4) ? true : false);
 
   constructor() {
 
     effect(() => {
-      
+      console.log('selectedCategory ', this.selectedCategory())
     });
   }
 
@@ -57,12 +57,35 @@ export class NftAuctionsTableComponent implements OnInit {
 
   filterChangeHandler(event: { category: string; prop: string; order: string }) {
     const { category, prop, order } = event;
-    this.productsService.updateFilterHandler(category, prop as keyof Product, order);
+    debugger
+    this.#productsService.updateFilterHandler(category, prop as keyof Product, order);
   }
 
   onChipsSelected(item: string) {
-    this.productsService.removeSelectedCategory(item);
+    this.#productsService.removeSelectedCategory(item);
+    this.#messageService.updateSaveState(true);
+
   }
 
+  getSaved() {
+    // this.#messageService.isActive.set(false);
+    this.#messageService.resetFormState.set(true);
+
+    const data = JSON.parse(localStorage.getItem('data-1')!);
+    console.log(data)
+
+    this.#productsService.productProperty.set(data.prop);
+    this.#productsService.selectedCategoriesList.set(data.categories);
+    this.#productsService.orderProp.set({ title: '', value: data.order });
+
+    this.#messageService.usePrevSaveState();
+
+    // queueMicrotask(() => {
+    //   this.#messageService.isActive.set(true);
+    //   this.cdr.markForCheck();
+    // });
+
+
+  }
 
 }

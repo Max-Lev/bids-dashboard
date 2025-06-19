@@ -7,6 +7,7 @@ export type ChartProducts = {
     titles: string[];
     prop: keyof Product;
     order: "asc" | "desc";
+    totalValue:string;
 }
 
 export const EmptyChartProduct: ChartProducts = {
@@ -16,4 +17,5 @@ export const EmptyChartProduct: ChartProducts = {
     titles: [],
     prop: "id",             // Replace "id" with a valid key of Product
     order: "asc",           // Default to "asc" or "desc"
+    totalValue:''
 };
