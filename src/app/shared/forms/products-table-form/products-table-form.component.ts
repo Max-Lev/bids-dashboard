@@ -4,9 +4,6 @@ import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MenuService } from 'src/app/modules/layout/services/menu.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { ProductsService } from 'src/app/core/services/products.service';
 import { MessageService } from '../../providers/message.service';
 @Component({
   selector: 'app-products-table-form',
@@ -34,7 +31,6 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   orderModel = model('');
 
   onFilterChange = output<{ category: string; prop: string; order: string }>();
-
   filterModel: Signal<{ category: string; prop: string; order: string; }> = computed(() => {
     return {
       category: this.categoryModel(),
@@ -52,22 +48,11 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   destroy = inject(DestroyRef);
   #messageService = inject(MessageService);
 
-  // isActive = true;
-
   constructor() {
-
-    effect(() => {
-      this.onFilterChange.emit(this.filterModel());
-      // this.isActive = this.#messageService.isActive();
-      // console.log(this.isActive, 'isActive');
-      if(this.#messageService.resetFormState()){
-        debugger
-        this.form.form.markAsPristine();
-        console.log(this.form.form)
-      }
-      // console.log('filterModel: ', this.filterModel());
-    });
+    this.filterOutput();
+    this.resetForm();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.categoryModel.set(this.selectedLastDefaultCategory());
     this.orderModel.set(this.selectedOrder()?.value!);
@@ -76,28 +61,35 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
 
     this.form.valueChanges?.pipe(takeUntilDestroyed(this.destroy)).subscribe(v => {
-      // if (this.form.dirty && this.isActive) {
-      // if (this.form.dirty && this.#messageService.isActive()) {
       if (this.form.dirty) {
         this.#messageService.updateSaveState(true);
       }
     });
+
   }
 
   onCategoryChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value
     this.categoryModel.set(value);
-    // this.#messageService.updateSaveState(true);
-
-
   }
+
   onProductDetailsChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.propertyModel.set(value);
-    // this.#messageService.updateSaveState(true);
-
   }
 
-
+  filterOutput() {
+    effect(() => {
+      this.onFilterChange.emit(this.filterModel());
+    });
+  }
+  resetForm() {
+    effect(() => {
+      if (this.#messageService.resetFormState()) {
+        this.form.form.markAsPristine();
+        console.log(this.form.form)
+      }
+    });
+  }
 
 }

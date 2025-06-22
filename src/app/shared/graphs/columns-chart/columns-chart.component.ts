@@ -34,10 +34,12 @@ export class ColumnsChartComponent implements OnChanges {
 
   graphData = input<ChartProducts>({ ...EmptyChartProduct });
 
+  savedFilterState = input<{ order: string; prop: keyof Product; categories: string[]; }[]>();
+
   selectedItem = signal<Product | {}>({});
 
-  totalValue = computed(()=>this.graphData().totalValue);
-  
+  totalValue = computed(() => this.graphData().totalValue);
+
   additionalData = computed(() => {
     const dataMax = this.graphData().products[0];
     const dataMin = this.graphData().products[this.graphData().products.length - 1];
@@ -62,13 +64,12 @@ export class ColumnsChartComponent implements OnChanges {
 
     effect(() => {
       this.additionalData();
-      console.log('graphData ',this.graphData());
     });
 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('graphData ',this.graphData());
+
   }
 
   setChartOptions() {

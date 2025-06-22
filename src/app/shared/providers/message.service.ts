@@ -7,7 +7,6 @@ export class MessageService {
 
   saveBtnState = signal<{ active: boolean, count: number }>({ active: false, count: 0 });
   notifyProductsSrv = signal<boolean>(false);
-  // isActive = signal<boolean>(true);
   resetFormState = signal<boolean>(false);
 
   updateSaveState(active: boolean) {
@@ -17,14 +16,12 @@ export class MessageService {
           active,
           count: (!this.saveBtnState().active) ? value.count + 1 : value.count
         }
-      };
-      debugger
+      };   
       return value;
     });
   }
 
   usePrevSaveState() {
-
     this.saveBtnState.update((value: { active: boolean; count: number; }) => {
       value = {
         ...value, ...{
@@ -35,7 +32,6 @@ export class MessageService {
       return value;
     });
     console.log('usePrevSaveState ', this.saveBtnState());
-    debugger;
   }
 
   notifyProductsHandler(state: boolean) {
@@ -45,8 +41,8 @@ export class MessageService {
 
   constructor() {
     effect(() => {
-      console.log('saveBtnState ', this.saveBtnState());
-      console.log('updateProducts ', this.notifyProductsSrv());
+      // console.log('saveBtnState ', this.saveBtnState());
+      // console.log('updateProducts ', this.notifyProductsSrv());
     });
   }
 

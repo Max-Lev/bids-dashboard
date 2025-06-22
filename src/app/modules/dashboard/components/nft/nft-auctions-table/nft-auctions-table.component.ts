@@ -45,19 +45,15 @@ export class NftAuctionsTableComponent implements OnInit {
 
   constructor() {
 
-    effect(() => {
-      console.log('selectedCategory ', this.selectedCategory())
-    });
   }
 
   ngOnInit(): void {
-    // this.cdr.detectChanges();
+    
   }
 
 
   filterChangeHandler(event: { category: string; prop: string; order: string }) {
     const { category, prop, order } = event;
-    debugger
     this.#productsService.updateFilterHandler(category, prop as keyof Product, order);
   }
 
@@ -68,7 +64,6 @@ export class NftAuctionsTableComponent implements OnInit {
   }
 
   getSaved() {
-    // this.#messageService.isActive.set(false);
     this.#messageService.resetFormState.set(true);
 
     const data = JSON.parse(localStorage.getItem('data-1')!);
@@ -79,12 +74,6 @@ export class NftAuctionsTableComponent implements OnInit {
     this.#productsService.orderProp.set({ title: '', value: data.order });
 
     this.#messageService.usePrevSaveState();
-
-    // queueMicrotask(() => {
-    //   this.#messageService.isActive.set(true);
-    //   this.cdr.markForCheck();
-    // });
-
 
   }
 

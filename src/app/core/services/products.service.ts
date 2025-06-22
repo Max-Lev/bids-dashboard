@@ -8,6 +8,7 @@ import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
 import { GraphUtilService } from '../utils/graph-util.service';
 import { ChartProducts } from '../models/chart-products.model';
 import { MessageService } from 'src/app/shared/providers/message.service';
+import { SavedFilter } from '../models/saved-filter.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,19 +40,11 @@ export class ProductsService {
     return (last === -1) ? '' : all[last];
   });
 
-  savedState = signal<{ order: string; prop: keyof Product; categories: string[]; }[]>([]);
+  savedFilterState = signal<SavedFilter[]>([]);
+  
+  savedFilterMap = signal<Map<string,SavedFilter>>(new Map());
   constructor() {
-this.savedFilter();
-    // effect(() => {
-    //   console.log(this.graphData());
-    //   console.log('state:', {
-    //     order: this.orderProp(),
-    //     prop: this.productProperty(),
-    //     categories: this.selectedCategoriesList()
-    //   });
-    //   console.log('updateProducts ',this.#messageService.notifyProductsSrv())
-    //   console.log('saveStateList ',this.saveStateList());
-    // });
+    this.savedFilter();
   }
 
   getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[]; }> {
@@ -100,7 +93,7 @@ this.savedFilter();
     const products = this.products(); // signal
     const selectedCategories = this.selectedCategoriesList(); // signal
     const prop = this.productProperty(); // signal
-    debugger
+
     const order = this.orderProp().value as 'asc' | 'desc'; // signal
 
     const _filterProducts = this.filterProducts(products, {
@@ -156,7 +149,7 @@ this.savedFilter();
 
     this.updateTopProductsCategories(category);
     this.productProperty.set(prop);
-    debugger
+
     const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
     this.orderProp.set(_orderProp);
 
@@ -185,12 +178,10 @@ this.savedFilter();
         updated.push(categoryToDisplay); // add
 
       }
-
       // Update the signal with the new array
       this.selectedCategoriesList.set(updated); // update signal
     }
-    // Log the updated categories
-    // Return the updated categories
+    
     return this.selectedCategoriesList();
   }
 
@@ -203,8 +194,6 @@ this.savedFilter();
       this.selectedCategoriesList.set(updated);
     }
   }
-
-
 
   readonly productsHighDiscount = computed(() => {
     const items = this.products();
@@ -221,28 +210,32 @@ this.savedFilter();
     this.orderProp
   );
 
-
- private savedFilter(){
+  private savedFilter() {
     effect(() => {
       if (this.#messageService.notifyProductsSrv()) {
-        const snapshot = {
+        const snapshot:SavedFilter = {
           order: this.orderProp().value,
           prop: this.productProperty(),
           categories: this.selectedCategoriesList(),
         };
-        debugger
-        if(this.savedState().length <= 4){
-          const index = this.savedState().length + 1;
+
+        if (this.savedFilterState().length <= 4) {
+          const index = this.savedFilterState().length + 1;
           localStorage.setItem(`data-${index}`, JSON.stringify(snapshot));
-  
-          this.savedState.update(states => [...states, snapshot]);
+
+          this.savedFilterState.update(states => [...states, snapshot]);
+          this.savedFilterMap.update(currentMap => {
+            const newMap = new Map(currentMap);
+            newMap.set(`S${index}`, snapshot);
+            return newMap;
+          });
         }
-        
+        console.log(this.savedFilterMap().entries());
+
         // Reset flag
         this.#messageService.notifyProductsHandler(false);
-        debugger;
-        
-        console.log('savedStates ', this.savedState());
+
+        console.log('savedFilter savedStates ', this.savedFilterState());
       }
     });
   }

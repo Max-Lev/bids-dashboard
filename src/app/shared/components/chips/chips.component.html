@@ -1,8 +1,8 @@
 @for (item of list(); track $index) {
-<div (click)="onChipsSelected.emit(item)" class="rounded-md m-0.5 flex items-center cursor-pointer group
-    border-1 border-color-gray p-2 pb-1 pt-1 text-xs text-primary-foreground">
+<div (click)="onChipsSelected.emit(item)" class="rounded-md m-0.5 flex items-center cursor-pointer 
+group border-1 border-color-gray p-2 pb-1 pt-1 text-xs text-primary-foreground">
     <span>{{item | titlecase}}</span>
-    <svg-icon class="text-muted-foreground text-xs hover:text-primary" src="assets/icons/heroicons/outline/x-small.svg">
+    <svg-icon class="text-muted-foreground text-xs group-hover:text-red-500" src="assets/icons/heroicons/outline/x-small.svg">
     </svg-icon>
 </div>
 }

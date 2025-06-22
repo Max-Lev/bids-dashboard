@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { NftAuctionsTableComponent } from '../../components/nft/nft-auctions-table/nft-auctions-table.component';
 import { NftChartCardComponent } from '../../components/nft/nft-chart-card/nft-chart-card.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
@@ -53,18 +53,19 @@ export class NftComponent implements OnInit {
   graphData = this.productsService.graphData;
   cdr = inject(ChangeDetectorRef);
 
+  savedFilterState: WritableSignal<{
+    order: string;
+    prop: keyof Product;
+    categories: string[];
+  }[]> = this.productsService.savedFilterState;
+
 
   constructor() {
-
-    effect(() => {
-      console.log('graphData ', this.graphData())
-    });
-
 
   }
 
   ngOnInit(): void {
-    // this.cdr.detectChanges();
+
   }
 
 }
