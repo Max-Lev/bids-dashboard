@@ -1,101 +1,174 @@
-<div *ngFor="let menu of menuService.pagesMenu">
-    <div *ngIf="menuService.showSideBar" class="mx-1 flex items-center justify-between py-3">
-      <small [ngClass]="{ hidden: !menuService.showSideBar }" class="text-muted-foreground/50 text-xs font-semibold">
-        {{ menu.group }}
-      </small>
-    </div>
-    <ul class="flex flex-col">
-      <!-- List items -->
-      <li *ngFor="let item of menu.items">
-        <!-- Menu List -->
-        <div
-          (click)="toggleMenu(item)"
-          [ngClass]="{
-            'hover:bg-primary/10': !menuService.showSideBar && item.active,
-            'hover:bg-card/50': !menuService.showSideBar
-          }"
-          class="text-muted-foreground hover:text-foreground group relative flex grow items-center gap-4 rounded-lg px-2">
-          <!-- Icon -->
-          <div [ngClass]="item.active && !menuService.showSideBar ? 'text-primary' : 'text-muted-foreground/50'">
-            <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
-          </div>
+
   
-          <!-- Condition -->
-          <ng-container
-            [ngTemplateOutlet]="item.children ? childMenu : parentMenu"
-            [ngTemplateOutletContext]="{ item: item }">
-          </ng-container>
+
+  <!-- import { computed, effect, Injectable, OnDestroy, signal } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Menu } from 'src/app/core/constants/menu';
+import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class MenuService implements OnDestroy {
+  private _showSidebarState = JSON.parse(localStorage.getItem('showSidebar') || 'false');
+  private _showSidebar = signal(this._showSidebarState);
+  private _showMobileMenu = signal(false);
+  private _pagesMenu = signal<MenuItem[]>([]);
+  private _subscription = new Subscription();
+
+
+  constructor(private router: Router) {
+
+    /** Set dynamic menu */
+    // this._pagesMenu.set(Menu.pages);
+    // const filtered: MenuItem[] = Menu.pages
+    // .map(group => {
+    //   const filteredItems: SubMenuItem[] = group.items
+    //     .filter(item => item.route === '/dashboard') // Only allow dashboard
+    //     .map(item => ({
+    //       ...item,
+    //       children: item.children?.filter(child => child.route === '/dashboard/nfts') // optional
+    //     })) as SubMenuItem[]; // ✅ Cast since we're filtering correctly
   
-          <!-- Workaround:: Enable routerLink -->
-          <ng-template #parentMenu let-item="item">
-            <div
-              routerLink="{{ item.route }}"
-              class="text-muted-foreground hover:text-primary flex h-[36px] cursor-pointer items-center justify-start rounded-sm">
-              <a
-                [ngClass]="{ hidden: !menuService.showSideBar }"
-                routerLinkActive="text-primary"
-                class="truncate text-xs font-semibold tracking-wide focus:outline-hidden">
-                {{ item.label }}
-              </a>
-            </div>
-          </ng-template>
+    //   if (filteredItems.length > 0) {
+    //     return {
+    //       ...group,
+    //       items: filteredItems
+    //     };
+    //   }
   
-          <!-- Workaround:: Disable routerLink -->
-          <ng-template #childMenu let-item="item">
-            <div class="flex h-9 grow cursor-pointer items-center justify-start rounded-sm">
-              <a
-                [ngClass]="{ hidden: !menuService.showSideBar }"
-                class="text-muted-foreground group-hover:text-primary truncate text-xs font-semibold tracking-wide focus:outline-hidden">
-                {{ item.label }}
-              </a>
-            </div>
-          </ng-template>
-  
-          <!-- Arrow Icon -->
-          <button
-            *ngIf="item.children"
-            [ngClass]="{ hidden: !menuService.showSideBar }"
-            class="text-foreground/50 flex cursor-pointer items-center justify-end p-0 transition-all duration-500 ltr:right-0 rtl:left-0">
-            @if(!item.expanded){
-            <svg-icon src="assets/icons/heroicons/outline/plus.svg" svgClass="h-4 w-4"> </svg-icon>
-            }@else {
-            <svg-icon src="assets/icons/heroicons/outline/minus.svg" svgClass="h-4 w-4"> </svg-icon>
+    //   return null;
+    // })
+    // .filter((group): group is MenuItem => group !== null); // ✅ valid now
+    // this._pagesMenu.set(filtered);
+    this._pagesMenu.set(
+      Menu.pages.map(group => ({
+        ...group,
+        items: group.items.map(item => {
+          const isDashboard = item.route === '/dashboard';
+          const updatedChildren = item.children?.map(child => ({
+            ...child,
+            disabled: !isDashboard && child.route !== '/dashboard/nfts', // disable non-dashboard children
+          }));
+    
+          return {
+            ...item,
+            disabled: !isDashboard, // disable everything except dashboard
+            children: updatedChildren,
+          };
+        }),
+      }))
+    );
+    
+
+    let sub = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        /** Expand menu base on active route */
+        this._pagesMenu().forEach((menu) => {
+          let activeGroup = false;
+          menu.items.forEach((subMenu) => {
+            const active = this.isActive(subMenu.route);
+            subMenu.expanded = active;
+            subMenu.active = active;
+            if (active) activeGroup = true;
+            if (subMenu.children) {
+              this.expand(subMenu.children);
             }
-          </button>
+          });
+          menu.active = activeGroup;
+        });
+      }
+    });
+    this._subscription.add(sub);
+  }
+
+  get showSideBar() {
+    return this._showSidebar();
+  }
+  get showMobileMenu() {
+    return this._showMobileMenu();
+  }
+  get pagesMenu() {
+    return this._pagesMenu();
+  }
+
+  set showSideBar(value: boolean) {
+    this._showSidebar.set(value);
+  }
+  set showMobileMenu(value: boolean) {
+    this._showMobileMenu.set(value);
+  }
+
+  public toggleSidebar() {
+    this._showSidebar.set(!this._showSidebar());
+    localStorage.setItem('showSidebar', JSON.stringify(this._showSidebar()));
+  }
+
+  public toggleMenu(menu: any) {
+    this.showSideBar = true;
+    menu.expanded = !menu.expanded;
+  }
+
+  public toggleSubMenu(submenu: SubMenuItem) {
+    submenu.expanded = !submenu.expanded;
+  }
+
+  private expand(items: Array<any>) {
+    items.forEach((item) => {
+      item.expanded = this.isActive(item.route);
+      if (item.children) this.expand(item.children);
+    });
+  }
+
+  public isActive(instruction: any): boolean {
+    return this.router.isActive(this.router.createUrlTree([instruction]), {
+      paths: 'subset',
+      queryParams: 'subset',
+      fragment: 'ignored',
+      matrixParams: 'ignored',
+    });
+  }
+
+  ngOnDestroy(): void {
+    this._subscription.unsubscribe();
+  }
+} -->
+
+
+<!-- export interface MenuItem {
+    group: string;
+    separator?: boolean;
+    selected?: boolean;
+    active?: boolean;
+    items: Array<SubMenuItem>;
+  }
   
-          <!-- Tooltip -->
-          <div class="z-1 fixed h-[36px]" *ngIf="!menuService.showSideBar">
-            <span
-              class="z-1 bg-foreground text-background absolute w-auto min-w-max translate-y-[2px] scale-0 rounded-md p-2 text-xs font-bold shadow-md transition-all duration-200 group-hover:scale-100 ltr:origin-left ltr:translate-x-10 rtl:origin-right rtl:-translate-x-10">
-              {{ item.label }}
-            </span>
-          </div>
-        </div>
-  
-        <!-- Submenu items -->
-        <app-sidebar-submenu [submenu]="item"></app-sidebar-submenu>
-      </li>
-    </ul>
-  
-    <div class="py-3" *ngIf="menu.separator">
-      <hr class="border-border border-dashed" />
-    </div>
-  </div>
+  export interface SubMenuItem {
+    label: string;
+    route?: string;
+    expanded?: boolean;
+    active?: boolean;
+    disabled?: boolean; // ✅ NEW
+    children?: SubMenuItem[];
+    icon?:string;
+  } -->
+
   <div *ngFor="let menu of menuService.pagesMenu">
     <div *ngIf="menuService.showSideBar" class="mx-1 flex items-center justify-between py-3">
       <small [ngClass]="{ hidden: !menuService.showSideBar }" class="text-muted-foreground/50 text-xs font-semibold">
         {{ menu.group }}
       </small>
     </div>
+  
     <ul class="flex flex-col">
       <!-- List items -->
       <li *ngFor="let item of menu.items">
         <!-- Menu List -->
-        <div
-          (click)="toggleMenu(item)"
-          [ngClass]="{
+        <div (click)="!item.disabled && toggleMenu(item)" [ngClass]="{
             'hover:bg-primary/10': !menuService.showSideBar && item.active,
-            'hover:bg-card/50': !menuService.showSideBar
+            'hover:bg-card/50': !menuService.showSideBar,
+            'opacity-75 pointer-events-none cursor-not-allowed': item.disabled
           }"
           class="text-muted-foreground hover:text-foreground group relative flex grow items-center gap-4 rounded-lg px-2">
           <!-- Icon -->
@@ -104,41 +177,46 @@
           </div>
   
           <!-- Condition -->
-          <ng-container
-            [ngTemplateOutlet]="item.children ? childMenu : parentMenu"
-            [ngTemplateOutletContext]="{ item: item }">
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="item.children ? childMenu : parentMenu"
+            [ngTemplateOutletContext]="{ item: item }"></ng-container>
   
           <!-- Workaround:: Enable routerLink -->
           <ng-template #parentMenu let-item="item">
-            <div
-              routerLink="{{ item.route }}"
+            <div [routerLink]="item.disabled ? null : item.route" [ngClass]="{
+                'opacity-75 pointer-events-none cursor-not-allowed': item.disabled
+              }"
               class="text-muted-foreground hover:text-primary flex h-[36px] cursor-pointer items-center justify-start rounded-sm">
-              <a
-                [ngClass]="{ hidden: !menuService.showSideBar }"
-                routerLinkActive="text-primary"
-                class="truncate text-xs font-semibold tracking-wide focus:outline-hidden">
+              <a [ngClass]="{
+                  hidden: !menuService.showSideBar,
+                  'truncate text-xs font-semibold tracking-wide focus:outline-hidden': true,
+                  'pointer-events-none opacity-75 cursor-not-allowed': item.disabled
+                }" [routerLinkActive]="item.disabled ? '' : 'text-primary'">
                 {{ item.label }}
               </a>
             </div>
           </ng-template>
   
-          <!-- Workaround:: Disable routerLink -->
+          <!-- Workaround:: Disable routerLink (for parents with children) -->
           <ng-template #childMenu let-item="item">
-            <div class="flex h-9 grow cursor-pointer items-center justify-start rounded-sm">
-              <a
-                [ngClass]="{ hidden: !menuService.showSideBar }"
-                class="text-muted-foreground group-hover:text-primary truncate text-xs font-semibold tracking-wide focus:outline-hidden">
+            <div class="flex h-9 grow items-center justify-start rounded-sm" [ngClass]="{
+                'opacity-75 pointer-events-none cursor-not-allowed': item.disabled
+              }">
+              <a [ngClass]="{
+                  hidden: !menuService.showSideBar,
+                  'text-muted-foreground group-hover:text-primary truncate text-xs font-semibold tracking-wide focus:outline-hidden': true,
+                  'pointer-events-none opacity-75 cursor-not-allowed': item.disabled
+                }">
                 {{ item.label }}
               </a>
             </div>
           </ng-template>
   
           <!-- Arrow Icon -->
-          <button
-            *ngIf="item.children"
-            [ngClass]="{ hidden: !menuService.showSideBar }"
-            class="text-foreground/50 flex cursor-pointer items-center justify-end p-0 transition-all duration-500 ltr:right-0 rtl:left-0">
+          <button *ngIf="item.children" [disabled]="item.disabled" [ngClass]="{
+              hidden: !menuService.showSideBar,
+              'cursor-not-allowed opacity-75': item.disabled
+            }"
+            class="text-foreground/50 flex items-center justify-end p-0 transition-all duration-500 ltr:right-0 rtl:left-0">
             @if(!item.expanded){
             <svg-icon src="assets/icons/heroicons/outline/plus.svg" svgClass="h-4 w-4"> </svg-icon>
             }@else {
@@ -146,7 +224,7 @@
             }
           </button>
   
-          <!-- Tooltip -->
+          <!-- Tooltip for collapsed sidebar -->
           <div class="z-1 fixed h-[36px]" *ngIf="!menuService.showSideBar">
             <span
               class="z-1 bg-foreground text-background absolute w-auto min-w-max translate-y-[2px] scale-0 rounded-md p-2 text-xs font-bold shadow-md transition-all duration-200 group-hover:scale-100 ltr:origin-left ltr:translate-x-10 rtl:origin-right rtl:-translate-x-10">
@@ -164,4 +242,3 @@
       <hr class="border-border border-dashed" />
     </div>
   </div>
-  
