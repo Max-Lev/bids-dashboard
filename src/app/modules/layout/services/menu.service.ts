@@ -9,7 +9,7 @@ import { MenuItem, SubMenuItem } from 'src/app/core/models/menu.model';
   providedIn: 'root',
 })
 export class MenuService implements OnDestroy {
-  private _showSidebarState = JSON.parse(localStorage.getItem('showSidebar') || 'false');
+  private _showSidebarState = JSON.parse(localStorage.getItem('showSidebar') || 'true');
   private _showSidebar = signal(this._showSidebarState);
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);

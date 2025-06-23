@@ -65,7 +65,12 @@ export class NftComponent implements OnInit {
   saveBtnState = computed(() => this.#messageService.saveBtnState());
 
   constructor() {
-
+    effect(() => {
+      const data = this.graphData();
+      if (data?.products?.length > 0) {
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   ngOnInit(): void {

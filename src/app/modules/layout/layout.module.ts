@@ -12,7 +12,5 @@ import { LayoutRoutingModule } from './layout-routing.module';
     ]
 })
 export class LayoutModule {
-    constructor(){
-        // console.log('LayoutModule routing module loaded',LayoutModule);
-      }
+    
  }
