@@ -1,0 +1,6 @@
+<button [disabled]="disabled()" [class.disabled]="disabled()" (click)="onButtonClick()" [ngClass]="classes">
+    <div [class.disabled-content]="disabled()">
+      <ng-content></ng-content>
+  </div>
+  </button>
+  

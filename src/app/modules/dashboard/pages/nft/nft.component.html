@@ -26,9 +26,12 @@
     <!-- <div nft-chart-card class="md:col-span-2 xl:col-span-1"></div> -->
     <!-- <div nft-chart-card class="md:col-span-2 xl:col-span-1"></div> -->
 
-    <div class="md:col-span-2 xl:col-span-1" 
+    <div app-columns-chart class="md:col-span-2 xl:col-span-1" 
+    (onFilterHandler)="selectedFilterHandler($event)"
+    (onSaveHandler)="onSaveFilterHandler()"
     [savedFilterState]="savedFilterState()"
-    app-columns-chart [graphData]="graphData()"></div>
+    (onDeleteSelected)="onDeleteSelectedHandler($event)"
+     [graphData]="graphData()"></div>
     <!-- end Single Card -->
 
 

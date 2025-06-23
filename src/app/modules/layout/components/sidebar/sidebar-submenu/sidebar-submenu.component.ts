@@ -43,11 +43,9 @@ export class SidebarSubmenuComponent implements OnInit, OnChanges {
   //This function is used to save data
 
   saveHandler() {
-    this.#messageService.updateSaveState(false);
+    this.#messageService.saveState();
     this.#messageService.notifyProductsHandler(true);
-    setTimeout(() => {
-      this.#messageService.notifyProductsHandler(false);
-    },250);
+    setTimeout(() => {this.#messageService.notifyProductsHandler(false);}, 250);
   }
 
 }

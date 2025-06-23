@@ -41,8 +41,8 @@ export class ProductsService {
   });
 
   savedFilterState = signal<SavedFilter[]>([]);
-  
-  savedFilterMap = signal<Map<string,SavedFilter>>(new Map());
+
+  savedFilterMap = signal<Map<string, SavedFilter>>(new Map());
   constructor() {
     this.savedFilter();
   }
@@ -181,7 +181,7 @@ export class ProductsService {
       // Update the signal with the new array
       this.selectedCategoriesList.set(updated); // update signal
     }
-    
+
     return this.selectedCategoriesList();
   }
 
@@ -213,7 +213,7 @@ export class ProductsService {
   private savedFilter() {
     effect(() => {
       if (this.#messageService.notifyProductsSrv()) {
-        const snapshot:SavedFilter = {
+        const snapshot: SavedFilter = {
           order: this.orderProp().value,
           prop: this.productProperty(),
           categories: this.selectedCategoriesList(),
@@ -221,7 +221,7 @@ export class ProductsService {
 
         if (this.savedFilterState().length <= 4) {
           const index = this.savedFilterState().length + 1;
-          localStorage.setItem(`data-${index}`, JSON.stringify(snapshot));
+          // localStorage.setItem(`data-${index}`, JSON.stringify(snapshot));
 
           this.savedFilterState.update(states => [...states, snapshot]);
           this.savedFilterMap.update(currentMap => {
@@ -230,14 +230,22 @@ export class ProductsService {
             return newMap;
           });
         }
-        console.log(this.savedFilterMap().entries());
+        // console.log(this.savedFilterMap().entries());
 
         // Reset flag
         this.#messageService.notifyProductsHandler(false);
-
-        console.log('savedFilter savedStates ', this.savedFilterState());
       }
     });
+  }
+
+  deleteSavedFilter(index: number) {
+    this.savedFilterState.update(states => states.filter((_, i) => i !== index - 1));
+  }
+
+  getSelectedStateData(index: number): SavedFilter {
+    const savedStates = this.savedFilterState();
+    const selected = savedStates[index];
+    return selected;
   }
 
 

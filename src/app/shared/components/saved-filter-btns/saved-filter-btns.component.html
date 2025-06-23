@@ -1,0 +1,7 @@
+<div class="mb-3 grid grid-cols-5 items-center justify-between gap-2 text-center min-h-[24px]">
+    @for (item of savedFilterState(); track $index) {
+      <button (click)="onFilterClick.emit($index)" class="bg-primary text-primary-foreground hover:bg-primary cursor-pointer rounded-md p-0.5 text-sm">
+        S<span class="text-xs font-semibold">{{$index+1}}</span>
+      </button>
+    }
+  </div>

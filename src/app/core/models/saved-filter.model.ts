@@ -5,3 +5,11 @@ export type SavedFilter = {
     prop: keyof Product; 
     categories: string[]
 }
+
+export type SaveBtnState = {
+    isSaveActive: boolean;
+    count: number;
+    isDeleteActive?:boolean,
+    deleteIndex?:number;
+    isUpdateActive?:boolean;
+}

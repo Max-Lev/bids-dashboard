@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, OnChanges, signal, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, OnChanges, output, signal, SimpleChanges, ViewChild } from '@angular/core';
 import { ChartComponent } from 'ng-apexcharts';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartOptions } from '../../models/chart-options';
@@ -9,7 +9,11 @@ import { GraphConf } from './graph.config';
 import { MiniTableComponent } from '../../components/mini-table/mini-table.component';
 import { Product } from 'src/app/core/models/products';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-
+import { SaveDeleteButtonComponent } from '../../components/save-delete-button/save-delete-button.component';
+import { ButtonComponent } from '../../components/button/button.component';
+import { MessageService } from '../../providers/message.service';
+import { SavedFilterBtnsComponent } from '../../components/saved-filter-btns/saved-filter-btns.component';
+import { SaveBtnState, SavedFilter } from 'src/app/core/models/saved-filter.model';
 
 @Component({
   selector: '[app-columns-chart]',
@@ -18,7 +22,9 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
     TitleCasePipe,
     MiniTableComponent,
     DecimalPipe,
-    AngularSvgIconModule
+    AngularSvgIconModule,
+    SaveDeleteButtonComponent,
+    SavedFilterBtnsComponent
   ],
   providers: [TitleCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,7 +40,7 @@ export class ColumnsChartComponent implements OnChanges {
 
   graphData = input<ChartProducts>({ ...EmptyChartProduct });
 
-  savedFilterState = input<{ order: string; prop: keyof Product; categories: string[]; }[]>();
+  savedFilterState = input<SavedFilter[]>();
 
   selectedItem = signal<Product | {}>({});
 
@@ -52,6 +58,14 @@ export class ColumnsChartComponent implements OnChanges {
       list: [dataMax, dataMin]
     }
   });
+
+  #messageService = inject(MessageService);
+  saveBtnState = computed(() => this.#messageService.saveBtnState());
+
+  onDeleteSelected = output<number>();
+  onSaveHandler = output<void>();
+  onFilterHandler = output<number>();
+
 
   constructor(private themeService: ThemeService) {
     let baseColor = '#FFFFFF';
@@ -117,6 +131,21 @@ export class ColumnsChartComponent implements OnChanges {
       }
     }
   }
+
+  saveHandler() {
+    this.onSaveHandler.emit();
+  }
+
+  filterHandler(index:number){
+    this.onFilterHandler.emit(index);
+  }
+
+  deleteSelected(){
+    const {deleteIndex} = this.#messageService.saveBtnState();
+    this.onDeleteSelected.emit(deleteIndex!);
+  }
+
+  
 
 
 

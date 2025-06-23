@@ -19,7 +19,7 @@
         }
     </select>
 
-    <select [(ngModel)]="orderModel" name="order" class="w-full mb-0.5 md:w-36! p-2 cursor-pointer">
+    <select (change)="onOrderChange($event)" [(ngModel)]="orderModel" name="order" class="w-full mb-0.5 md:w-36! p-2 cursor-pointer">
         @for (item of orderOptions(); track item.title) {
         <option [value]="item.value">{{item.title | titlecase}}</option>
 

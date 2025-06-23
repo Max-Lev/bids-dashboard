@@ -1,0 +1,18 @@
+/* .disabled {
+    pointer-events: none;
+    color: #aaa;
+    color: color-mix(in oklab, var(--color-muted-foreground)50%, transparent);
+    cursor: not-allowed;
+    cursor:none;
+  } */
+
+  button:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.disabled-content {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    pointer-events: none;
+}

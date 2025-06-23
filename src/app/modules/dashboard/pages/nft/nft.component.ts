@@ -10,6 +10,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
 import { ColumnsChartComponent } from 'src/app/shared/graphs/columns-chart/columns-chart.component';
+import { MessageService } from 'src/app/shared/providers/message.service';
+import { SaveBtnState } from 'src/app/core/models/saved-filter.model';
 
 
 @Component({
@@ -59,12 +61,43 @@ export class NftComponent implements OnInit {
     categories: string[];
   }[]> = this.productsService.savedFilterState;
 
+  #messageService = inject(MessageService);
+  saveBtnState = computed(() => this.#messageService.saveBtnState());
 
   constructor() {
 
   }
 
   ngOnInit(): void {
+
+  }
+
+  onDeleteSelectedHandler(index: number) {
+    this.productsService.deleteSavedFilter(index);
+    this.#messageService.deleteState();
+    
+    const { count } = this.#messageService.saveBtnState();
+    this.selectedFilterHandler(count-1);
+    
+  }
+
+  onSaveFilterHandler() {
+    this.#messageService.saveState();
+    this.#messageService.notifyProductsHandler(true);
+    setTimeout(() => { this.#messageService.notifyProductsHandler(false); }, 250);
+  }
+
+  selectedFilterHandler(index: number) {
+    
+    const data = this.productsService.getSelectedStateData(index);
+
+    this.#messageService.resetFormState.set(true);
+
+    this.productsService.productProperty.set(data?.prop ?? '');
+    this.productsService.selectedCategoriesList.set(data?.categories ?? []);
+    this.productsService.orderProp.set({ title: '', value: data?.order ?? 'asc' });
+
+    this.#messageService.filterSelectedState(index);
 
   }
 

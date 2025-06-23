@@ -59,21 +59,7 @@ export class NftAuctionsTableComponent implements OnInit {
 
   onChipsSelected(item: string) {
     this.#productsService.removeSelectedCategory(item);
-    this.#messageService.updateSaveState(true);
-
-  }
-
-  getSaved() {
-    this.#messageService.resetFormState.set(true);
-
-    const data = JSON.parse(localStorage.getItem('data-1')!);
-    console.log(data)
-
-    this.#productsService.productProperty.set(data.prop);
-    this.#productsService.selectedCategoriesList.set(data.categories);
-    this.#productsService.orderProp.set({ title: '', value: data.order });
-
-    this.#messageService.usePrevSaveState();
+    this.#messageService.updateState();
 
   }
 
