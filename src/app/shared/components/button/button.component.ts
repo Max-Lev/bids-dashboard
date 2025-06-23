@@ -101,7 +101,6 @@ export class ButtonComponent implements OnInit {
       this.shadowClasses[this.shadow()],
       this.full() ? 'w-full' : '',
     );
-    console.log(this.classes);
   }
 
   onButtonClick() {
