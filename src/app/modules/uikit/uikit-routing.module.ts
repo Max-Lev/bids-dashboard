@@ -8,10 +8,14 @@ const routes: Routes = [
     path: '',
     component: UikitComponent,
     children: [
-      { path: '', redirectTo: 'components', pathMatch: 'full' },
-      { path: 'table', component: TableComponent },
+      { path: '', component: TableComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
+    // children: [
+    //   { path: '', redirectTo: 'components', pathMatch: 'full' },
+    //   { path: 'table', component: TableComponent },
+    //   { path: '**', redirectTo: 'errors/404' },
+    // ],
   },
 ];
 

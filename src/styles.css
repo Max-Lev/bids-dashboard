@@ -316,3 +316,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-right: 7px !important; /* Spacing before label */
   /* You can also use filter for glow effects */
 }
+
+.disabled-save{
+  pointer-events: none;
+  color: #aaa;
+  color: color-mix(in oklab, var(--color-muted-foreground)50%, transparent);
+  cursor: not-allowed;
+}

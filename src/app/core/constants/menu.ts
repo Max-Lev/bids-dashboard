@@ -11,7 +11,7 @@ export class Menu {
           label: 'Dashboard',
           route: '/dashboard',
           children: [
-            { label: 'Nfts', route: '/dashboard/nfts' },
+            { label: 'Products', route: '/dashboard/products' },
             { label: 'Save' }
           ],
         },
@@ -41,12 +41,12 @@ export class Menu {
             { label: '500', route: '/errors/500' },
           ],
         },
-        {
-          icon: 'assets/icons/heroicons/outline/cube.svg',
-          label: 'Components',
-          route: '/components',
-          children: [{ label: 'Table', route: '/components/table' }],
-        },
+        // {
+        //   icon: 'assets/icons/heroicons/outline/cube.svg',
+        //   label: 'Components',
+        //   route: '/components',
+        //   children: [{ label: 'Table', route: '/components/table' }],
+        // },
       ],
     },
     {

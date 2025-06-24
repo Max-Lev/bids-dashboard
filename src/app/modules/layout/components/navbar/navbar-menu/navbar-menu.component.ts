@@ -16,7 +16,9 @@ export class NavbarMenuComponent implements OnInit {
 
   constructor(public menuService: MenuService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    
+  }
 
   public toggleMenu(menu: MenuItem): void {
     menu.selected = !menu.selected;

@@ -1,9 +1,10 @@
 import { NgClass, NgFor, NgTemplateOutlet } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, computed, inject, Input, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { MenuService } from 'src/app/modules/layout/services/menu.service';
+import { MessageService } from 'src/app/shared/providers/message.service';
 
 @Component({
   selector: 'app-navbar-mobile-submenu',
@@ -14,9 +15,12 @@ import { MenuService } from 'src/app/modules/layout/services/menu.service';
 export class NavbarMobileSubmenuComponent implements OnInit {
   @Input() public submenu = <SubMenuItem>{};
 
-  constructor(public menuService: MenuService) {}
+  #messageService = inject(MessageService);
+  saveBtnState = computed(() => this.#messageService.saveBtnState());
 
-  ngOnInit(): void {}
+  constructor(public menuService: MenuService) { }
+
+  ngOnInit(): void { }
 
   public toggleMenu(menu: any) {
     this.menuService.toggleSubMenu(menu);
@@ -31,5 +35,11 @@ export class NavbarMobileSubmenuComponent implements OnInit {
 
   public closeMobileMenu() {
     this.menuService.showMobileMenu = false;
+  }
+  
+  saveHandler() {
+    this.#messageService.saveState();
+    this.#messageService.notifyProductsHandler(true);
+    setTimeout(() => { this.#messageService.notifyProductsHandler(false); }, 250);
   }
 }

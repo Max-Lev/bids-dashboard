@@ -8,7 +8,6 @@ import { DiscountPipe } from 'src/app/core/pipes/discount.pipe';
 @NgModule({
   imports: [
     DashboardRoutingModule,
-    // HttpClientModule
   ],
   providers:[
     provideHttpClient(),

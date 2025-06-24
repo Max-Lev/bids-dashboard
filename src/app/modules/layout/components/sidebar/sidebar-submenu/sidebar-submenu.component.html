@@ -16,13 +16,13 @@
           @if(sub.label==='Save'){
           <a 
           (click)="saveHandler()"
-          [class.disabled]="!saveBtnState().isSaveActive"
+          [class.disabled-save]="!saveBtnState().isSaveActive"
           [routerLink]="sub.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
             class="hover:text-foreground inline-block w-full rounded-lg px-4 py-2 text-xs cursor-pointer">
             {{ sub.label }}
             @if(saveBtnState().count > 0){
               <span 
-              [class.disabled]="!saveBtnState().isSaveActive"
+              [class.disabled-save]="!saveBtnState().isSaveActive"
               class="save-num rounded-md text-xs font-semibold text-primary
               ml-1">{{saveBtnState().count}}</span>
             }
