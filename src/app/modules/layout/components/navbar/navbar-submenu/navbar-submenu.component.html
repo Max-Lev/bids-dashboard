@@ -31,37 +31,37 @@
 
     <!-- Child Menu -->
     <ng-template #parentMenu let-item="item">
-      @if(item.label==='Save'){
+      <app-save-state [template]="saveTemplate"></app-save-state>
 
-      <button [routerLink]="item.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
-        (click)="saveHandler()" [class.disabled-save]="!saveBtnState().isSaveActive"
-        [disabled]="!saveBtnState().isSaveActive"
-        class="text-muted-foreground hover:bg-card hover:text-foreground mx-3 flex w-full items-center justify-between rounded-md py-2 px-2 text-xs font-semibold">
-        <div class="flex items-center justify-start">
-          <span class="text-muted-foreground/50 ltr:mr-2 rtl:ml-2" *ngIf="item.icon">
-            <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
-          </span>
-          <span class="ml-1">{{ item.label }}</span>
-          @if(saveBtnState().count > 0){
-            <span 
-            [class.disabled]="!saveBtnState().isSaveActive"
-            class="save-num rounded-md text-xs font-semibold text-primary
-            ml-1">{{saveBtnState().count}}</span>
-          }
-        </div>
-      </button>
+      <ng-template #saveTemplate let-saveBtnState="saveBtnState" let-click="click">
+        @if(item.label==='Save'){
+        <button [routerLink]="item.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
+          (click)="click()" [class.disabled-save]="!saveBtnState.isSaveActive" [disabled]="!saveBtnState.isSaveActive"
+          class="text-muted-foreground hover:bg-card hover:text-foreground mx-3 flex w-full items-center justify-between rounded-md py-2 px-2 text-xs font-semibold">
+          <div class="flex items-center justify-start">
+            <span class="text-muted-foreground/50 ltr:mr-2 rtl:ml-2" *ngIf="item.icon">
+              <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
+            </span>
+            <span class="ml-1">{{ item.label }}</span>
+            @if(saveBtnState.count > 0){
+            <span [class.disabled-save]="!saveBtnState.isSaveActive" class="save-num rounded-md text-xs font-semibold text-primary
+              ml-1">{{saveBtnState.count}}</span>
+            }
+          </div>
+        </button>
+        }@else {
+        <button [routerLink]="item.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
+          class="text-muted-foreground hover:bg-card hover:text-foreground mx-3 flex w-full items-center justify-between rounded-md py-2 px-2 text-xs font-semibold">
+          <div class="flex items-center justify-start">
+            <span class="text-muted-foreground/50 ltr:mr-2 rtl:ml-2" *ngIf="item.icon">
+              <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
+            </span>
+            <span class="ml-1">{{ item.label }}</span>
+          </div>
+        </button>
+        }
 
-      }@else {
-      <button [routerLink]="item.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
-        class="text-muted-foreground hover:bg-card hover:text-foreground mx-3 flex w-full items-center justify-between rounded-md py-2 px-2 text-xs font-semibold">
-        <div class="flex items-center justify-start">
-          <span class="text-muted-foreground/50 ltr:mr-2 rtl:ml-2" *ngIf="item.icon">
-            <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
-          </span>
-          <span class="ml-1">{{ item.label }}</span>
-        </div>
-      </button>
-      }
+      </ng-template>
 
     </ng-template>
 

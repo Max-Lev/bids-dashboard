@@ -1,22 +1,22 @@
 import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
-import { MessageService } from 'src/app/shared/providers/message.service';
+import { SaveStateComponent } from 'src/app/shared/components/save-state/save-state.component';
 
 @Component({
   selector: 'div[navbar-submenu]',
   templateUrl: './navbar-submenu.component.html',
   styleUrls: ['./navbar-submenu.component.css'],
-  imports: [NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, NgIf, AngularSvgIconModule],
+  imports: [NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, NgIf, 
+    AngularSvgIconModule,
+    SaveStateComponent
+  ],
 })
 export class NavbarSubmenuComponent implements OnInit {
   @Input() public submenu = <SubMenuItem[]>{};
   @ViewChild('submenuRef') submenuRef: ElementRef<HTMLDivElement> | undefined;
-
-  #messageService = inject(MessageService);
-  saveBtnState = computed(() => this.#messageService.saveBtnState());
 
   constructor() { }
 
@@ -41,13 +41,6 @@ export class NavbarSubmenuComponent implements OnInit {
       }
     }
   }
-
-
-saveHandler() {
-  this.#messageService.saveState();
-  this.#messageService.notifyProductsHandler(true);
-  setTimeout(() => { this.#messageService.notifyProductsHandler(false); }, 250);
-}
 
 }
 

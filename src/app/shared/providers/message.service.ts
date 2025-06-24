@@ -7,7 +7,8 @@ import { SaveBtnState } from 'src/app/core/models/saved-filter.model';
 export class MessageService {
 
   saveBtnState = signal<SaveBtnState>({
-    isSaveActive: false, count: 0,
+    isSaveActive: false, 
+    count: 0,
     isDeleteActive: false,
     deleteIndex: -1,
     isUpdateActive: false
