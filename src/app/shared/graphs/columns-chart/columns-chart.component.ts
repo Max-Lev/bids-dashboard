@@ -64,7 +64,7 @@ export class ColumnsChartComponent implements OnChanges {
 
   onDeleteSelected = output<number>();
   onSaveHandler = output<void>();
-  onFilterHandler = output<number>();
+  filterSelected = output<number>();
 
 
   constructor(private themeService: ThemeService) {
@@ -83,7 +83,7 @@ export class ColumnsChartComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
+    
   }
 
   setChartOptions() {
@@ -136,16 +136,16 @@ export class ColumnsChartComponent implements OnChanges {
     this.onSaveHandler.emit();
   }
 
-  filterHandler(index:number){
-    this.onFilterHandler.emit(index);
+  onFilterSelected(index: number) {
+    this.filterSelected.emit(index);
   }
 
-  deleteSelected(){
-    const {deleteIndex} = this.#messageService.saveBtnState();
+  deleteSelected() {
+    const { deleteIndex } = this.#messageService.saveBtnState();
     this.onDeleteSelected.emit(deleteIndex!);
   }
 
-  
+
 
 
 

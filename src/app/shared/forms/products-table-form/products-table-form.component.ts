@@ -62,7 +62,7 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
 
     this.form.valueChanges?.pipe(takeUntilDestroyed(this.destroy)).subscribe(v => {
       if (this.form.dirty && this.#messageService.saveBtnState().isSaveActive) {
-        this.#messageService.updateState();
+        this.#messageService.onChangeState();
       }
     });
 
@@ -71,17 +71,17 @@ export class ProductsTableFormComponent implements AfterViewInit, OnChanges {
   onCategoryChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value
     this.categoryModel.set(value);
-    this.#messageService.updateState();
+    this.#messageService.onChangeState();
   }
 
   onProductDetailsChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
     this.propertyModel.set(value);
-    this.#messageService.updateState();
+    this.#messageService.onChangeState();
   }
 
   onOrderChange(event:Event){
-    this.#messageService.updateState();
+    this.#messageService.onChangeState();
   }
 
   filterOutput() {

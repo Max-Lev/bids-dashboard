@@ -8,17 +8,20 @@
 
     <!-- Dual Card -->
     @if(isProductsExists()){
-    <div nft-dual-card [product]="productsHighDiscount()![0]" class="md:col-span-2"></div>
+    <!-- <div nft-dual-card [product]="productsHighDiscount()![0]" class="md:col-span-2"></div> -->
+    <div nft-dual-card [product]="topResults()![0]" class="md:col-span-2"></div>
     <!-- end Dual Card -->
     }
 
     <!-- Single Card -->
     <!-- <div nft-single-card [nft]="nft[1]"></div> -->
-    <div nft-single-card [product]="productsHighDiscount()![1]"></div>
+    <!-- <div nft-single-card [product]="productsHighDiscount()![1]"></div> -->
+    <div nft-single-card [product]="topResults()![1]"></div>
     <!-- end Single Card -->
 
     <!-- Single Card -->
-    <div nft-single-card [product]="productsHighDiscount()![2]"></div>
+    <!-- <div nft-single-card [product]="productsHighDiscount()![2]"></div> -->
+    <div nft-single-card [product]="topResults()![2]"></div>
     <!-- <div nft-single-card [nft]="nft[2]"></div> -->
     <!-- end Single Card -->
 
@@ -28,7 +31,7 @@
 
     @if(graphData().products.length){
     <div app-columns-chart class="md:col-span-2 xl:col-span-1" 
-    (onFilterHandler)="selectedFilterHandler($event)"
+    (filterSelected)="filterSelectedHandler($event)"
     (onSaveHandler)="onSaveFilterHandler()"
     [savedFilterState]="savedFilterState()"
     (onDeleteSelected)="onDeleteSelectedHandler($event)"

@@ -11,5 +11,5 @@ export type SaveBtnState = {
     count: number;
     isDeleteActive?:boolean,
     deleteIndex?:number;
-    isUpdateActive?:boolean;
+    isChangeActive?:boolean;
 }

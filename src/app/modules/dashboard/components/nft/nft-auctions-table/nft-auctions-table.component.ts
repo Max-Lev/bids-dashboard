@@ -59,7 +59,7 @@ export class NftAuctionsTableComponent implements OnInit {
 
   onChipsSelected(item: string) {
     this.#productsService.removeSelectedCategory(item);
-    this.#messageService.updateState();
+    this.#messageService.onChangeState();
 
   }
 

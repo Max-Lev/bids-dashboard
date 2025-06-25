@@ -64,13 +64,24 @@ export class NftComponent implements OnInit {
   #messageService = inject(MessageService);
   saveBtnState = computed(() => this.#messageService.saveBtnState());
 
+  topResults = computed(() => {
+    const top = this.filteredProducts().slice(0, 3);
+    return top;
+  })
+
   constructor() {
+
     effect(() => {
       const data = this.graphData();
       if (data?.products?.length > 0) {
         this.cdr.markForCheck();
       }
     });
+    effect(() => {
+      // console.log('filteredProducts ',this.filteredProducts());
+      // console.log('topResults ',this.topResults());
+    })
+
   }
 
   ngOnInit(): void {
@@ -78,12 +89,13 @@ export class NftComponent implements OnInit {
   }
 
   onDeleteSelectedHandler(index: number) {
+
     this.productsService.deleteSavedFilter(index);
     this.#messageService.deleteState();
-    
+
     const { count } = this.#messageService.saveBtnState();
-    this.selectedFilterHandler(count-1);
-    
+    this.filterSelectedHandler(count - 1);
+
   }
 
   onSaveFilterHandler() {
@@ -92,17 +104,18 @@ export class NftComponent implements OnInit {
     setTimeout(() => { this.#messageService.notifyProductsHandler(false); }, 250);
   }
 
-  selectedFilterHandler(index: number) {
-    
-    const data = this.productsService.getSelectedStateData(index);
+  filterSelectedHandler(index: number) {
+    const { length } = this.productsService.savedFilterState();
+    this.#messageService.saveBtnState.update(state => ({ ...state, count: length }));
 
+    const data = this.productsService.getSelectedStateData(index);
     this.#messageService.resetFormState.set(true);
 
     this.productsService.productProperty.set(data?.prop ?? '');
     this.productsService.selectedCategoriesList.set(data?.categories ?? []);
     this.productsService.orderProp.set({ title: '', value: data?.order ?? 'asc' });
 
-    this.#messageService.filterSelectedState(index);
+    this.#messageService.onSaveBtnSelectedState(index);
 
   }
 
