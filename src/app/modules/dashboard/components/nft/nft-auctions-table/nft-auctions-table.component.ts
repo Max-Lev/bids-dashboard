@@ -9,6 +9,7 @@ import { ProductsService } from 'src/app/core/services/products.service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ChipsComponent } from 'src/app/shared/components/chips/chips.component';
 import { MessageService } from 'src/app/shared/providers/message.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: '[nft-auctions-table]',
@@ -21,7 +22,8 @@ import { MessageService } from 'src/app/shared/providers/message.service';
     ProductsTableFormComponent,
     ChipsComponent,
     TitleCasePipe,
-    AngularSvgIconModule
+    AngularSvgIconModule,
+    RouterModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

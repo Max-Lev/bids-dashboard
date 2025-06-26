@@ -12,8 +12,8 @@ import { MessageService } from 'src/app/shared/providers/message.service';
 
 
 @Component({
-  selector: 'app-nft',
-  templateUrl: './nft.component.html',
+  selector: 'app-products',
+  templateUrl: './products.component.html',
   imports: [
     NftHeaderComponent,
     NftDualCardComponent,
@@ -25,7 +25,7 @@ import { MessageService } from 'src/app/shared/providers/message.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class NftComponent implements OnInit,OnChanges {
+export class ProductsComponent implements OnInit,OnChanges {
 
   productDetailsOptions = signal(ProductDetailsOptions);
   orderOptions = signal(OrderOptions);

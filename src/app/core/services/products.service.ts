@@ -22,7 +22,7 @@ export class ProductsService {
   excludedCategories = ['groceries', 'furniture', 'tops'];
 
   private allProducts = signal<Product[]>([]);
-  private products = signal<Product[]>([]);
+  readonly products = signal<Product[]>([]);
   private categories = signal<string[]>([]);
 
 
@@ -74,6 +74,8 @@ export class ProductsService {
           product => allowedCategories.includes(product.category));
 
         this.products.set(filteredProducts);
+        console.log('products ',this.products());
+        console.log('all products ',this.allProducts());
         this.categories.set(allowedCategories);
         return {
           categories: allowedCategories,

@@ -1,0 +1,7 @@
+::ng-deep {
+    div[property="nft-single-card"] {
+        background-size: contain;
+        background-repeat: no-repeat;
+        border: 1px solid red;
+    }
+}

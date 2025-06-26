@@ -61,6 +61,7 @@
         <ng-container *ngIf="filteredProducts() && filteredProducts()?.length">
           @for (product of filteredProducts(); track product.id) {
             <tr [product]="product" nft-auctions-table-item
+            [routerLink]="['/dashboard/products/'+ product!.id]"
             class="border-b border-dashed border-border hover:bg-card"></tr>
           }
         </ng-container>
