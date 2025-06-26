@@ -1,17 +1,14 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, input, Input, OnChanges, OnInit, signal, SimpleChanges, WritableSignal } from '@angular/core';
 import { NftAuctionsTableComponent } from '../../components/nft/nft-auctions-table/nft-auctions-table.component';
 import { NftChartCardComponent } from '../../components/nft/nft-chart-card/nft-chart-card.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
 import { NftHeaderComponent } from '../../components/nft/nft-header/nft-header.component';
 import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
-import { Nft } from '../../models/nft';
 import { ProductsService } from 'src/app/core/services/products.service';
-import { provideHttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions } from 'src/app/core/models/products';
+import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions, Products } from 'src/app/core/models/products';
 import { ColumnsChartComponent } from 'src/app/shared/graphs/columns-chart/columns-chart.component';
 import { MessageService } from 'src/app/shared/providers/message.service';
-import { SaveBtnState } from 'src/app/core/models/saved-filter.model';
 
 
 @Component({
@@ -28,7 +25,7 @@ import { SaveBtnState } from 'src/app/core/models/saved-filter.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
-export class NftComponent implements OnInit {
+export class NftComponent implements OnInit,OnChanges {
 
   productDetailsOptions = signal(ProductDetailsOptions);
   orderOptions = signal(OrderOptions);
@@ -40,8 +37,8 @@ export class NftComponent implements OnInit {
     initialValue: { products: [], categories: [] }
   });
 
-  category = computed(() => this.filteredProductsCategories().categories);
-  products = computed(() => this.filteredProductsCategories().products);
+  category = computed(() => this.filteredProductsCategories()?.categories);
+  products = computed(() => this.filteredProductsCategories()?.products);
 
   readonly filteredProducts = computed(() => this.productsService.filteredProducts());
 
@@ -64,10 +61,7 @@ export class NftComponent implements OnInit {
   #messageService = inject(MessageService);
   saveBtnState = computed(() => this.#messageService.saveBtnState());
 
-  topResults = computed(() => {
-    const top = this.filteredProducts().slice(0, 3);
-    return top;
-  })
+  topResults = computed(() => this.filteredProducts().slice(0, 3));
 
   constructor() {
 
@@ -79,9 +73,12 @@ export class NftComponent implements OnInit {
     });
     effect(() => {
       // console.log('filteredProducts ',this.filteredProducts());
-      // console.log('topResults ',this.topResults());
-    })
+      console.log('filteredProductsCategories ',this.filteredProductsCategories());
+    });
 
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    // console.log('dashboardResolver ',this.dashboardResolver);
   }
 
   ngOnInit(): void {
@@ -109,7 +106,7 @@ export class NftComponent implements OnInit {
     this.#messageService.saveBtnState.update(state => ({ ...state, count: length }));
 
     this.#messageService.resetFormState.set(true);
-    
+
     const data = this.productsService.getSelectedStateData(index);
     this.productsService.productProperty.set(data?.prop ?? '');
     this.productsService.selectedCategoriesList.set(data?.categories ?? []);

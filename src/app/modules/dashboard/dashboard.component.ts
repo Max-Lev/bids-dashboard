@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -8,6 +8,10 @@ import { RouterOutlet } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
   constructor() {}
+  
+  ngOnInit(): void {
+    
+  }
 
-  ngOnInit(): void {}
+  
 }

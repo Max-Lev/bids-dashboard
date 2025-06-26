@@ -59,8 +59,10 @@
       <!--Table body-->
       <tbody>
         <ng-container *ngIf="filteredProducts() && filteredProducts()?.length">
-          <tr *ngFor="let product of filteredProducts()" [product]="product" nft-auctions-table-item
+          @for (product of filteredProducts(); track product.id) {
+            <tr [product]="product" nft-auctions-table-item
             class="border-b border-dashed border-border hover:bg-card"></tr>
+          }
         </ng-container>
       </tbody>
       <!--end::Table body-->

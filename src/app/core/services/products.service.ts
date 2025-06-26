@@ -55,11 +55,11 @@ export class ProductsService {
           categories: this.categories()
         });
       }
-      return this.loadData();
+      return this.getProductsData();
     });
   }
 
-  private loadData() {
+  private getProductsData():Observable<{categories: string[];products: Products;}> {
     return forkJoin({
       categories: this.#http.get<string[]>(`${environment.productsApi}/category-list`),
       products: this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`)

@@ -12,7 +12,7 @@ import { ResponsiveHelperComponent } from './shared/components/responsive-helper
     NgxSonnerToaster],
 })
 export class AppComponent {
-  // title = 'Angular Tailwind';
+  
 
   constructor(public themeService: ThemeService) {}
 }
