@@ -7,8 +7,7 @@ import { ImgUrlPipe } from 'src/app/shared/pipes/img-url.pipe';
 @Component({
   selector: '[app-product-single-card]',
   imports: [
-    NgStyle, CurrencyPipe, RouterModule,
-    ImgUrlPipe
+    CurrencyPipe, RouterModule,
   ],
   templateUrl: './product-single-card.component.html',
   styleUrl: './product-single-card.component.css',
