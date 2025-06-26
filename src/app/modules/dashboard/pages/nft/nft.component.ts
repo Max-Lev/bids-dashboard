@@ -108,9 +108,9 @@ export class NftComponent implements OnInit {
     const { length } = this.productsService.savedFilterState();
     this.#messageService.saveBtnState.update(state => ({ ...state, count: length }));
 
-    const data = this.productsService.getSelectedStateData(index);
     this.#messageService.resetFormState.set(true);
-
+    
+    const data = this.productsService.getSelectedStateData(index);
     this.productsService.productProperty.set(data?.prop ?? '');
     this.productsService.selectedCategoriesList.set(data?.categories ?? []);
     this.productsService.orderProp.set({ title: '', value: data?.order ?? 'asc' });

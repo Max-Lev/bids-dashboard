@@ -61,7 +61,7 @@ export class MessageService {
       isDeleteActive: true,
       deleteIndex: index + 1
     }));
-    // console.log('filterSelectedState ', this.saveBtnState());
+    // console.log('onSaveBtnSelectedState ', this.saveBtnState());
   }
 
   updateCount(count: number) {
