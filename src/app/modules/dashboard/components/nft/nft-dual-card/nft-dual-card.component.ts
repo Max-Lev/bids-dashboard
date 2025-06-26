@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, input, Input, OnInit } from '@angul
 import { Nft } from '../../../models/nft';
 import { Product, Products } from 'src/app/core/models/products';
 import { DiscountPipe } from 'src/app/core/pipes/discount.pipe';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: '[nft-dual-card]',
@@ -10,14 +11,12 @@ import { DiscountPipe } from 'src/app/core/pipes/discount.pipe';
   imports: [
     NgStyle, 
     CurrencyPipe,
-    DiscountPipe
+    DiscountPipe,
+    RouterModule
   ],
   changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class NftDualCardComponent implements OnInit {
-  @Input() nft: Nft = <Nft>{};
-
-  // @Input() product!:Product;
 
   product = input<Product>();
 

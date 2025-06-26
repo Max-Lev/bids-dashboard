@@ -1,2 +1,14 @@
+<!-- <button (click)="openUserDialog()" class="text-foreground">User Dialog</button>
+<button (click)="openProductDialog()" class="text-foreground">product Dialog</button>
+<button (click)="openDeleteDialog()" class="text-foreground">Delete Dialog</button> -->
+
 <div nft-dual-card [product]="product()" class="md:col-span-2"></div>
 <div nft-single-card [product]="product()" class="bg-contain bg-no-repeat"></div>
+
+<dialog-container 
+[isOpen]="currentDialog.isOpen" 
+[dialogData]="currentDialog.data!" 
+(onClose)="handleDialogClose()"
+(onSave)="handleDialogSave($event)" 
+(onDelete)="handleDialogDelete()">
+</dialog-container>

@@ -29,7 +29,7 @@
     "prettier:verify": "prettier --config ./.prettierrc --check \"src/{app,environments}/**/*{.ts,.html,.scss,.json}\"",
     "prettier:staged": "pretty-quick --staged",
     "lint": "ng lint",
-    "deploy":"ng build && firebase deploy --only hosting"
+    "deploy": "ng build && firebase deploy --only hosting"
   },
   "private": true,
   "dependencies": {
@@ -49,6 +49,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "angular-svg-icon": "^13.0.0",
     "apexcharts": "^3.35.3",
+    "firebase": "^11.9.1",
     "ng-apexcharts": "^1.7.1",
     "ngx-sonner": "^2.0.1",
     "rxjs": "~7.4.0",

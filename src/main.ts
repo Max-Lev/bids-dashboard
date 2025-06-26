@@ -6,7 +6,7 @@ import { AppComponent } from './app/app.component';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { withComponentInputBinding } from '@angular/router';
+import { FirebaseService } from './app/core/firebase/firebase.service';
 
 if (environment.production) {
   enableProdMode();
@@ -19,7 +19,8 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule, AppRoutingModule), 
-    provideAnimations()
+    provideAnimations(),
+    FirebaseService
   ],
 }).catch((err) => console.error(err));
 

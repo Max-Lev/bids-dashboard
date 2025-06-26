@@ -2,7 +2,8 @@
   @if(product()){
     
   <div [ngStyle]="{ 'background-image': 'url(' + product()!.images[0] }"
-    class="min-h-[200px] w-full flex-1 
+  [routerLink]="['/dashboard/products/'+ product()!.id]"  
+  class="min-h-[200px] w-full flex-1 
     cursor-pointer rounded-md 
     bg-contain 
     bg-no-repeat 

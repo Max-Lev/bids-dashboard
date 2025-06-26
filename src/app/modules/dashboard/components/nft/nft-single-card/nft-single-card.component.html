@@ -2,7 +2,8 @@
 
 
 <!-- Card -->
-<div class="flex h-[420px] flex-col rounded-lg bg-background p-8">
+<div [routerLink]="['/dashboard/products/'+ product()!.id]"  
+class="flex h-[420px] flex-col rounded-lg bg-background p-8">
   <div class="dflex items-end justify-between text-sm font-semibold text-muted-foreground">
     SKU: {{ product()!.sku }}
   </div>
