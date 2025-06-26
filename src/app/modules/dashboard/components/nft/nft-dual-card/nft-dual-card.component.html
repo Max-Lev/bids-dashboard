@@ -8,19 +8,19 @@
     transition duration-150 ease-in-out hover:opacity-75">
     </div>
 
-    <div class="flex flex-col rounded-lg bg-background p-0 mt-1.5 max-h-[100px] h-[100px]">
-      <div class="flex flex-wrap gap-4 justify-center">
+    @if(additionalImgs()){
+    <!-- Thumbnail Image List (responsive) -->
+    <div class="hidden sm:flex mt-2 sm:mt-4 justify-center">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center sm:justify-center 
+        overflow-auto sm:overflow-visible w-full sm:w-auto">
         @for (img of product()?.images! | imgUrl; track $index) {
-        <div [ngStyle]="{ 'background-image': 'url(' + img + ')' }" 
-        (click)="onSelectedImage.emit($index)" 
-        class="flex-1 min-w-[100px] max-w-[100px] h-[100px] cursor-pointer 
-        rounded-md bg-contain bg-no-repeat 
-        transition duration-150 ease-in-out hover:opacity-75 bg-center sm:bg-center"></div>
+        <div [ngStyle]="{ 'background-image': 'url(' + img + ')' }" (click)="onSelectedImage.emit($index)" class="w-[100px] h-[100px] cursor-pointer rounded-md bg-contain bg-no-repeat bg-center 
+        transition duration-150 ease-in-out hover:opacity-75 shrink-0">
+        </div>
         }
       </div>
     </div>
-
-
+    }
 
   </div>
 

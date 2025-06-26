@@ -2,7 +2,9 @@
 <button (click)="openProductDialog()" class="text-foreground">product Dialog</button>
 <button (click)="openDeleteDialog()" class="text-foreground">Delete Dialog</button> -->
 
-<div (onSelectedImage)="onSelectedImageHandler($event)" nft-dual-card [product]="product()" class="md:col-span-2"></div>
+<div (onSelectedImage)="onSelectedImageHandler($event)" nft-dual-card [product]="product()" 
+[additionalImgs]="true"
+class="md:col-span-2"></div>
 
 <div app-product-single-card [product]="product()"></div>
 

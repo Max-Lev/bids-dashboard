@@ -21,6 +21,7 @@ import { ImgUrlPipe } from 'src/app/shared/pipes/img-url.pipe';
 export class NftDualCardComponent implements OnInit {
 
   product = input<Product>();
+  additionalImgs = input<boolean>(false);
 
   onSelectedImage = output<number>();
 
