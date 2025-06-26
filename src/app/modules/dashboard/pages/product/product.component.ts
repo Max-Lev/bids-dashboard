@@ -1,16 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit, signal, Signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
 import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
 import { DialogService } from 'src/app/core/services/dialog.service';
 import { DialogData, DialogContainer } from 'src/app/shared/components/dialogs/edit-product-dialog/dialog-container.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
+import { Product } from 'src/app/core/models/products';
 
 @Component({
   selector: 'app-product',
   imports: [
     NftDualCardComponent,
-    NftSingleCardComponent,
+    // NftSingleCardComponent,
+    ProductSingleCardComponent,
     DialogContainer
   ],
   templateUrl: './product.component.html',
@@ -20,13 +23,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class ProductComponent implements OnInit {
 
   activatedRoute = inject(ActivatedRoute);
-  productId = computed(() => this.activatedRoute.snapshot.params['id']);
-  product = computed(() => this.activatedRoute.snapshot.data['productResolver']);
   destroy$ = inject(DestroyRef);
-  currentDialog = {
-    isOpen: false,
-    data: null as DialogData | null
-  };
+
+  product = signal<Product>(this.activatedRoute.snapshot.data['productResolver'] as Product);
+  
+  currentDialog = {isOpen: false,data: null as DialogData | null};
 
 
   constructor(private dialogService: DialogService) {
@@ -80,6 +81,10 @@ export class ProductComponent implements OnInit {
 
   ngOnInit(): void {
 
+  }
+
+  onSelectedImageHandler(index:number){
+    this.product.update(prod => ({...prod,mainImage: prod.images[index]}));
   }
 
 }

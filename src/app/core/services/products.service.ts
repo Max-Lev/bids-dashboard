@@ -59,24 +59,32 @@ export class ProductsService {
     });
   }
 
-  private getProductsData():Observable<{categories: string[];products: Products;}> {
+  private getProductsData(): Observable<{ categories: string[]; products: Products; }> {
     return forkJoin({
       categories: this.#http.get<string[]>(`${environment.productsApi}/category-list`),
       products: this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`)
     }).pipe(
+      map(({ categories, products }) => {
+        products.products = products.products.map(product => ({ ...product, mainImage: product.images[0] }));
+        return {
+          categories: categories,
+          products: products
+        };
+      }),
       map(({ categories, products }) => {
         this.allProducts.set(products.products);
 
         const allowedCategories = this.excludeCategories(categories, this.excludedCategories);
 
         // Filter products by allowed categories
-        const filteredProducts = products.products.filter(
-          product => allowedCategories.includes(product.category));
+        const filteredProducts = products.products.filter(product => allowedCategories.includes(product.category));
 
         this.products.set(filteredProducts);
-        console.log('products ',this.products());
-        console.log('all products ',this.allProducts());
         this.categories.set(allowedCategories);
+
+        console.log('products ', this.products());
+        console.log('all products ', this.allProducts());
+
         return {
           categories: allowedCategories,
           products: filteredProducts

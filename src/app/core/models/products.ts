@@ -44,6 +44,7 @@ export type ProductsDTO = {
   title: string;
   warrantyInformation: string;
   weight: number;
+  mainImage?:string;
 };
 
 export const ProductDetailsOption:{title:string,value:string}[] = [
