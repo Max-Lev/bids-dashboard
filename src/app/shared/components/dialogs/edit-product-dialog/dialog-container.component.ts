@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonComponent } from '../../button/button.component';
 export interface DialogData {
   type: 'user' | 'product' | 'delete';
   title: string;
@@ -23,7 +24,8 @@ export interface ProductFormData {
   selector: 'dialog-container',
   imports: [
     FormsModule,
-    NgIf
+    NgIf,
+    ButtonComponent
   ],
   templateUrl: './dialog-container.component.html',
   styleUrl: './dialog-container.component.css'
@@ -55,7 +57,7 @@ export class DialogContainer {
   }
 
   onBackdropClick(event: Event) {
-    if (event.target === event.currentTarget) {
+    if (event.target !== event.currentTarget) {
       this.close();
     }
   }
@@ -78,5 +80,12 @@ export class DialogContainer {
   private resetForms() {
     this.userForm = { name: '', email: '', role: 'user' };
     this.productForm = { productName: '', category: '', price: 0, description: '' };
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  handleEscape(event: KeyboardEvent) {
+    if (this.isOpen) {
+      this.close();
+    }
   }
 }

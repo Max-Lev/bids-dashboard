@@ -1,0 +1,7 @@
+input::placeholder {
+    color: var(--color-foreground);
+}
+
+::ng-deep app-button button {
+    color: white;
+}

@@ -80,7 +80,7 @@ export class ProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.openProductDialog();
   }
 
   onSelectedImageHandler(index:number){
