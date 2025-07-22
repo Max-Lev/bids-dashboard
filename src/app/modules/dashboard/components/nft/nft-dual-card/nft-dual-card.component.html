@@ -1,29 +1,27 @@
 <div class="bg-background flex min-h-[420px] flex-col rounded-lg p-8 sm:flex-row">
   @if(product()){
 
-  <div class="flex flex-col flex-1">
-    <div [ngStyle]="{ 'background-image': 'url(' + product()!.mainImage | imgUrl }"
-      [routerLink]="['/dashboard/products/'+ product()!.id]" class="min-h-[200px] w-full flex-1 
-    cursor-pointer rounded-md bg-contain bg-no-repeat bg-center 
-    transition duration-150 ease-in-out hover:opacity-75">
-    </div>
+  <div class="flex flex-1 flex-col">
+    <div
+      [ngStyle]="{ 'background-image': 'url(' + product()!.mainImage | imgUrl }"
+      [routerLink]="['/dashboard/products/' + product()!.id]"
+      class="min-h-[200px] w-full flex-1 cursor-pointer rounded-md bg-contain bg-center bg-no-repeat transition duration-150 ease-in-out hover:opacity-75"></div>
 
     @if(additionalImgs()){
     <!-- Thumbnail Image List (responsive) -->
-    <div class="hidden sm:flex mt-2 sm:mt-4 justify-center">
-      <div class="flex flex-col sm:flex-row gap-4 justify-center sm:justify-center 
-        overflow-auto sm:overflow-visible w-full sm:w-auto">
+    <div class="mt-2 hidden justify-center sm:mt-4 sm:flex">
+      <div
+        class="flex w-full flex-col justify-center gap-4 overflow-auto sm:w-auto sm:flex-row sm:justify-center sm:overflow-visible">
         @for (img of product()?.images! | imgUrl; track $index) {
-        <div [ngStyle]="{ 'background-image': 'url(' + img + ')' }" (click)="onSelectedImage.emit($index)" class="w-[100px] h-[100px] cursor-pointer rounded-md bg-contain bg-no-repeat bg-center 
-        transition duration-150 ease-in-out hover:opacity-75 shrink-0">
-        </div>
+        <div
+          [ngStyle]="{ 'background-image': 'url(' + img + ')' }"
+          (click)="onSelectedImage.emit($index)"
+          class="h-[100px] w-[100px] shrink-0 cursor-pointer rounded-md bg-contain bg-center bg-no-repeat transition duration-150 ease-in-out hover:opacity-75"></div>
         }
       </div>
     </div>
     }
-
   </div>
-
 
   <!-- Details  -->
   <div class="mt-4 flex flex-1 flex-col justify-between space-y-2 ltr:sm:ml-6 rtl:sm:mr-6 md:mt-0">
@@ -33,7 +31,6 @@
     </div>
 
     <div class="flex space-x-8">
-
       <!-- Price -->
       <div class="flex items-center space-x-2">
         <div class="bg-primary flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-center">
@@ -50,7 +47,7 @@
     <div class="border-border rounded-md border border-dashed p-4 text-center">
       <small class="text-muted-foreground">Discount</small>
       <h1 class="text-3xl font-semibold text-green-500">{{ product()?.discountPercentage }} %</h1>
-      <span class="text-muted-foreground text-lg font-semibold">{{ product()! | discount:product() | currency }}</span>
+      <span class="text-muted-foreground text-lg font-semibold">{{ product()! | discount: product() | currency }}</span>
       <!-- <div class="text-muted-foreground mt-3 text-xs">Ending in</div>
       <div class="text-foreground font-semibold">{{ nft.ending_in }}</div> -->
     </div>

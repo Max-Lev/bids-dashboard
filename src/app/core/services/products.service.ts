@@ -11,10 +11,9 @@ import { MessageService } from 'src/app/shared/providers/message.service';
 import { SavedFilter } from '../models/saved-filter.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsService {
-
   #http = inject(HttpClient);
   #graphUtilService = inject(GraphUtilService);
   #messageService = inject(MessageService);
@@ -25,11 +24,10 @@ export class ProductsService {
   readonly products = signal<Product[]>([]);
   private categories = signal<string[]>([]);
 
-
-  // private readonly 
+  // private readonly
   selectedCategoriesList = signal<string[]>(['laptops', 'smartphones', 'tablets']);
   productProperty = signal<keyof Product>('rating');
-  orderProp = signal<{ title: string, value: string }>({ title: 'High', value: 'desc' }); // 'asc' | 'desc';
+  orderProp = signal<{ title: string; value: string }>({ title: 'High', value: 'desc' }); // 'asc' | 'desc';
   itemsSize = signal(10);
 
   selectedCategory = computed(() => this.selectedCategoriesList());
@@ -37,7 +35,7 @@ export class ProductsService {
   selectedLastDefaultCategory = computed(() => {
     const all = this.selectedCategoriesList();
     const last = all.length - 1;
-    return (last === -1) ? '' : all[last];
+    return last === -1 ? '' : all[last];
   });
 
   savedFilterState = signal<SavedFilter[]>([]);
@@ -47,28 +45,28 @@ export class ProductsService {
     this.savedFilter();
   }
 
-  getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[]; }> {
+  getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[] }> {
     return defer(() => {
       if (this.products().length > 0 && this.categories().length > 0) {
         return of({
           products: this.products(),
-          categories: this.categories()
+          categories: this.categories(),
         });
       }
       return this.getProductsData();
     });
   }
 
-  private getProductsData(): Observable<{ categories: string[]; products: Products; }> {
+  private getProductsData(): Observable<{ categories: string[]; products: Products }> {
     return forkJoin({
       categories: this.#http.get<string[]>(`${environment.productsApi}/category-list`),
-      products: this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`)
+      products: this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`),
     }).pipe(
       map(({ categories, products }) => {
-        products.products = products.products.map(product => ({ ...product, mainImage: product.images[0] }));
+        products.products = products.products.map((product) => ({ ...product, mainImage: product.images[0] }));
         return {
           categories: categories,
-          products: products
+          products: products,
         };
       }),
       map(({ categories, products }) => {
@@ -77,25 +75,25 @@ export class ProductsService {
         const allowedCategories = this.excludeCategories(categories, this.excludedCategories);
 
         // Filter products by allowed categories
-        const filteredProducts = products.products.filter(product => allowedCategories.includes(product.category));
+        const filteredProducts = products.products.filter((product) => allowedCategories.includes(product.category));
 
         this.products.set(filteredProducts);
         this.categories.set(allowedCategories);
 
-        console.log('products ', this.products());
-        console.log('all products ', this.allProducts());
+        console.log('All Products ', this.allProducts());
+        console.log('Filtered Products ', this.products());
 
         return {
           categories: allowedCategories,
-          products: filteredProducts
+          products: filteredProducts,
         };
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
   private excludeCategories(categories: string[], exclude: string[]): string[] {
-    const allowedCategories = categories.filter(cat => !exclude.includes(cat));
+    const allowedCategories = categories.filter((cat) => !exclude.includes(cat));
     return allowedCategories;
   }
 
@@ -112,25 +110,29 @@ export class ProductsService {
       order,
     });
     return _filterProducts;
-
   });
 
-  filterProducts(products: Products, options: {
-    categories?: string[]; sortBy?: keyof Product; order?: 'asc' | 'desc';
-  }): Products {
+  filterProducts(
+    products: Products,
+    options: {
+      categories?: string[];
+      sortBy?: keyof Product;
+      order?: 'asc' | 'desc';
+    },
+  ): Products {
     if (!Array.isArray(products) || products.length === 0) return [];
 
-    let result = products.filter(p => p.stock > 0);
+    let result = products.filter((p) => p.stock > 0);
 
     if (options.categories?.length) {
-      result = result.filter(p => options.categories!.includes(p.category));
+      result = result.filter((p) => options.categories!.includes(p.category));
     }
 
     if (options.sortBy) {
       result = this.sortByProperty(result, options.sortBy, options.order ?? 'desc');
     } else {
       // fallback to sorting by id
-      result = result.sort((a, b) => options.order === 'asc' ? a.id - b.id : b.id - a.id);
+      result = result.sort((a, b) => (options.order === 'asc' ? a.id - b.id : b.id - a.id));
     }
 
     const _result = result.slice(0, this.itemsSize());
@@ -150,9 +152,7 @@ export class ProductsService {
     });
   }
 
-
   updateFilterHandler(category: string, prop: keyof Product, order: string) {
-
     if (category === '') {
       this.selectedCategoriesList.set([]);
     }
@@ -162,7 +162,6 @@ export class ProductsService {
 
     const _orderProp = order === 'desc' ? { title: 'High', value: 'desc' } : { value: 'asc', title: 'Low' };
     this.orderProp.set(_orderProp);
-
   }
 
   // private readonly defaultCategories = signal<string[]>([]);
@@ -186,7 +185,6 @@ export class ProductsService {
       } else {
         // If it is not, add it to the array
         updated.push(categoryToDisplay); // add
-
       }
       // Update the signal with the new array
       this.selectedCategoriesList.set(updated); // update signal
@@ -217,7 +215,7 @@ export class ProductsService {
   readonly graphData: Signal<ChartProducts> = this.#graphUtilService.createGraphData(
     this.filteredProducts,
     this.productProperty,
-    this.orderProp
+    this.orderProp,
   );
 
   private savedFilter() {
@@ -233,8 +231,8 @@ export class ProductsService {
           const index = this.savedFilterState().length + 1;
           // localStorage.setItem(`data-${index}`, JSON.stringify(snapshot));
 
-          this.savedFilterState.update(states => [...states, snapshot]);
-          this.savedFilterMap.update(currentMap => {
+          this.savedFilterState.update((states) => [...states, snapshot]);
+          this.savedFilterMap.update((currentMap) => {
             const newMap = new Map(currentMap);
             newMap.set(`S${index}`, snapshot);
             return newMap;
@@ -249,7 +247,7 @@ export class ProductsService {
   }
 
   deleteSavedFilter(index: number) {
-    this.savedFilterState.update(states => states.filter((_, i) => i !== index - 1));
+    this.savedFilterState.update((states) => states.filter((_, i) => i !== index - 1));
   }
 
   getSelectedStateData(index: number): SavedFilter {
@@ -258,15 +256,11 @@ export class ProductsService {
     return selected;
   }
 
-
-
   // readonly graphData= computed(()=>this.#graphUtilService.createGraphData(
   //   this.filteredProducts,
   //   this.productProperty,
   //   this.orderProp
   // ));
-
-
 
   // rxProducts = rxResource<Products, string | undefined>({
   //   // request: () => this.query(),
@@ -349,9 +343,4 @@ export class ProductsService {
   //       )
   //   }
   // });
-
-
-
-
-
 }

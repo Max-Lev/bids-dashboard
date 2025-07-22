@@ -14,8 +14,7 @@ import { ImgUrlPipe } from 'src/app/shared/pipes/img-url.pipe';
     CurrencyPipe,
     DiscountPipe,
     RouterModule,
-    ImgUrlPipe,
-    NgClass
+    ImgUrlPipe
   ],
   changeDetection:ChangeDetectionStrategy.OnPush
 })
@@ -27,12 +26,10 @@ export class NftDualCardComponent implements OnInit,OnChanges {
   onSelectedImage = output<number>();
 
   constructor() {
-    effect(()=>{
-      
-    })
+    
   }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.additionalImgs())
+    
   }
 
   ngOnInit(): void {}

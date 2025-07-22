@@ -11,27 +11,25 @@ const routes: Routes = [
     path: '',
     component: DashboardComponent,
     resolve: {
-      dashboardResolver: dashboardResolver
+      dashboardResolver: dashboardResolver,
     },
     children: [
       { path: '', redirectTo: 'products', pathMatch: 'full' },
-      { path: 'products', component: ProductsComponent},
-      { 
-        path: 'products/:id', component: ProductComponent,
-        resolve:{
-          productResolver:productResolver
-        }
-
-       }, // 👈 flat structure
+      { path: 'products', component: ProductsComponent },
+      {
+        path: 'products/:id',
+        component: ProductComponent,
+        resolve: {
+          productResolver: productResolver,
+        },
+      }, // 👈 flat structure
       { path: '**', redirectTo: 'errors/404' },
-    ]
-  }
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DashboardRoutingModule {
-
-}
+export class DashboardRoutingModule {}

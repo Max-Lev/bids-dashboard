@@ -1,6 +1,6 @@
 import { NgIf } from '@angular/common';
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../button/button.component';
 export interface DialogData {
   type: 'user' | 'product' | 'delete';
@@ -25,7 +25,8 @@ export interface ProductFormData {
   imports: [
     FormsModule,
     NgIf,
-    ButtonComponent
+    ButtonComponent,
+    ReactiveFormsModule
   ],
   templateUrl: './dialog-container.component.html',
   styleUrl: './dialog-container.component.css'
@@ -88,4 +89,19 @@ export class DialogContainer {
       this.close();
     }
   }
+
+  prdForm = new FormGroup<{
+    productName: FormControl<string | null>;
+    category: FormControl<string | null>;
+    price: FormControl<number | null>; description: FormControl<string | null>;
+  }>({
+    productName: new FormControl<string>('',),
+    category: new FormControl(''),
+    price: new FormControl(0),
+    description: new FormControl('')
+  })
+
+
+
+
 }

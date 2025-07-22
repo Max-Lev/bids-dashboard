@@ -15,7 +15,6 @@ import { RouterModule } from '@angular/router';
   selector: '[nft-auctions-table]',
   templateUrl: './nft-auctions-table.component.html',
   imports: [
-    NgFor,
     NftAuctionsTableItemComponent,
     NgIf,
     FormsModule,

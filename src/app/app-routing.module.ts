@@ -18,7 +18,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  // imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    bindToComponentInputs: true // 👈 Enable input binding
+  })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
