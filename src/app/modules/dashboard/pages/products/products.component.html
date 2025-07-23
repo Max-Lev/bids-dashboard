@@ -9,7 +9,11 @@
     <!-- Dual Card -->
     @if(isProductsExists()){
     <!-- <div nft-dual-card [product]="productsHighDiscount()![0]" class="md:col-span-2"></div> -->
-    <div nft-dual-card [product]="topResults()![0]" class="md:col-span-2"></div>
+    <div 
+    (onMainBtnClick)="onMainBtnClickHandler($event)"
+    [mainBtnText]="'Product Details'"
+    nft-dual-card [displaySecondaryBtn]="false" [product]="topResults()![0]" 
+    class="md:col-span-2"></div>
     <!-- end Dual Card -->
     }
 

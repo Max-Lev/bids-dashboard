@@ -9,6 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { OrderOptions, Product, ProductDetailsOption as ProductDetailsOptions, Products } from 'src/app/core/models/products';
 import { ColumnsChartComponent } from 'src/app/shared/graphs/columns-chart/columns-chart.component';
 import { MessageService } from 'src/app/shared/providers/message.service';
+import { Router, RouterModule } from '@angular/router';
 
 
 @Component({
@@ -21,6 +22,7 @@ import { MessageService } from 'src/app/shared/providers/message.service';
     NftChartCardComponent,
     NftAuctionsTableComponent,
     ColumnsChartComponent,
+    RouterModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -31,6 +33,8 @@ export class ProductsComponent implements OnInit,OnChanges {
   orderOptions = signal(OrderOptions);
 
   productsService = inject(ProductsService);
+
+  router = inject(Router);
 
   filteredProductsCategories = toSignal(
     this.productsService.getFilteredProductsCategories(), {
@@ -114,6 +118,10 @@ export class ProductsComponent implements OnInit,OnChanges {
 
     this.#messageService.onSaveBtnSelectedState(index);
 
+  }
+
+  onMainBtnClickHandler(product:Product){
+    this.router.navigateByUrl('/dashboard/products/' + product!.id)
   }
 
 }

@@ -69,6 +69,7 @@ export class DialogContainer {
   }
 
   saveProduct() {
+    debugger
     this.onSave.emit({ type: 'product', data: this.productForm });
     this.close();
   }

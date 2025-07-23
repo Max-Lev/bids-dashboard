@@ -52,15 +52,24 @@
       <div class="text-foreground font-semibold">{{ nft.ending_in }}</div> -->
     </div>
 
-    <div class="flex items-center justify-between">
-      <button
-        class="hover:bg-primary-600 bg-primary text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
-        Place a Bid
+    <div
+      class="flex"
+      [ngClass]="{
+        'items-center justify-between': displaySecondaryBtn,
+        'justify-center': !displaySecondaryBtn
+      }">
+      <button (click)="onMainBtnClick.emit(product()!)"
+        class="hover:cursor-pointer hover:bg-primary-600 bg-primary text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
+        <!-- Place a Bid -->
+        {{ mainBtnText }}
       </button>
+      @if(displaySecondaryBtn){
       <button
-        class="lex-none bg-card text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-4 py-2.5 text-xs font-semibold">
-        View Item
+        class="hover:cursor-pointer lex-none bg-card text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-4 py-2.5 text-xs font-semibold">
+        <!-- View Item -->
+        {{ secondaryBtnText }}
       </button>
+      }
     </div>
   </div>
   }

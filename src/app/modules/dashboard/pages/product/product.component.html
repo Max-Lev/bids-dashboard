@@ -4,7 +4,9 @@
 
 <div
   (onSelectedImage)="onSelectedImageHandler($event)"
+  (onMainBtnClick)="openProductDialog($event)"
   nft-dual-card
+  [mainBtnText]="'Edit Product'"
   [product]="product()"
   [additionalImgs]="true"
   class="md:col-span-2"></div>

@@ -67,10 +67,12 @@ export class ProductComponent implements OnInit, OnChanges {
     });
   }
 
-  openProductDialog() {
+  openProductDialog(product:Product) {
+    console.log('product: ',product);
     this.dialogService.openDialog({
       type: 'product',
       title: 'Add New Product',
+      data: product
     });
   }
 
