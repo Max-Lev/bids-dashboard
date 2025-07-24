@@ -13,10 +13,16 @@
 
 <div app-product-single-card [product]="product()"></div>
 
-<dialog-container
-  [isOpen]="currentDialog.isOpen"
-  [dialogData]="currentDialog.data!"
-  (onClose)="handleDialogClose()"
-  (onSave)="handleDialogSave($event)"
-  (onDelete)="handleDialogDelete()">
-</dialog-container>
+<!-- <ng-container *ngComponentOutlet="componentType; injector: customInjector">
+</ng-container> -->
+
+@if(currentDialog.isOpen){
+  <dialog-container
+    [isOpen]="currentDialog.isOpen"
+    [dialogData]="currentDialog.data!"
+    (onClose)="handleDialogClose()"
+    (onSave)="handleDialogSave($event)"
+    (onDelete)="handleDialogDelete()">
+  </dialog-container>
+}
+

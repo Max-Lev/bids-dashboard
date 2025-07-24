@@ -1,25 +1,9 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonComponent } from '../../button/button.component';
-export interface DialogData {
-  type: 'user' | 'product' | 'delete';
-  title: string;
-  data?: any;
-}
+import { ButtonComponent } from '../button/button.component';
+import { DialogData, UserFormData, ProductFormData } from './dialog.models';
 
-export interface UserFormData {
-  name: string;
-  email: string;
-  role: string;
-}
-
-export interface ProductFormData {
-  productName: string;
-  category: string;
-  price: number;
-  description: string;
-}
 @Component({
   selector: 'dialog-container',
   imports: [
@@ -50,6 +34,14 @@ export class DialogContainer {
     price: 0,
     description: ''
   };
+
+  constructor(){
+    console.log('dialog container component')
+    effect(()=>{
+      console.log(this.dialogData)
+    })
+  }
+
 
   close() {
     this.isOpen = false;

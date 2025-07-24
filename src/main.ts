@@ -20,7 +20,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule, AppRoutingModule), 
     provideAnimations(),
-    FirebaseService
+    environment.production ? FirebaseService : []
   ],
 }).catch((err) => console.error(err));
 

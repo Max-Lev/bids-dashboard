@@ -1,7 +1,7 @@
 // dialog.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DialogData } from 'src/app/shared/components/dialogs/edit-product-dialog/dialog-container.component';
+import { DialogData } from 'src/app/shared/components/dialogs/dialog.models';
 
 @Injectable({
   providedIn: 'root'

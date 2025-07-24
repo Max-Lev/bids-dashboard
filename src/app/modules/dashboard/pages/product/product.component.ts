@@ -5,6 +5,7 @@ import {
   DestroyRef,
   effect,
   inject,
+  Injector,
   Input,
   OnChanges,
   OnInit,
@@ -17,12 +18,13 @@ import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dua
 import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
 import { DialogService } from 'src/app/core/services/dialog.service';
 import {
-  DialogData,
   DialogContainer,
-} from 'src/app/shared/components/dialogs/edit-product-dialog/dialog-container.component';
+} from 'src/app/shared/components/dialogs/dialog-container.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
 import { Product } from 'src/app/core/models/products';
+import { DialogData } from 'src/app/shared/components/dialogs/dialog.models';
+import { NgComponentOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-product',
@@ -31,6 +33,7 @@ import { Product } from 'src/app/core/models/products';
     // NftSingleCardComponent,
     ProductSingleCardComponent,
     DialogContainer,
+    NgComponentOutlet
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.css',
@@ -48,7 +51,7 @@ export class ProductComponent implements OnInit, OnChanges {
 
   constructor(private dialogService: DialogService) {
     this.dialogService.dialogState$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((state) => {
-      console.log(state);
+      console.log('state: ', state);
       this.currentDialog = state;
     });
 
@@ -56,6 +59,7 @@ export class ProductComponent implements OnInit, OnChanges {
       console.log(this.product());
     });
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes, this.id);
   }
@@ -67,16 +71,38 @@ export class ProductComponent implements OnInit, OnChanges {
     });
   }
 
-  openProductDialog(product:Product) {
-    console.log('product: ',product);
+  /*injector = inject(Injector);
+  componentType: any = null;
+  customInjector!: Injector;
+  const injector = Injector.create({
+    providers: [
+      {
+        provide: '',
+        useValue: {
+          type: 'product',
+          title: 'Add New Product',
+          data: product,
+        },
+      },
+    ],
+    parent: this.injector,
+  });
+  this.componentType = DialogContainer;
+  this.customInjector = injector;
+*/
+
+  openProductDialog(product: Product) {
+
     this.dialogService.openDialog({
       type: 'product',
       title: 'Add New Product',
       data: product
     });
+
   }
 
   openDeleteDialog() {
+
     this.dialogService.openDialog({
       type: 'delete',
       title: 'Confirm Deletion',
