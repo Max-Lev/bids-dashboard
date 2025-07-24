@@ -1,7 +1,14 @@
 export interface DialogData {
-  type: 'user' | 'product' | 'delete';
+  type: 'USER' | 'PRODUCT' | 'DELETE';
   title: string;
   data?: any;
+}
+
+export enum DIALOG_TYPE 
+{
+  product = 'PRODUCT',
+  user='USER',
+  delete='DELETE'
 }
 
 export interface UserFormData {

@@ -1,4 +1,4 @@
-<div *ngIf="dialogData.type === 'product'" class="space-y-4">
+<!-- <div *ngIf="dialogData.type === 'product'" class="space-y-4"> -->
   <!-- <form> -->
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
@@ -6,14 +6,14 @@
       type="text"
       name="productName"
       [ngModelOptions]="{ standalone: true }"
-      [(ngModel)]="productForm.productName"
+      [(ngModel)]="form.productName"
       placeholder="Enter product name"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
   </div>
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
     <select
-      [(ngModel)]="productForm.category"
+      [(ngModel)]="form.category"
       class="t ransition-colors w-full rounded-lg border border-gray-300 px-4 py-3 duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
       <option value="">Select category</option>
       <option value="electronics">Electronics</option>
@@ -26,7 +26,7 @@
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
     <input
       type="number"
-      [(ngModel)]="productForm.price"
+      [(ngModel)]="form.price"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
       placeholder="0.00"
       min="0"
@@ -35,7 +35,7 @@
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Description </label>
     <textarea
-      [(ngModel)]="productForm.description"
+      [(ngModel)]="form.description"
       class="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
       rows="3"
       placeholder="Enter product description"></textarea>
@@ -61,4 +61,4 @@
       </app-button>
     </div>
   </div>
-</div>
+<!-- </div> -->

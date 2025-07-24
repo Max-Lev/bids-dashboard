@@ -17,13 +17,11 @@ import { ActivatedRoute } from '@angular/router';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
 import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
 import { DialogService } from 'src/app/core/services/dialog.service';
-import {
-  DialogContainer,
-} from 'src/app/shared/components/dialogs/dialog-container.component';
+import { DialogContainer } from 'src/app/shared/components/dialogs/dialog-container.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
 import { Product } from 'src/app/core/models/products';
-import { DialogData } from 'src/app/shared/components/dialogs/dialog.models';
+import { DialogData, DIALOG_TYPE } from 'src/app/shared/components/dialogs/dialog.models';
 import { NgComponentOutlet } from '@angular/common';
 
 @Component({
@@ -33,7 +31,7 @@ import { NgComponentOutlet } from '@angular/common';
     // NftSingleCardComponent,
     ProductSingleCardComponent,
     DialogContainer,
-    NgComponentOutlet
+    NgComponentOutlet,
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.css',
@@ -66,55 +64,35 @@ export class ProductComponent implements OnInit, OnChanges {
 
   openUserDialog() {
     this.dialogService.openDialog({
-      type: 'user',
+      type: DIALOG_TYPE.user,
       title: 'Add New User',
     });
   }
 
-  /*injector = inject(Injector);
-  componentType: any = null;
-  customInjector!: Injector;
-  const injector = Injector.create({
-    providers: [
-      {
-        provide: '',
-        useValue: {
-          type: 'product',
-          title: 'Add New Product',
-          data: product,
-        },
-      },
-    ],
-    parent: this.injector,
-  });
-  this.componentType = DialogContainer;
-  this.customInjector = injector;
-*/
-
   openProductDialog(product: Product) {
-
+    debugger
     this.dialogService.openDialog({
-      type: 'product',
+      type: DIALOG_TYPE.product,
       title: 'Add New Product',
-      data: product
+      data: product,
     });
-
   }
 
   openDeleteDialog() {
-
     this.dialogService.openDialog({
-      type: 'delete',
+      type: DIALOG_TYPE.delete,
       title: 'Confirm Deletion',
     });
   }
 
   handleDialogClose() {
+    debugger
     console.log('Close item');
     this.dialogService.closeDialog();
   }
 
   handleDialogSave(event: any) {
+    debugger
     console.log('Saving:', event);
     // Handle save logic here
     this.dialogService.closeDialog();
