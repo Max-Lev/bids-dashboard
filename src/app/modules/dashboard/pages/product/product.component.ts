@@ -1,15 +1,16 @@
-import { NgComponentOutlet } from "@angular/common";
-import { Component, ChangeDetectionStrategy, OnInit, OnChanges, Input, inject, DestroyRef, signal, effect, SimpleChanges } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { ActivatedRoute } from "@angular/router";
-import { filter } from "rxjs";
-import { Product } from "src/app/core/models/products";
-import { DialogService } from "src/app/core/services/dialog.service";
-import { DialogContainer } from "src/app/shared/components/dialogs/dialog-container.component";
-import { DialogData, IProductFormData } from "src/app/shared/components/dialogs/dialog.models";
-import { ProductsDialogComponent } from "src/app/shared/components/dialogs/products-dialog/products-dialog.component";
-import { NftDualCardComponent } from "../../components/nft/nft-dual-card/nft-dual-card.component";
-import { ProductSingleCardComponent } from "../../components/nft/product-single-card/product-single-card.component";
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { filter, map, mergeMap, of } from 'rxjs';
+import { Product } from 'src/app/core/models/products';
+import { DialogService } from 'src/app/core/services/dialog.service';
+import { DialogContainer } from 'src/app/shared/components/dialogs/dialog-container.component';
+import { DialogData, IProductFormData } from 'src/app/shared/components/dialogs/dialog.models';
+import { ProductsDialogComponent } from 'src/app/shared/components/dialogs/products-dialog/products-dialog.component';
+import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
+import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
+import { ProductsService } from 'src/app/core/services/products.service';
+import { NgComponentOutlet } from '@angular/common';
+import { Component, ChangeDetectionStrategy, OnInit, OnChanges, Input, inject, DestroyRef, signal, effect, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-product',
@@ -34,6 +35,8 @@ export class ProductComponent implements OnInit, OnChanges {
 
   currentDialog = { isOpen: false, data: null as DialogData | null };
 
+  productsService = inject(ProductsService);
+
   constructor(private dialogService: DialogService) {
     // this.dialogService.dialogState$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((state) => {
     //   console.log('state: ', state);
@@ -49,18 +52,33 @@ export class ProductComponent implements OnInit, OnChanges {
     console.log(changes, this.id);
   }
 
+
   openProductDialog(product: Product): void {
     const dialogRef = this.dialogService.open(ProductsDialogComponent, {
       title: 'Edit Product',
       data: { product }, // Pass the product data here
     });
 
-    dialogRef.afterClosed$.pipe(takeUntilDestroyed(this.destroy$))
-      .pipe(filter((result) => !!result))
-      .subscribe((updatedProductData: IProductFormData) => {
-        console.log('Saving:', updatedProductData);
-        // Update the product signal with the returned form data
-        this.product.update((product: Product) => ({ ...product, ...updatedProductData }));
+    dialogRef.afterClosed$
+      .pipe(
+        takeUntilDestroyed(this.destroy$),
+        filter((result) => !!result),
+        mergeMap((result) => {
+          return this.productsService.updateProductById(product,result);
+        }),
+        map((response) => {
+          console.log('response ',response);
+          return response;
+        })
+      )
+      .subscribe({
+        next: (response:Product) => {
+          this.product.update((prod) => ({ ...prod, ...response }));
+          console.log('product: ', this.product());
+        },
+        error: (err) => {
+          console.log(err);
+        },
       });
   }
 

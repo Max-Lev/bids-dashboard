@@ -1,5 +1,5 @@
 import { computed, effect, inject, Injectable, resource, ResourceRef, Signal, signal } from '@angular/core';
-import { Product, Products } from '../models/products';
+import { Product, Products, ProductsDTO } from '../models/products';
 import { HttpClient } from '@angular/common/http';
 import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -43,6 +43,23 @@ export class ProductsService {
   savedFilterMap = signal<Map<string, SavedFilter>>(new Map());
   constructor() {
     this.savedFilter();
+  }
+
+  updateProductById(product: Product, updateData: any): Observable<Product> {
+    const { id } = product;
+    return this.#http.put<Product>(`https://dummyjson.com/products/${id}`,
+      { title: updateData.title },
+      { headers: { 'Content-Type': 'application/json' } }
+    ).pipe(
+      map((res: ProductsDTO) => {
+        const index = this.products().findIndex((p) => p.id === id);
+        if (index !== -1) {
+          this.products.update((prods: Product[]) => prods.map((_prods) => (_prods.id === id ? res : _prods)));
+        }
+        console.log(this.products());
+        return res;
+      })
+    );
   }
 
   getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[] }> {
@@ -256,91 +273,5 @@ export class ProductsService {
     return selected;
   }
 
-  // readonly graphData= computed(()=>this.#graphUtilService.createGraphData(
-  //   this.filteredProducts,
-  //   this.productProperty,
-  //   this.orderProp
-  // ));
 
-  // rxProducts = rxResource<Products, string | undefined>({
-  //   // request: () => this.query(),
-  //   loader: ({ request }) =>
-  //     this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`).pipe(
-  //       distinctUntilChanged(),
-  //       map(({ products }) => {
-  //         console.log('products ', products);
-  //         return products;
-  //       }),
-  //       catchError((err) => {
-  //         console.log('err ', err);
-  //         throw Error('Unable to load!');
-  //       })
-  //     ),
-  // });
-
-  // rxCategories = rxResource<string[], string | undefined>({
-  //   // request: () => this.query(),
-
-  //   loader: ({ request }) =>
-  //     this.#http.get<string[]>(`${environment.productsApi}/category-list`).pipe(
-  //       distinctUntilChanged(),
-
-  //       map((categories) => {
-  //         console.log('category-list ', categories);
-  //         return categories;
-  //       }),
-  //       catchError((err) => {
-  //         console.log('err ', err);
-  //         throw Error('Unable to load!');
-  //       })
-  //     )
-
-  // });
-
-  // rxProductsHighRating = rxResource<Products, string | undefined>({
-  //   // request: () => this.query(),
-  //   loader: ({ request }) =>
-  //     this.#http.get<{ products: Products }>(`${environment.productsApi}?sortBy=rating&order=desc&limit=0`).pipe(
-  //       map(({ products }) => {
-  //         console.log('rating high', products)
-  //         return products;
-  //       }),
-  //       catchError((err) => {
-  //         console.log('err ', err);
-  //         throw Error('Unable to load!');
-  //       })
-  //     )
-  // });
-
-  // rxProductsInStock = rxResource<Products, string | undefined>({
-  //   loader: () => {
-  //     return this.#http.get<{ products: Products }>
-  //       (`${environment.productsApi}?sortBy=availabilityStatus&order=asc&limit=0`).pipe(
-  //         map(({ products }) => {
-  //           console.log('in stock', products)
-  //           return products;
-  //         }),
-  //         catchError((err) => {
-  //           console.log('err ', err);
-  //           throw Error('Unable to load!');
-  //         })
-  //       )
-  //   }
-  // });
-
-  // rxProductsHighDiscount = rxResource<Products, string | undefined>({
-  //   loader: () => {
-  //     return this.#http.get<{ products: Products }>
-  //       (`${environment.productsApi}?sortBy=discountPercentage&order=desc&limit=0`).pipe(
-  //         map(({ products }) => {
-  //           console.log('in stock', products)
-  //           return products;
-  //         }),
-  //         catchError((err) => {
-  //           console.log('err ', err);
-  //           throw Error('Unable to load!');
-  //         })
-  //       )
-  //   }
-  // });
 }
