@@ -1,28 +1,15 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  Injector,
-  Input,
-  OnChanges,
-  OnInit,
-  signal,
-  Signal,
-  SimpleChanges,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
-import { NftSingleCardComponent } from '../../components/nft/nft-single-card/nft-single-card.component';
-import { DialogService } from 'src/app/core/services/dialog.service';
-import { DialogContainer } from 'src/app/shared/components/dialogs/dialog-container.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
-import { Product } from 'src/app/core/models/products';
-import { DialogData, DIALOG_TYPE } from 'src/app/shared/components/dialogs/dialog.models';
-import { NgComponentOutlet } from '@angular/common';
+import { NgComponentOutlet } from "@angular/common";
+import { Component, ChangeDetectionStrategy, OnInit, OnChanges, Input, inject, DestroyRef, signal, effect, SimpleChanges } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ActivatedRoute } from "@angular/router";
+import { filter } from "rxjs";
+import { Product } from "src/app/core/models/products";
+import { DialogService } from "src/app/core/services/dialog.service";
+import { DialogContainer } from "src/app/shared/components/dialogs/dialog-container.component";
+import { DialogData, IProductFormData } from "src/app/shared/components/dialogs/dialog.models";
+import { ProductsDialogComponent } from "src/app/shared/components/dialogs/products-dialog/products-dialog.component";
+import { NftDualCardComponent } from "../../components/nft/nft-dual-card/nft-dual-card.component";
+import { ProductSingleCardComponent } from "../../components/nft/product-single-card/product-single-card.component";
 
 @Component({
   selector: 'app-product',
@@ -48,10 +35,10 @@ export class ProductComponent implements OnInit, OnChanges {
   currentDialog = { isOpen: false, data: null as DialogData | null };
 
   constructor(private dialogService: DialogService) {
-    this.dialogService.dialogState$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((state) => {
-      console.log('state: ', state);
-      this.currentDialog = state;
-    });
+    // this.dialogService.dialogState$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((state) => {
+    //   console.log('state: ', state);
+    //   this.currentDialog = state;
+    // });
 
     effect(() => {
       console.log(this.product());
@@ -62,47 +49,72 @@ export class ProductComponent implements OnInit, OnChanges {
     console.log(changes, this.id);
   }
 
-  openUserDialog() {
-    this.dialogService.openDialog({
-      type: DIALOG_TYPE.user,
-      title: 'Add New User',
+  openProductDialog(product: Product): void {
+    const dialogRef = this.dialogService.open(ProductsDialogComponent, {
+      title: 'Edit Product',
+      data: { product }, // Pass the product data here
     });
+
+    dialogRef.afterClosed$.pipe(takeUntilDestroyed(this.destroy$))
+      .pipe(filter((result) => !!result))
+      .subscribe((updatedProductData: IProductFormData) => {
+        console.log('Saving:', updatedProductData);
+        // Update the product signal with the returned form data
+        this.product.update((product: Product) => ({ ...product, ...updatedProductData }));
+      });
   }
 
-  openProductDialog(product: Product) {
-    debugger
-    this.dialogService.openDialog({
-      type: DIALOG_TYPE.product,
-      title: 'Add New Product',
-      data: product,
-    });
+  openDeleteDialog(): void {
+    // const dialogRef = this.dialogService.open(DeleteDialogComponent, {
+    //   title: 'Confirm Deletion',
+    // });
+    // dialogRef.afterClosed$.pipe(filter(confirmed => confirmed === true)).subscribe(() => {
+    //   console.log('Deleting item');
+    //   // Handle delete logic here
+    // });
   }
 
-  openDeleteDialog() {
-    this.dialogService.openDialog({
-      type: DIALOG_TYPE.delete,
-      title: 'Confirm Deletion',
-    });
-  }
+  // openUserDialog() {
+  //   this.dialogService.openDialog({
+  //     type: DIALOG_TYPE.user,
+  //     title: 'Add New User',
+  //   });
+  // }
 
-  handleDialogClose() {
-    debugger
-    console.log('Close item');
-    this.dialogService.closeDialog();
-  }
+  // openProductDialog(product: Product) {
+  //   debugger
+  //   this.dialogService.openDialog({
+  //     type: DIALOG_TYPE.product,
+  //     title: 'Add New Product',
+  //     data: product,
+  //   });
+  // }
 
-  handleDialogSave(event: any) {
-    debugger
-    console.log('Saving:', event);
-    // Handle save logic here
-    this.dialogService.closeDialog();
-  }
+  // openDeleteDialog() {
+  //   this.dialogService.openDialog({
+  //     type: DIALOG_TYPE.delete,
+  //     title: 'Confirm Deletion',
+  //   });
+  // }
 
-  handleDialogDelete() {
-    console.log('Deleting item');
-    // Handle delete logic here
-    this.dialogService.closeDialog();
-  }
+  // handleDialogClose() {
+  //   debugger
+  //   console.log('Close item');
+  //   this.dialogService.closeDialog();
+  // }
+
+  // handleDialogSave(event: any) {
+  //   debugger
+  //   console.log('Saving:', event);
+  //   // Handle save logic here
+  //   this.dialogService.closeDialog();
+  // }
+
+  // handleDialogDelete() {
+  //   console.log('Deleting item');
+  //   // Handle delete logic here
+  //   this.dialogService.closeDialog();
+  // }
 
   ngOnInit(): void {
     // this.openProductDialog();

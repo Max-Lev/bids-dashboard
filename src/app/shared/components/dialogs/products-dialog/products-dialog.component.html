@@ -1,19 +1,13 @@
 <!-- <div *ngIf="dialogData.type === 'product'" class="space-y-4"> -->
-  <!-- <form> -->
+<form [formGroup]="productForm">
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
-    <input
-      type="text"
-      name="productName"
-      [ngModelOptions]="{ standalone: true }"
-      [(ngModel)]="form.productName"
-      placeholder="Enter product name"
+    <input type="text" name="title" formControlName="title" placeholder="Enter product name"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
   </div>
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
-    <select
-      [(ngModel)]="form.category"
+    <select formControlName="category"
       class="t ransition-colors w-full rounded-lg border border-gray-300 px-4 py-3 duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500">
       <option value="">Select category</option>
       <option value="electronics">Electronics</option>
@@ -24,41 +18,33 @@
   </div>
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
-    <input
-      type="number"
-      [(ngModel)]="form.price"
+    <input type="number" formControlName="price"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-      placeholder="0.00"
-      min="0"
-      step="0.01" />
+      placeholder="0.00" min="0" step="0.01" />
   </div>
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Description </label>
-    <textarea
-      [(ngModel)]="form.description"
+    <textarea formControlName="description"
       class="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-      rows="3"
-      placeholder="Enter product description"></textarea>
+      rows="3" placeholder="Enter product description"></textarea>
   </div>
-  <!-- </form> -->
+</form>
 
-  <!-- Product Form Actions -->
+<!-- Product Form Actions -->
 
-  <div class="flex justify-between gap-3 space-x-2 pt-4">
-    <div class="w-full">
-      <app-button (click)="close()" full impact="bold" tone="primary" shape="rounded" size="medium"> Cancel</app-button>
-    </div>
-    <div class="w-full">
-      <app-button (click)="saveProduct()" full impact="bold" tone="success" shape="rounded" size="medium">
-        <svg class="mr-2 h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-        </svg>
-        Save
-      </app-button>
-    </div>
+<div class="flex justify-between gap-3 space-x-2 pt-4">
+  <div class="w-full">
+    <app-button (click)="close()" full impact="bold" tone="primary" shape="rounded" size="medium"> Cancel</app-button>
   </div>
+  <div class="w-full">
+    <!-- <app-button (click)="saveProduct()" full impact="bold" tone="success" shape="rounded" size="medium"> -->
+    <app-button (click)="save()" full impact="bold" tone="success" shape="rounded" size="medium">
+      <svg class="mr-2 h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+      </svg>
+      Save
+    </app-button>
+  </div>
+</div>
 <!-- </div> -->
