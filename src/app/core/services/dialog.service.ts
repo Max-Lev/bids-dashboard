@@ -19,7 +19,13 @@ export class DialogService {
   private dialogComponentRef?: ComponentRef<DialogContainer>;
 
   public open<T>(componentType: Type<T>, config?: Partial<DialogConfig>): DialogRef {
-    const dialogConfig = { ...new DialogConfig(), ...config, component: componentType };
+    console.log('config', config);
+
+    const dialogConfig = {
+      ...new DialogConfig(),
+      ...config,
+      component: componentType,
+    };
     const dialogRef = new DialogRef();
 
     const injector = Injector.create({

@@ -1,31 +1,38 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Product } from 'src/app/core/models/products';
 import { ButtonComponent } from '../../button/button.component'; // Assuming you have this
 import { DialogRef } from '../dialog-ref';
 import { DIALOG_DATA } from '../dialog-tokens';
 import { IProductFormGroup } from '../dialog.models';
-
-
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-product-dialog',
   standalone: true,
   imports: [
-    ReactiveFormsModule, ButtonComponent
+    ReactiveFormsModule, 
+    ButtonComponent,
+    TitleCasePipe
   ],
   templateUrl: './products-dialog.component.html',
 })
-export class ProductsDialogComponent {
+export class ProductsDialogComponent implements OnInit {
   private dialogRef = inject(DialogRef);
-  public data: { product: Product } = inject(DIALOG_DATA);
+  public dialogData = inject(DIALOG_DATA) as { product: Product; categories: string[] };
+  categories = computed(() => this.dialogData.categories);
 
-  productForm:FormGroup<IProductFormGroup> = new FormGroup({
-    title: new FormControl(this.data?.product?.title || ''),
-    category: new FormControl(this.data?.product?.category || ''),
-    price: new FormControl(this.data?.product?.price || 0),
-    description: new FormControl(this.data?.product?.description || ''),
+  productForm: FormGroup<IProductFormGroup> = new FormGroup({
+    title: new FormControl(this.dialogData?.product?.title || ''),
+    category: new FormControl(this.dialogData?.product?.category || ''),
+    price: new FormControl(this.dialogData?.product?.price || 0),
+    description: new FormControl(this.dialogData?.product?.description || ''),
   });
+
+  ngOnInit(): void {
+    console.log(this.dialogData);
+    console.log(this.dialogData.categories);
+  }
 
   save() {
     this.dialogRef.close(this.productForm.value);
@@ -34,8 +41,12 @@ export class ProductsDialogComponent {
   close() {
     this.dialogRef.close();
   }
+
+  compareFn(c1: string, c2: string): boolean {
+    return c1 && c2 ? c1 === c2 : c1 === c2;
 }
 
+}
 
 // import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 // import { FormsModule } from '@angular/forms';

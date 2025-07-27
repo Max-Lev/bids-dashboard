@@ -1,30 +1,33 @@
-import { NgIf, NgComponentOutlet } from "@angular/common";
-import { Component, inject, Type, Injector, HostListener } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { ButtonComponent } from "../button/button.component";
-import { DialogConfig, DialogRef } from "./dialog-ref";
-import { DIALOG_DATA } from "./dialog-tokens";
+import { NgComponentOutlet } from '@angular/common';
+import { Component, inject, Type, Injector, HostListener} from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogConfig, DialogRef } from './dialog-ref';
+import { DIALOG_DATA } from './dialog-tokens';
 
 @Component({
   selector: 'dialog-container',
-  imports: [FormsModule, NgIf, ButtonComponent, ReactiveFormsModule, NgComponentOutlet],
+  imports: [FormsModule, ReactiveFormsModule, NgComponentOutlet],
+  standalone: true,
   templateUrl: './dialog-container.component.html',
   styleUrl: './dialog-container.component.css',
 })
-export class DialogContainer  {
+export class DialogContainer {
   config = inject(DialogConfig);
   dialogRef = inject(DialogRef);
-  
+
   component: Type<any> = this.config.component;
   injector: Injector;
 
+
   constructor() {
+    console.log(this.config.data )
     this.injector = Injector.create({
       providers: [
         { provide: DIALOG_DATA, useValue: this.config.data },
-        { provide: DialogRef, useValue: this.dialogRef },
+        { provide: DialogRef, useValue: this.dialogRef }
       ],
     });
+    
   }
 
   close() {
@@ -41,7 +44,7 @@ export class DialogContainer  {
       this.close();
     }
   }
-// export class DialogContainer implements OnChanges, OnInit, AfterViewInit {
+  // export class DialogContainer implements OnChanges, OnInit, AfterViewInit {
   // @Input() isOpen = false;
   // @Input() dialogData!: DialogData;
 
@@ -54,7 +57,6 @@ export class DialogContainer  {
   // @Output() onClose = new EventEmitter<void>();
   // @Output() onSave = new EventEmitter<any>();
   // @Output() onDelete = new EventEmitter<void>();
-
 
   // constructor() {
   //   console.log('dialog container component');
@@ -90,7 +92,6 @@ export class DialogContainer  {
   //     });
   //   }
   // }
-
 
   // userForm: UserFormData = {
   //   name: '',

@@ -1,28 +1,14 @@
-<!-- <button (click)="openUserDialog()" class="text-foreground">User Dialog</button>
-<button (click)="openProductDialog()" class="text-foreground">product Dialog</button>
-<button (click)="openDeleteDialog()" class="text-foreground">Delete Dialog</button> -->
 
 <div
   (onSelectedImage)="onSelectedImageHandler($event)"
   (onMainBtnClick)="openProductDialog($event)"
   nft-dual-card
   [mainBtnText]="'Edit Product'"
+  [displaySecondaryBtn]="false"
   [product]="product()"
   [additionalImgs]="true"
   class="md:col-span-2"></div>
 
 <div app-product-single-card [product]="product()"></div>
 
-<!-- <ng-container *ngComponentOutlet="componentType; injector: customInjector">
-</ng-container> -->
-
-<!-- @if(currentDialog.isOpen){
-  <dialog-container
-    [isOpen]="currentDialog.isOpen"
-    [dialogData]="currentDialog.data!"
-    (onClose)="handleDialogClose()"
-    (onSave)="handleDialogSave($event)"
-    (onDelete)="handleDialogDelete()">
-  </dialog-container>
-} -->
 

@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject, throttleTime } from 'rxjs';
 
 export class DialogRef {
   private readonly _afterClosed = new Subject<any>();

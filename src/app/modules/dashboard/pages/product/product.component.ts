@@ -1,16 +1,25 @@
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { concatMap, filter, map, mergeMap, of } from 'rxjs';
+import { concatMap, filter } from 'rxjs';
 import { Product } from 'src/app/core/models/products';
 import { DialogService } from 'src/app/core/services/dialog.service';
-import { DialogContainer } from 'src/app/shared/components/dialogs/dialog-container.component';
 import { DialogData, IProductFormData } from 'src/app/shared/components/dialogs/dialog.models';
 import { ProductsDialogComponent } from 'src/app/shared/components/dialogs/products-dialog/products-dialog.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
 import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
 import { ProductsService } from 'src/app/core/services/products.service';
-import { NgComponentOutlet } from '@angular/common';
-import { Component, ChangeDetectionStrategy, OnInit, OnChanges, Input, inject, DestroyRef, signal, effect, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  OnInit,
+  OnChanges,
+  Input,
+  inject,
+  DestroyRef,
+  signal,
+  effect,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'app-product',
@@ -18,9 +27,9 @@ import { Component, ChangeDetectionStrategy, OnInit, OnChanges, Input, inject, D
     NftDualCardComponent,
     // NftSingleCardComponent,
     ProductSingleCardComponent,
-    DialogContainer,
-    NgComponentOutlet,
   ],
+  providers: [],
+  standalone: true,
   templateUrl: './product.component.html',
   styleUrl: './product.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,33 +57,38 @@ export class ProductComponent implements OnInit, OnChanges {
     });
   }
 
+  ngOnInit(): void {
+    const _prod = this.productsService.products().find((product) => product.id === +this.id);
+    this.openProductDialog(_prod ?? this.product());
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes, this.id);
   }
 
-
   openProductDialog(product: Product): void {
     const dialogRef = this.dialogService.open(ProductsDialogComponent, {
       title: 'Edit Product',
-      data: { product }, // Pass the product data here
+      data: {
+        product,
+        categories: this.productsService.categories(),
+      } as { product: Product, categories: string[] }, // Pass the data here
     });
-
-    // concatMap()
+    console.log(this.productsService.selectedCategoriesList());
 
     dialogRef.afterClosed$
       .pipe(
         takeUntilDestroyed(this.destroy$),
-        filter((result) => !!result),
-        mergeMap((result) => {
-          return this.productsService.updateProductById(product,result);
+        filter((productForm: IProductFormData) => {
+          console.log('productForm: ', productForm);
+          return !!productForm;
         }),
-        map((response) => {
-          console.log('response ',response);
-          return response;
-        })
+        concatMap((result) => {
+          return this.productsService.updateProductById(product, result);
+        }),
       )
       .subscribe({
-        next: (response:Product) => {
+        next: (response: Product) => {
           this.product.update((prod) => ({ ...prod, ...response }));
           console.log('product: ', this.product());
         },
@@ -135,10 +149,6 @@ export class ProductComponent implements OnInit, OnChanges {
   //   // Handle delete logic here
   //   this.dialogService.closeDialog();
   // }
-
-  ngOnInit(): void {
-    // this.openProductDialog();
-  }
 
   onSelectedImageHandler(index: number) {
     this.product.update((prod) => ({ ...prod, mainImage: prod.images[index] }));

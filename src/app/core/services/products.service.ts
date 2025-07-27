@@ -23,7 +23,7 @@ export class ProductsService {
 
   private allProducts = signal<Product[]>([]);
   readonly products = signal<Product[]>([]);
-  private categories = signal<string[]>([]);
+  readonly categories = signal<string[]>([]);
 
   // private readonly
   selectedCategoriesList = signal<string[]>(['laptops', 'smartphones', 'tablets']);
@@ -49,7 +49,7 @@ export class ProductsService {
   updateProductById(product: Product, updateData: any): Observable<Product> {
     const { id } = product;
     return this.#http.put<Product>(
-        `https://dummyjson.com/products/${id}`,
+        `${environment.productsApi}/${id}`,
         { title: updateData.title },
         { headers: { 'Content-Type': 'application/json' } },
       )
@@ -107,8 +107,9 @@ export class ProductsService {
         this.products.set(filteredProducts);
         this.categories.set(allowedCategories);
 
-        console.log('All Products ', this.allProducts());
-        console.log('Filtered Products ', this.products());
+        // console.log('All Products ', this.allProducts());
+        // console.log('Filtered Products ', this.products());
+        console.log(allowedCategories)
 
         return {
           categories: allowedCategories,
