@@ -1,6 +1,6 @@
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { filter, map, mergeMap, of } from 'rxjs';
+import { concatMap, filter, map, mergeMap, of } from 'rxjs';
 import { Product } from 'src/app/core/models/products';
 import { DialogService } from 'src/app/core/services/dialog.service';
 import { DialogContainer } from 'src/app/shared/components/dialogs/dialog-container.component';
@@ -58,6 +58,8 @@ export class ProductComponent implements OnInit, OnChanges {
       title: 'Edit Product',
       data: { product }, // Pass the product data here
     });
+
+    // concatMap()
 
     dialogRef.afterClosed$
       .pipe(

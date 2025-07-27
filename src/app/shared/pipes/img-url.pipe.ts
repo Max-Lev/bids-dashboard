@@ -11,7 +11,6 @@ export class ImgUrlPipe implements PipeTransform {
     if (Array.isArray(value)) {
       return value.map(url => url.replace(/'/g, '%27'));
     }
-
     return value.replace(/'/g, '%27');
   }
 }

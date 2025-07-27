@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, resource, ResourceRef, Signal, signal } from '@angular/core';
 import { Product, Products, ProductsDTO } from '../models/products';
 import { HttpClient } from '@angular/common/http';
-import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay } from 'rxjs';
+import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay, EMPTY } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from 'src/environments/environment';
 import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
@@ -9,6 +9,7 @@ import { GraphUtilService } from '../utils/graph-util.service';
 import { ChartProducts } from '../models/chart-products.model';
 import { MessageService } from 'src/app/shared/providers/message.service';
 import { SavedFilter } from '../models/saved-filter.model';
+import { addMainImage } from '../utils/main-image.util';
 
 @Injectable({
   providedIn: 'root',
@@ -47,19 +48,28 @@ export class ProductsService {
 
   updateProductById(product: Product, updateData: any): Observable<Product> {
     const { id } = product;
-    return this.#http.put<Product>(`https://dummyjson.com/products/${id}`,
-      { title: updateData.title },
-      { headers: { 'Content-Type': 'application/json' } }
-    ).pipe(
-      map((res: ProductsDTO) => {
-        const index = this.products().findIndex((p) => p.id === id);
-        if (index !== -1) {
-          this.products.update((prods: Product[]) => prods.map((_prods) => (_prods.id === id ? res : _prods)));
-        }
-        console.log(this.products());
-        return res;
-      })
-    );
+    return this.#http.put<Product>(
+        `https://dummyjson.com/products/${id}`,
+        { title: updateData.title },
+        { headers: { 'Content-Type': 'application/json' } },
+      )
+      .pipe(
+        catchError((err) => {
+          console.error(err);
+          return EMPTY;
+        }),
+        map((responseProduct: Product) => {
+          const index = this.products().findIndex((p) => p.id === id);
+          
+          responseProduct = addMainImage(responseProduct)
+
+          if (index !== -1) {
+            this.products.update((prods: Product[]) => prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)));
+          }
+          console.log(this.products());
+          return responseProduct;
+        }),
+      );
   }
 
   getFilteredProductsCategories(): Observable<{ products: Product[]; categories: string[] }> {
@@ -80,7 +90,7 @@ export class ProductsService {
       products: this.#http.get<{ products: Products }>(`${environment.productsApi}?limit=0`),
     }).pipe(
       map(({ categories, products }) => {
-        products.products = products.products.map((product) => ({ ...product, mainImage: product.images[0] }));
+        products.products = products.products.map(addMainImage);
         return {
           categories: categories,
           products: products,
@@ -272,6 +282,4 @@ export class ProductsService {
     const selected = savedStates[index];
     return selected;
   }
-
-
 }
