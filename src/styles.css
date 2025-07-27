@@ -327,3 +327,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .border-mixed-color {
   border-color: color-mix(in oklab, var(--color-muted-foreground) 50%, transparent);
 }
+
+.errors-container{
+  @apply p-1.5 h-[2rem];
+}
+.error-msg{
+  @apply text-xs font-medium text-red-500;
+}

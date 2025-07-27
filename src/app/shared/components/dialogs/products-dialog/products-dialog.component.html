@@ -1,6 +1,8 @@
 <!-- <div *ngIf="dialogData.type === 'product'" class="space-y-4"> -->
 <form [formGroup]="productForm">
-  <div>
+ 
+  <!-- TITLE -->
+  <div class="min-h-[6rem]">
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
     <input
       type="text"
@@ -8,16 +10,36 @@
       formControlName="title"
       placeholder="Enter product name"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
+    @if(productForm.get('title')?.errors){
+    <app-form-error [cntl]="productForm.get('title')" 
+    [errors]="
+    { 
+      required: 'Product name is required',
+      minlength:'Min product name length > 3' 
+    }">
+    </app-form-error>
+    }
   </div>
-  <div>
+
+  <!-- CATEGORY -->
+  <div class="min-h-[6rem]">
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
-    <select [compareWith]="compareFn" formControlName="category">
+    <select formControlName="category">
+      <option value="">Category</option>
       @for (item of categories(); track item) {
-        <option [value]="item">{{ item | titlecase }}</option>
+      <option [value]="item">{{ item | titlecase }}</option>
       }
     </select>
-  
+    @if(productForm.get('category')?.errors){
+    <app-form-error
+      [cntl]="productForm.get('category')"
+      [control]="categoryCtrl()"
+      [errors]="{ required: 'Category type must be selected' }">
+    </app-form-error>
+    }
   </div>
+
+  <!-- PRICE -->
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
     <input
@@ -28,6 +50,8 @@
       min="0"
       step="0.01" />
   </div>
+
+  <!-- DESCRIPTION -->
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Description </label>
     <textarea
@@ -36,17 +60,23 @@
       rows="3"
       placeholder="Enter product description"></textarea>
   </div>
+
 </form>
 
 <!-- Product Form Actions -->
-
 <div class="flex justify-between gap-3 space-x-2 pt-4">
   <div class="w-full">
     <app-button (click)="close()" full impact="bold" tone="primary" shape="rounded" size="medium"> Cancel</app-button>
   </div>
   <div class="w-full">
-    <!-- <app-button (click)="saveProduct()" full impact="bold" tone="success" shape="rounded" size="medium"> -->
-    <app-button (click)="save()" full impact="bold" tone="success" shape="rounded" size="medium">
+    <app-button
+      [disabled]="isSubmitDisabled()"
+      (click)="save()"
+      full
+      impact="bold"
+      tone="success"
+      shape="rounded"
+      size="medium">
       <svg class="mr-2 h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"

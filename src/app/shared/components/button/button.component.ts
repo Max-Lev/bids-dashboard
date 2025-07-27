@@ -31,6 +31,8 @@ export class ButtonComponent implements OnInit {
     transform: (value: boolean | string) => (typeof value === 'string' ? value === '' : value),
   });
 
+  
+
   @Output() buttonClick = new EventEmitter<void>();
 
   public classes: string = '';
@@ -104,6 +106,10 @@ export class ButtonComponent implements OnInit {
   }
 
   onButtonClick() {
+    debugger
+    if(this.disabled()){
+      return;
+    }
     this.buttonClick.emit();
   }
 }
