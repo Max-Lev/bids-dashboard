@@ -31,7 +31,14 @@ export class ProductsDialogComponent implements OnInit,AfterViewInit {
       Validators.maxLength(50),
     ]),
     category: new FormControl<string>(this.dialogData?.product?.category || '', [Validators.required]),
-    price: new FormControl(this.dialogData?.product?.price || 0,[Validators.min(0)]),
+    price: new FormControl<number>(this.dialogData?.product?.price || 0,[
+      Validators.required,Validators.min(0)
+    ]),
+    discountPercentage: new FormControl<number>(this.dialogData?.product?.discountPercentage || 0,
+      [
+        Validators.min(0), Validators.max(100),Validators.required
+      ]
+    ),
     description: new FormControl(this.dialogData?.product?.description || ''),
   },
   {
@@ -65,7 +72,7 @@ export class ProductsDialogComponent implements OnInit,AfterViewInit {
   ngAfterViewInit(): void {
     this.productForm.statusChanges.subscribe((status) => {
       // console.log(this.productForm.errors);
-      // console.log(this.productForm);
+      console.log(this.productForm);
       
     })
   }

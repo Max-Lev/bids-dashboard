@@ -1,8 +1,7 @@
 <!-- <div *ngIf="dialogData.type === 'product'" class="space-y-4"> -->
 <form [formGroup]="productForm">
- 
   <!-- TITLE -->
-  <div class="min-h-[6rem]">
+  <div class="cntrl-container">
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
     <input
       type="text"
@@ -11,18 +10,18 @@
       placeholder="Enter product name"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
     @if(productForm.get('title')?.errors){
-    <app-form-error [cntl]="productForm.get('title')" 
-    [errors]="
-    { 
-      required: 'Product name is required',
-      minlength:'Min product name length > 3' 
-    }">
+    <app-form-error
+      [cntl]="productForm.get('title')"
+      [errors]="{
+        required: 'Product name is required',
+        minlength: 'Min product name is 3 characters'
+      }">
     </app-form-error>
     }
   </div>
 
   <!-- CATEGORY -->
-  <div class="min-h-[6rem]">
+  <div class="cntrl-container">
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
     <select formControlName="category">
       <option value="">Category</option>
@@ -40,15 +39,42 @@
   </div>
 
   <!-- PRICE -->
-  <div>
+  <div class="cntrl-container">
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
     <input
       type="number"
       formControlName="price"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-      placeholder="0.00"
-      min="0"
-      step="0.01" />
+      placeholder="0.00" />
+    @if(productForm.get('price')?.errors){
+    <app-form-error
+      [cntl]="productForm.get('price')"
+      [errors]="{
+        min: 'Min price value is 0',
+        required: 'Price must be entered'
+      }">
+    </app-form-error>
+    }
+  </div>
+  
+  <!-- DISCOUNTPERCENTAGE -->
+  <div class="cntrl-container">
+    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
+    <input
+      type="number"
+      formControlName="discountPercentage"
+      class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
+      placeholder="0.00" />
+    @if(productForm.get('discountPercentage')?.errors){
+    <app-form-error
+      [cntl]="productForm.get('discountPercentage')"
+      [errors]="{
+        min: 'Discount percentage is between 0 - 100%',
+        max: 'Discount percentage is between 0 - 100%',
+        required: 'Required field',
+      }">
+    </app-form-error>
+    }
   </div>
 
   <!-- DESCRIPTION -->
@@ -60,7 +86,6 @@
       rows="3"
       placeholder="Enter product description"></textarea>
   </div>
-
 </form>
 
 <!-- Product Form Actions -->

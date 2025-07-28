@@ -23,7 +23,7 @@ export class FormErrorComponent implements OnChanges {
   /** A map of error keys to user-friendly messages. */
   @Input() errors: Record<string, string> = {};
 
-  @Input() cntl!: AbstractControl<string | null, string | null> | null;
+  @Input() cntl!: AbstractControl<string | number | null, string | number | null> | null;
 
   // Generates a list of current error messages to display.
   // protected errorMessages = computed(() => {
@@ -34,26 +34,22 @@ export class FormErrorComponent implements OnChanges {
   //   return Object.keys(this.control()!).map((key) => this.errors[key] || 'Invalid input');
   // });
 
-  constructor() {
-    
-  }
+  constructor() {}
 
   errorMsg = signal<string[] | null>([]);
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.cntl);
     if (changes['cntl']) {
       this.errorMsg.update((_) => {
-        if(this.cntl?.errors){
-          console.log(this.cntl?.errors);
+        if (this.cntl?.errors) {
+          // console.log(this.cntl?.errors);
           return Object.keys(this.cntl?.errors!).map((key) => {
-            console.log({"this.errors[key]":this.errors[key],"this.errors: ":this.errors,"key: ":key});
-            return this.errors[key] || 'Invalid input'
-          })
-        }else{
+            // console.log({"this.errors[key]":this.errors[key],"this.errors: ":this.errors,"key: ":key});
+            return this.errors[key] || 'Invalid input';
+          });
+        } else {
           return [];
         }
-        
       });
     }
   }

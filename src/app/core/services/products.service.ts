@@ -10,6 +10,7 @@ import { ChartProducts } from '../models/chart-products.model';
 import { MessageService } from 'src/app/shared/providers/message.service';
 import { SavedFilter } from '../models/saved-filter.model';
 import { addMainImage } from '../utils/main-image.util';
+import { IProductFormData, IProductFormGroup } from 'src/app/shared/components/dialogs/dialog.models';
 
 @Injectable({
   providedIn: 'root',
@@ -46,11 +47,14 @@ export class ProductsService {
     this.savedFilter();
   }
 
-  updateProductById(product: Product, updateData: any): Observable<Product> {
+  updateProductById(product: Product, updateData: IProductFormData): Observable<Product> {
     const { id } = product;
     return this.#http.put<Product>(
         `${environment.productsApi}/${id}`,
-        { title: updateData.title },
+        { 
+          // title: updateData.title 
+          ...updateData
+        },
         { headers: { 'Content-Type': 'application/json' } },
       )
       .pipe(

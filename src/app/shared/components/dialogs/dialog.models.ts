@@ -22,11 +22,13 @@ export interface IProductFormGroup {
   title: FormControl<string | null>;
   category: FormControl<string | null>;
   price: FormControl<number | null>;
+  discountPercentage: FormControl<number | null>;
   description: FormControl<string | null>;
 }
 export interface IProductFormData {
   title: string;
   category: string;
   price: number;
+  discountPercentage:number | null;
   description: string;
 }

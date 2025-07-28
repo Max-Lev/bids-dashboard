@@ -334,3 +334,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .error-msg{
   @apply text-xs font-medium text-red-500;
 }
+.cntrl-container{
+  @apply min-h-[6.25rem]
+}
