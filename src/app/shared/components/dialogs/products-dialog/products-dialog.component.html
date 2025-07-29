@@ -2,7 +2,7 @@
 <form [formGroup]="productForm">
   <!-- TITLE -->
   <section class="row flex">
-    <div class="cntrl-container flex-col flex-1 mx-1">
+    <div class="cntrl-container mx-1 flex-1 flex-col">
       <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
       <input type="text" name="title" formControlName="title" placeholder="Enter product name"
         class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
@@ -14,9 +14,19 @@
       </app-form-error>
       }
     </div>
-  
+    <!-- BRAND -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Brand </label>
+      <select formControlName="brand" class="h-[42px]">
+        @for (item of brandOptions(); track item.key) {
+        <option [value]="item.value">{{ item.value | titlecase }}</option>
+        }
+      </select>
+    </div>
+  </section>
+  <section class="row flex">
     <!-- CATEGORY -->
-    <div class="cntrl-container flex-col flex-1 mx-1">
+    <div class="cntrl-container mx-1 flex-1 flex-col">
       <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
       <select formControlName="category" class="h-[42px]">
         <option value="">Category</option>
@@ -30,73 +40,40 @@
       </app-form-error>
       }
     </div>
-  </section>
-  <section class="row flex">
-  <!-- PRICE -->
-  <div class="cntrl-container flex-col flex-1 mx-1">
-    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
-    <input type="number" formControlName="price"
-      class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-      placeholder="0.00" />
-    @if(productForm.get('price')?.errors){
-    <app-form-error [cntl]="productForm.get('price')" [errors]="{
-        min: 'Min. price value is 0',
-        required: 'Price must be entered'
-      }">
-    </app-form-error>
-    }
-  </div>
-
-  <!-- DISCOUNTPERCENTAGE -->
-  <div class="cntrl-container flex-col flex-1 mx-1">
-    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Discount Percentage </label>
-    <input type="number" formControlName="discountPercentage"
-      class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-      placeholder="0.00" />
-    @if(productForm.get('discountPercentage')?.errors){
-    <app-form-error [cntl]="productForm.get('discountPercentage')" [errors]="{
-        min: 'Discount percentage is between 0 - 100%',
-        max: 'Discount percentage is between 0 - 100%',
-        required: 'Required field',
-      }">
-    </app-form-error>
-    }
-  </div>
-  </section>
-
-
-  <section class="row flex">
-    <div class="cntrl-container flex-col flex-1 mx-1">
-      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
-      <input type="text" name="title" formControlName="title" placeholder="Enter product name"
-        class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
-      @if(productForm.get('title')?.errors){
-      <app-form-error [cntl]="productForm.get('title')" [errors]="{
-          required: 'Product name is required',
-          minlength: 'Min. product name is 3 characters'
+    <!-- PRICE -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
+      <input type="number" formControlName="price"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
+        placeholder="0.00" />
+      @if(productForm.get('price')?.errors){
+      <app-form-error [cntl]="productForm.get('price')" [errors]="{
+          min: 'Min. price value is 0',
+          required: 'Price must be entered'
         }">
       </app-form-error>
       }
     </div>
-  
-    <!-- CATEGORY -->
-    <div class="cntrl-container flex-col flex-1 mx-1">
-      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
-      <select formControlName="category" class="h-[42px]">
-        <option value="">Category</option>
-        @for (item of categories(); track item) {
-        <option [value]="item">{{ item | titlecase }}</option>
-        }
-      </select>
-      @if(productForm.get('category')?.errors){
-      <app-form-error [cntl]="productForm.get('category')" [control]="categoryCtrl()"
-        [errors]="{ required: 'Category type must be selected' }">
+  </section>
+
+  <section class="row flex">
+    <!-- DISCOUNT PERCENTAGE -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Discount Percentage </label>
+      <input type="number" formControlName="discountPercentage"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
+        placeholder="0.00" />
+      @if(productForm.get('discountPercentage')?.errors){
+      <app-form-error [cntl]="productForm.get('discountPercentage')" [errors]="{
+            min: 'Discount percentage is between 0 - 100%',
+            max: 'Discount percentage is between 0 - 100%',
+            required: 'Required field',
+          }">
       </app-form-error>
       }
     </div>
-  </section>
-  <section class="row flex">
-    <div class="cntrl-container flex-col flex-1 mx-1">
+    <!-- STOCK -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
       <label class="text-muted-foreground mb-2 block text-sm font-medium"> Stock </label>
       <input type="number" name="stock" formControlName="stock" placeholder="Enter stock size"
         class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
@@ -106,30 +83,56 @@
           min: 'Min. stock is 0',
         }">
       </app-form-error>
- 
+
       }
-    </div>
-  
-    <!-- CATEGORY -->
-    <div class="cntrl-container flex-col flex-1 mx-1">
-      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Availability Status: </label>
-      <select formControlName="availabilityStatus" class="h-[42px]">
-        @for (item of availability(); track item) {
-        <option [value]="item.value">{{ item.value| titlecase }}</option>
-        }
-      </select>
-      <!-- @if(productForm.get('availability')?.errors){
-      <app-form-error [cntl]="productForm.get('availability')" [control]="categoryCtrl()"
-        [errors]="{ required: 'Category type must be selected' }">
-      </app-form-error>
-      } -->
     </div>
   </section>
 
+  <section class="row flex">
+    <!-- AVALIBILITY -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Availability Status: </label>
 
+      <select formControlName="availabilityStatus" class="h-[42px]"
+        [class.disabled-save]="productForm.get('availabilityStatus')?.disabled" placeholder="Select availability status"
+        readonly="true">
+        @for (item of availability(); track item.key) {
+        <option [value]="item.value">{{ item.value | titlecase }}</option>
+        }
+      </select>
+    </div>
+    <!-- RETURN POLICY  -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Return Policy </label>
+      <select formControlName="returnPolicy" class="h-[42px]">
+        @for (item of returnPolicyOptions(); track item.key) {
+        <option [value]="item.value">{{ item.value | titlecase }}</option>
+        }
+      </select>
+    </div>
+  </section>
 
-
-
+  <section class="row flex">
+    <!-- WARRANTY -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Warranty </label>
+      <select formControlName="warrantyInformation" class="h-[42px]">
+        @for (item of warrantyOptions(); track item.key) {
+        <option [value]="item.value">{{ item.value | titlecase }}</option>
+        }
+      </select>
+    </div>
+    <!-- SHIPPING INFORMATION  -->
+    <div class="cntrl-container mx-1 flex-1 flex-col">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Shipping Information </label>
+      <select formControlName="shippingInformation" class="h-[42px]">
+        @for (item of shippingOptions(); track item.key) {
+        <option [value]="item.value">{{ item.value | titlecase }}</option>
+        }
+      </select>
+    </div>
+  </section>
+  
   <!-- DESCRIPTION -->
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Description </label>

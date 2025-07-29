@@ -4,9 +4,11 @@ export interface KeyValue {
   }
   
 export type ProductOptionsResult = {
+  availabilityStatusOptions: KeyValue[];
+
     shippingOptions: KeyValue[];
-    availabilityStatusOptions: KeyValue[];
     returnPolicyOptions: KeyValue[];
     warrantyOptions: KeyValue[];
+    brandOptions: KeyValue[];
   };
   

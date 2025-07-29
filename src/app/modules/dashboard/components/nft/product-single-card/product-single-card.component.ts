@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Product } from 'src/app/core/models/products';
@@ -17,4 +17,11 @@ import { Product } from 'src/app/core/models/products';
 export class ProductSingleCardComponent {
   product = input<Product>();
   onSelectedImage = output<number>();
+
+  constructor(){
+    effect(()=>{
+      console.log(this.product())
+    })
+  }
+
 }

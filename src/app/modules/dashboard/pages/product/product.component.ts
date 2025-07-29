@@ -73,11 +73,16 @@ export class ProductComponent implements OnInit, OnChanges {
         product,
         categories: this.productsService.categories(),
         availabilityStatus: this.productsService.availabilityStatusOptions(),
+        shippingOptions: this.productsService.shippingOptions(),
+        returnPolicyOptions: this.productsService.returnPolicyOptions(),
+        warrantyOptions: this.productsService.warrantyOptions(),
+        brandOptions: this.productsService.brandOptions(),
       } as ProductDialogDataType, // Pass the data here
     });
     console.log(this.productsService.selectedCategoriesList());
 
-    dialogRef.afterClosed$.pipe(
+    dialogRef.afterClosed$
+      .pipe(
         takeUntilDestroyed(this.destroy$),
         filter((productForm: IProductFormData) => {
           console.log('productForm: ', productForm);

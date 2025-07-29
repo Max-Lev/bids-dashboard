@@ -28,6 +28,10 @@ export interface IProductFormGroup {
   description: FormControl<string | null>;
   stock: FormControl<number | null>;
   availabilityStatus: FormControl<string | null>;
+  warrantyInformation: FormControl<string | null>;
+  returnPolicy: FormControl<string | null>;
+  shippingInformation: FormControl<string | null>;
+  brand: FormControl<string | null>;
 }
 export interface IProductFormData {
   title: string;
@@ -37,10 +41,18 @@ export interface IProductFormData {
   description: string;
   stock: number;
   availabilityStatus: string;
+  shippingInformation: string;
+  returnPolicy: string;
+  warrantyInformation: string;
+  brand: string;
 }
 
 export type ProductDialogDataType = {
   product: Product;
   categories: string[];
   availabilityStatus: KeyValue[];
+  shippingOptions: KeyValue[];
+  returnPolicyOptions: KeyValue[];
+  warrantyOptions: KeyValue[];
+  brandOptions: KeyValue[];
 };

@@ -48,6 +48,7 @@ export class ProductsService {
   availabilityStatusOptions = signal<{ key: number; value: string }[]>([]);
   returnPolicyOptions = signal<{ key: number; value: string }[]>([]);
   warrantyOptions = signal<{ key: number; value: string }[]>([]);
+  brandOptions = signal<{ key: number; value: string }[]>([]);
 
   constructor() {
     this.savedFilter();
@@ -55,10 +56,12 @@ export class ProductsService {
 
   updateProductById(product: Product, updateData: IProductFormData): Observable<Product> {
     const { id } = product;
-    return this.#http.put<Product>(`${environment.productsApi}/${id}`,
-      { ...updateData },
-      { headers: { 'Content-Type': 'application/json' } }
-    )
+    return this.#http
+      .put<Product>(
+        `${environment.productsApi}/${id}`,
+        { ...updateData },
+        { headers: { 'Content-Type': 'application/json' } },
+      )
       .pipe(
         catchError((err) => {
           console.error(err);
@@ -67,24 +70,30 @@ export class ProductsService {
         map((responseProduct: Product) => {
           const index = this.products().findIndex((p) => p.id === id);
 
-          responseProduct = { ...responseProduct, ...updateData };
+          responseProduct = {
+            ...responseProduct,
+            ...{
+              availabilityStatus: updateData.availabilityStatus,
+              returnPolicy:updateData.returnPolicy,
+              warrantyInformation:updateData.warrantyInformation,
+              shippingInformation:updateData.shippingInformation
+            }
+          };
           responseProduct = addMainImage(responseProduct);
 
+          if (index !== -1) {
+            this.products.update((prods: Product[]) =>
+              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
+            );
+          }
 
           if (index !== -1) {
             this.products.update((prods: Product[]) =>
               prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
             );
           }
+          console.log('warrantyOptions', this.warrantyOptions());
           console.log('responseProduct', responseProduct);
-
-          if (index !== -1) {
-            this.products.update((prods: Product[]) =>
-              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
-            );
-          }
-          console.log('responseProduct', responseProduct);
-          console.log('updated', this.products());
           return responseProduct;
         }),
       );
@@ -129,15 +138,14 @@ export class ProductsService {
         // console.log('Filtered Products ', this.products());
         // console.log(allowedCategories)
 
-        this.shippingOptions.set(ShippingOptionsFn(this.products()).shippingOptions);
-        const { shippingOptions, availabilityStatusOptions, returnPolicyOptions, warrantyOptions } = ShippingOptionsFn(
-          this.products(),
-        );
-        this.shippingOptions.set(shippingOptions);
+        const { shippingOptions, availabilityStatusOptions,
+          returnPolicyOptions, warrantyOptions,brandOptions } = ShippingOptionsFn(this.products());
+
         this.availabilityStatusOptions.set(availabilityStatusOptions);
+        this.shippingOptions.set(shippingOptions);
         this.returnPolicyOptions.set(returnPolicyOptions);
         this.warrantyOptions.set(warrantyOptions);
-
+        this.brandOptions.set(brandOptions);
 
         return {
           categories: allowedCategories,
