@@ -18,6 +18,7 @@
     <div class="cntrl-container mx-1 flex-1 flex-col">
       <label class="text-muted-foreground mb-2 block text-sm font-medium"> Brand </label>
       <select formControlName="brand" class="h-[42px]">
+        <option value="" class="text-red-600">Brand N/A</option>
         @for (item of brandOptions(); track item.key) {
         <option [value]="item.value">{{ item.value | titlecase }}</option>
         }

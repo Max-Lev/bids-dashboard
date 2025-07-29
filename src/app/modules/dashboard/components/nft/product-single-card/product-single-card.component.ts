@@ -1,4 +1,4 @@
-import { TitleCasePipe } from '@angular/common';
+import { NgClass, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -8,7 +8,8 @@ import { Product } from 'src/app/core/models/products';
   selector: '[app-product-single-card]',
   imports: [
     AngularSvgIconModule, RouterModule,
-    TitleCasePipe
+    TitleCasePipe,
+    NgClass
   ],
   templateUrl: './product-single-card.component.html',
   styleUrl: './product-single-card.component.css',

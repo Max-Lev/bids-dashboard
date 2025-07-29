@@ -8,7 +8,13 @@
       <span class="flex items-center gap-2">
         <!-- Brand Icon -->
         <svg-icon src="./assets/icons/product-details/brand.svg" [svgClass]="'h-4 w-4'"> </svg-icon>
-        <small class="text-muted-foreground text-xs">Brand:</small> {{ product()!.brand | titlecase }}
+        <small class="text-muted-foreground text-xs"
+          [ngClass]="product()?.brand === undefined ? 'line-through decoration-red-500' : ''">Brand:</small>
+        {{ product()!.brand | titlecase }}
+        @if(product()?.brand===undefined){
+        <!-- <span class="text-red-500">Brand N/A</span> -->
+        <span [ngClass]="product()?.brand === undefined ? 'line-through decoration-red-500' : ''">N/A</span>
+        }
       </span>
     </div>
     <div class="text-muted-foreground flex items-center justify-between py-1.5 text-sm font-semibold">
@@ -81,9 +87,11 @@
 
 <div class="bg-background mt-1.5 flex flex h-auto flex-1 rounded-lg p-8">
   <section class="flex flex-1 flex-col">
-    <div class="text-muted-foreground flex items-center justify-between py-1.5 text-sm font-semibold">{{product()?.description}}</div>
+    <div class="text-muted-foreground flex items-center justify-between p-3.5 text-sm font-semibold">
+      <p>{{ product()?.description }}</p>
+    </div>
   </section>
-  </div>
+</div>
 
 }
 

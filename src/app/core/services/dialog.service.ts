@@ -19,7 +19,7 @@ export class DialogService {
   private dialogComponentRef?: ComponentRef<DialogContainer>;
 
   public open<T>(componentType: Type<T>, config?: Partial<DialogConfig>): DialogRef {
-    console.log('config', config);
+    // console.log('config', config);
 
     const dialogConfig = {
       ...new DialogConfig(),

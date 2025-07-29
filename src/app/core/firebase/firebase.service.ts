@@ -24,7 +24,6 @@ export class FirebaseService {
     isSupported().then((supported) => {
       if (supported) {
         this.analytics = getAnalytics(this.app);
-        console.log('Firebase Analytics initialized');
       } else {
         console.warn('Firebase Analytics not supported in this environment');
       }

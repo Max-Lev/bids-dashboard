@@ -14,15 +14,33 @@ export function ShippingOptionsFn<T extends Product>(products: T[]): ProductOpti
   const returnPolicySet = new Set<string>();
   const warrantyInformation = new Set<string>();
   const brandSet = new Set<string>();
+  const brandByCategory = new Map<string,string[]>();
 
   for (const product of products) {
     shippingSet.add(product.shippingInformation);
     availabilitySet.add(product.availabilityStatus);
     returnPolicySet.add(product.returnPolicy);
     warrantyInformation.add(product.warrantyInformation);
-    brandSet.add(product.brand);
+    
   
+
+    const catName = product.category;
+    const brand = product.brand;
+   if(brand!==undefined){
+    brandSet.add(product.brand);
+    if (!brandByCategory.has(catName) && 'brand' in product && product.brand) {
+      brandByCategory.set(catName, []);
+    }
+    // Add only unique brands if needed:
+    const arr = brandByCategory.get(catName)!;
+    
+    if (!arr.includes(brand)) {
+      arr.push(brand);
+    }
+   }
+    
   }
+  console.log(brandByCategory)
   
 
   const toKeyValueArray = (set: Set<string>) => Array.from(set).map((value, index) => ({ key: index, value }));

@@ -63,7 +63,7 @@ export class ProductComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes, this.id);
+    
   }
 
   openProductDialog(product: Product): void {
@@ -79,7 +79,6 @@ export class ProductComponent implements OnInit, OnChanges {
         brandOptions: this.productsService.brandOptions(),
       } as ProductDialogDataType, // Pass the data here
     });
-    console.log(this.productsService.selectedCategoriesList());
 
     dialogRef.afterClosed$
       .pipe(
