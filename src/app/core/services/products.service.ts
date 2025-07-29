@@ -9,8 +9,8 @@ import { GraphUtilService } from '../utils/graph-util.service';
 import { ChartProducts } from '../models/chart-products.model';
 import { MessageService } from 'src/app/shared/providers/message.service';
 import { SavedFilter } from '../models/saved-filter.model';
-import { addMainImage } from '../utils/main-image.util';
-import { IProductFormData, IProductFormGroup } from 'src/app/shared/components/dialogs/dialog.models';
+import { addMainImage, ShippingOptionsFn } from '../utils/main-image.util';
+import { IProductFormData, IProductFormGroup } from 'src/app/core/models/dialog.models';
 
 @Injectable({
   providedIn: 'root',
@@ -43,20 +43,22 @@ export class ProductsService {
   savedFilterState = signal<SavedFilter[]>([]);
 
   savedFilterMap = signal<Map<string, SavedFilter>>(new Map());
+
+  shippingOptions = signal<{ key: number; value: string }[]>([]);
+  availabilityStatusOptions = signal<{ key: number; value: string }[]>([]);
+  returnPolicyOptions = signal<{ key: number; value: string }[]>([]);
+  warrantyOptions = signal<{ key: number; value: string }[]>([]);
+
   constructor() {
     this.savedFilter();
   }
 
   updateProductById(product: Product, updateData: IProductFormData): Observable<Product> {
     const { id } = product;
-    return this.#http.put<Product>(
-        `${environment.productsApi}/${id}`,
-        { 
-          // title: updateData.title 
-          ...updateData
-        },
-        { headers: { 'Content-Type': 'application/json' } },
-      )
+    return this.#http.put<Product>(`${environment.productsApi}/${id}`,
+      { ...updateData },
+      { headers: { 'Content-Type': 'application/json' } }
+    )
       .pipe(
         catchError((err) => {
           console.error(err);
@@ -64,13 +66,25 @@ export class ProductsService {
         }),
         map((responseProduct: Product) => {
           const index = this.products().findIndex((p) => p.id === id);
-          
-          responseProduct = addMainImage(responseProduct)
+
+          responseProduct = { ...responseProduct, ...updateData };
+          responseProduct = addMainImage(responseProduct);
+
 
           if (index !== -1) {
-            this.products.update((prods: Product[]) => prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)));
+            this.products.update((prods: Product[]) =>
+              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
+            );
           }
-          console.log(this.products());
+          console.log('responseProduct', responseProduct);
+
+          if (index !== -1) {
+            this.products.update((prods: Product[]) =>
+              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
+            );
+          }
+          console.log('responseProduct', responseProduct);
+          console.log('updated', this.products());
           return responseProduct;
         }),
       );
@@ -113,7 +127,17 @@ export class ProductsService {
 
         // console.log('All Products ', this.allProducts());
         // console.log('Filtered Products ', this.products());
-        console.log(allowedCategories)
+        // console.log(allowedCategories)
+
+        this.shippingOptions.set(ShippingOptionsFn(this.products()).shippingOptions);
+        const { shippingOptions, availabilityStatusOptions, returnPolicyOptions, warrantyOptions } = ShippingOptionsFn(
+          this.products(),
+        );
+        this.shippingOptions.set(shippingOptions);
+        this.availabilityStatusOptions.set(availabilityStatusOptions);
+        this.returnPolicyOptions.set(returnPolicyOptions);
+        this.warrantyOptions.set(warrantyOptions);
+
 
         return {
           categories: allowedCategories,
@@ -123,6 +147,8 @@ export class ProductsService {
       shareReplay(1),
     );
   }
+
+  combineShippingOptions() { }
 
   private excludeCategories(categories: string[], exclude: string[]): string[] {
     const allowedCategories = categories.filter((cat) => !exclude.includes(cat));

@@ -1,7 +1,7 @@
 import { InjectionToken } from '@angular/core';
 
 import { ProductsDialogComponent } from './products-dialog/products-dialog.component';
-import { IProductFormGroup } from './dialog.models';
+import { IProductFormGroup } from '../../../core/models/dialog.models';
 
 export const DIALOG_DATA = new InjectionToken<any>('DIALOG_DATA');
 

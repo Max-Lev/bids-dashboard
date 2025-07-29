@@ -106,7 +106,6 @@ export class ButtonComponent implements OnInit {
   }
 
   onButtonClick() {
-    debugger
     if(this.disabled()){
       return;
     }

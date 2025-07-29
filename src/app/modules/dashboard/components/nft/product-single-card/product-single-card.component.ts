@@ -1,13 +1,14 @@
-import { NgStyle, CurrencyPipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Product } from 'src/app/core/models/products';
-import { ImgUrlPipe } from 'src/app/shared/pipes/img-url.pipe';
 
 @Component({
   selector: '[app-product-single-card]',
   imports: [
-    CurrencyPipe, RouterModule,
+    AngularSvgIconModule, RouterModule,
+    TitleCasePipe
   ],
   templateUrl: './product-single-card.component.html',
   styleUrl: './product-single-card.component.css',

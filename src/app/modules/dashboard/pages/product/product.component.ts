@@ -1,9 +1,9 @@
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { concatMap, filter } from 'rxjs';
+import { concatMap, filter, mergeMap } from 'rxjs';
 import { Product } from 'src/app/core/models/products';
 import { DialogService } from 'src/app/core/services/dialog.service';
-import { DialogData, IProductFormData } from 'src/app/shared/components/dialogs/dialog.models';
+import { DialogData, IProductFormData, ProductDialogDataType } from 'src/app/core/models/dialog.models';
 import { ProductsDialogComponent } from 'src/app/shared/components/dialogs/products-dialog/products-dialog.component';
 import { NftDualCardComponent } from '../../components/nft/nft-dual-card/nft-dual-card.component';
 import { ProductSingleCardComponent } from '../../components/nft/product-single-card/product-single-card.component';
@@ -58,8 +58,8 @@ export class ProductComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    const _prod = this.productsService.products().find((product) => product.id === +this.id);
-    this.openProductDialog(_prod ?? this.product());
+    // const _prod = this.productsService.products().find((product) => product.id === +this.id);
+    // this.openProductDialog(_prod ?? this.product());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -72,25 +72,22 @@ export class ProductComponent implements OnInit, OnChanges {
       data: {
         product,
         categories: this.productsService.categories(),
-      } as { product: Product, categories: string[] }, // Pass the data here
+        availabilityStatus: this.productsService.availabilityStatusOptions(),
+      } as ProductDialogDataType, // Pass the data here
     });
     console.log(this.productsService.selectedCategoriesList());
 
-    dialogRef.afterClosed$
-      .pipe(
+    dialogRef.afterClosed$.pipe(
         takeUntilDestroyed(this.destroy$),
         filter((productForm: IProductFormData) => {
           console.log('productForm: ', productForm);
           return !!productForm;
         }),
-        concatMap((result) => {
-          return this.productsService.updateProductById(product, result);
-        }),
+        mergeMap((result) => this.productsService.updateProductById(product, result)),
       )
       .subscribe({
         next: (response: Product) => {
           this.product.update((prod) => ({ ...prod, ...response }));
-          console.log('product: ', this.product());
         },
         error: (err) => {
           console.log(err);

@@ -1,74 +1,60 @@
 <!-- <div *ngIf="dialogData.type === 'product'" class="space-y-4"> -->
 <form [formGroup]="productForm">
   <!-- TITLE -->
-  <div class="cntrl-container">
-    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
-    <input
-      type="text"
-      name="title"
-      formControlName="title"
-      placeholder="Enter product name"
-      class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
-    @if(productForm.get('title')?.errors){
-    <app-form-error
-      [cntl]="productForm.get('title')"
-      [errors]="{
-        required: 'Product name is required',
-        minlength: 'Min product name is 3 characters'
-      }">
-    </app-form-error>
-    }
-  </div>
-
-  <!-- CATEGORY -->
-  <div class="cntrl-container">
-    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
-    <select formControlName="category">
-      <option value="">Category</option>
-      @for (item of categories(); track item) {
-      <option [value]="item">{{ item | titlecase }}</option>
+  <section class="row flex">
+    <div class="cntrl-container flex-col flex-1 mx-1">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
+      <input type="text" name="title" formControlName="title" placeholder="Enter product name"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
+      @if(productForm.get('title')?.errors){
+      <app-form-error [cntl]="productForm.get('title')" [errors]="{
+          required: 'Product name is required',
+          minlength: 'Min. product name is 3 characters'
+        }">
+      </app-form-error>
       }
-    </select>
-    @if(productForm.get('category')?.errors){
-    <app-form-error
-      [cntl]="productForm.get('category')"
-      [control]="categoryCtrl()"
-      [errors]="{ required: 'Category type must be selected' }">
-    </app-form-error>
-    }
-  </div>
-
+    </div>
+  
+    <!-- CATEGORY -->
+    <div class="cntrl-container flex-col flex-1 mx-1">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
+      <select formControlName="category" class="h-[42px]">
+        <option value="">Category</option>
+        @for (item of categories(); track item) {
+        <option [value]="item">{{ item | titlecase }}</option>
+        }
+      </select>
+      @if(productForm.get('category')?.errors){
+      <app-form-error [cntl]="productForm.get('category')" [control]="categoryCtrl()"
+        [errors]="{ required: 'Category type must be selected' }">
+      </app-form-error>
+      }
+    </div>
+  </section>
+  <section class="row flex">
   <!-- PRICE -->
-  <div class="cntrl-container">
+  <div class="cntrl-container flex-col flex-1 mx-1">
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
-    <input
-      type="number"
-      formControlName="price"
+    <input type="number" formControlName="price"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
       placeholder="0.00" />
     @if(productForm.get('price')?.errors){
-    <app-form-error
-      [cntl]="productForm.get('price')"
-      [errors]="{
-        min: 'Min price value is 0',
+    <app-form-error [cntl]="productForm.get('price')" [errors]="{
+        min: 'Min. price value is 0',
         required: 'Price must be entered'
       }">
     </app-form-error>
     }
   </div>
-  
+
   <!-- DISCOUNTPERCENTAGE -->
-  <div class="cntrl-container">
-    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Price </label>
-    <input
-      type="number"
-      formControlName="discountPercentage"
+  <div class="cntrl-container flex-col flex-1 mx-1">
+    <label class="text-muted-foreground mb-2 block text-sm font-medium"> Discount Percentage </label>
+    <input type="number" formControlName="discountPercentage"
       class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
       placeholder="0.00" />
     @if(productForm.get('discountPercentage')?.errors){
-    <app-form-error
-      [cntl]="productForm.get('discountPercentage')"
-      [errors]="{
+    <app-form-error [cntl]="productForm.get('discountPercentage')" [errors]="{
         min: 'Discount percentage is between 0 - 100%',
         max: 'Discount percentage is between 0 - 100%',
         required: 'Required field',
@@ -76,15 +62,80 @@
     </app-form-error>
     }
   </div>
+  </section>
+
+
+  <section class="row flex">
+    <div class="cntrl-container flex-col flex-1 mx-1">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Product Name </label>
+      <input type="text" name="title" formControlName="title" placeholder="Enter product name"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
+      @if(productForm.get('title')?.errors){
+      <app-form-error [cntl]="productForm.get('title')" [errors]="{
+          required: 'Product name is required',
+          minlength: 'Min. product name is 3 characters'
+        }">
+      </app-form-error>
+      }
+    </div>
+  
+    <!-- CATEGORY -->
+    <div class="cntrl-container flex-col flex-1 mx-1">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Category </label>
+      <select formControlName="category" class="h-[42px]">
+        <option value="">Category</option>
+        @for (item of categories(); track item) {
+        <option [value]="item">{{ item | titlecase }}</option>
+        }
+      </select>
+      @if(productForm.get('category')?.errors){
+      <app-form-error [cntl]="productForm.get('category')" [control]="categoryCtrl()"
+        [errors]="{ required: 'Category type must be selected' }">
+      </app-form-error>
+      }
+    </div>
+  </section>
+  <section class="row flex">
+    <div class="cntrl-container flex-col flex-1 mx-1">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Stock </label>
+      <input type="number" name="stock" formControlName="stock" placeholder="Enter stock size"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500" />
+      @if(productForm.get('stock')?.errors){
+      <app-form-error [cntl]="productForm.get('stock')" [errors]="{
+          required: 'Required field',
+          min: 'Min. stock is 0',
+        }">
+      </app-form-error>
+ 
+      }
+    </div>
+  
+    <!-- CATEGORY -->
+    <div class="cntrl-container flex-col flex-1 mx-1">
+      <label class="text-muted-foreground mb-2 block text-sm font-medium"> Availability Status: </label>
+      <select formControlName="availabilityStatus" class="h-[42px]">
+        @for (item of availability(); track item) {
+        <option [value]="item.value">{{ item.value| titlecase }}</option>
+        }
+      </select>
+      <!-- @if(productForm.get('availability')?.errors){
+      <app-form-error [cntl]="productForm.get('availability')" [control]="categoryCtrl()"
+        [errors]="{ required: 'Category type must be selected' }">
+      </app-form-error>
+      } -->
+    </div>
+  </section>
+
+
+
+
 
   <!-- DESCRIPTION -->
   <div>
     <label class="text-muted-foreground mb-2 block text-sm font-medium"> Description </label>
-    <textarea
-      formControlName="description"
+    <textarea formControlName="description"
       class="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-colors duration-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-      rows="3"
-      placeholder="Enter product description"></textarea>
+      rows="3" placeholder="Enter product description"></textarea>
   </div>
 </form>
 
@@ -94,19 +145,10 @@
     <app-button (click)="close()" full impact="bold" tone="primary" shape="rounded" size="medium"> Cancel</app-button>
   </div>
   <div class="w-full">
-    <app-button
-      [disabled]="isSubmitDisabled()"
-      (click)="save()"
-      full
-      impact="bold"
-      tone="success"
-      shape="rounded"
+    <app-button [disabled]="isSubmitDisabled()" (click)="save()" full impact="bold" tone="success" shape="rounded"
       size="medium">
       <svg class="mr-2 h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
       </svg>
       Save
