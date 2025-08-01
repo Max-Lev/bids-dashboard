@@ -20,6 +20,8 @@ import {
   effect,
   SimpleChanges,
 } from '@angular/core';
+import { UsersService } from 'src/app/core/services/users.service';
+import { StrictUser } from 'src/app/core/models/user.model';
 
 @Component({
   selector: 'app-product',
@@ -40,17 +42,20 @@ export class ProductComponent implements OnInit, OnChanges {
   activatedRoute = inject(ActivatedRoute);
   destroy$ = inject(DestroyRef);
 
-  product = signal<Product>(this.activatedRoute.snapshot.data['productResolver'] as Product);
-
+  // product = signal<Product>(this.activatedRoute.snapshot.data['productResolver'] as Product);
+  product = signal<{ product: Product; users: (StrictUser | undefined)[] }>(this.activatedRoute.snapshot.data['productResolver']);
+  //product: Product; users: (StrictUser | undefined)[]
   currentDialog = { isOpen: false, data: null as DialogData | null };
 
   productsService = inject(ProductsService);
+  usersService = inject(UsersService);
 
   constructor(private dialogService: DialogService) {
     // this.dialogService.dialogState$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((state) => {
     //   console.log('state: ', state);
     //   this.currentDialog = state;
     // });
+    console.log(this.activatedRoute.snapshot.data['productResolver'])
 
     effect(() => {
       console.log(this.product());
@@ -58,12 +63,15 @@ export class ProductComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    // this.product.update(prev=> ({...prev, ...{id:1}}));
+
+    // this.usersService.getUsersByName(this.product());
     // const _prod = this.productsService.products().find((product) => product.id === +this.id);
     // this.openProductDialog(_prod ?? this.product());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    
+
   }
 
   openProductDialog(product: Product): void {
@@ -97,6 +105,16 @@ export class ProductComponent implements OnInit, OnChanges {
           console.log(err);
         },
       });
+  }
+
+  onSelectedImageHandler(index: number) {
+    this.product.update((state) => ({
+      ...state,
+      product: {
+        ...state.product,
+        mainImage: state.product.images[index],
+      }
+    }));
   }
 
   openDeleteDialog(): void {
@@ -151,7 +169,5 @@ export class ProductComponent implements OnInit, OnChanges {
   //   this.dialogService.closeDialog();
   // }
 
-  onSelectedImageHandler(index: number) {
-    this.product.update((prod) => ({ ...prod, mainImage: prod.images[index] }));
-  }
+
 }

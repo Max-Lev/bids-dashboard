@@ -15,9 +15,11 @@ type Meta = {
 type Review = {
   // Define the structure of a review based on your data, placeholder below:
   // Example:
-  reviewer: string;
+  reviewerEmail: string;
+  reviewerName: string;
   rating: number;
   comment: string;
+  date:string;
   // [key: string]: any;
 };
 

@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  productsApi:'https://dummyjson.com/products'
+  productsApi:'https://dummyjson.com/products',
+  usersApi:'https://dummyjson.com/users'
 };
 
 /*

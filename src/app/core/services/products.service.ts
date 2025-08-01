@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, resource, ResourceRef, Signal, signal } from '@angular/core';
 import { Product, Products, ProductsDTO } from '../models/products';
 import { HttpClient } from '@angular/common/http';
-import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay, EMPTY } from 'rxjs';
+import { distinctUntilChanged, map, catchError, forkJoin, Observable, of, defer, shareReplay, EMPTY, tap, concatMap, mergeMap } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { environment } from 'src/environments/environment';
 import { _ } from '@angular/cdk/number-property.d-CJVxXUcb';
@@ -11,6 +11,8 @@ import { MessageService } from 'src/app/shared/providers/message.service';
 import { SavedFilter } from '../models/saved-filter.model';
 import { addMainImage, ShippingOptionsFn } from '../utils/main-image.util';
 import { IProductFormData, IProductFormGroup } from 'src/app/core/models/dialog.models';
+import { UsersService } from './users.service';
+import { StrictUser } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -50,9 +52,30 @@ export class ProductsService {
   warrantyOptions = signal<{ key: number; value: string }[]>([]);
   brandOptions = signal<{ key: number; value: string }[]>([]);
 
+  usersService = inject(UsersService);
+  
+
   constructor() {
     this.savedFilter();
   }
+
+  getProductById(productId: number): Observable<{ product: Product; users: (StrictUser | undefined)[] }> {
+    return this.#http.get<Product>(`${environment.productsApi}/${productId}`).pipe(
+      concatMap((product) =>
+        this.usersService.getUsersByName(product).pipe(
+          map((users) => {
+            console.log('_users', users);
+            product = addMainImage(product);
+            return { product, users };
+          })
+        )
+      ),
+      tap((response) => {
+        console.log('response', response);
+      })
+    );
+  }
+  
 
   updateProductById(product: Product, updateData: IProductFormData): Observable<Product> {
     const { id } = product;
@@ -74,9 +97,9 @@ export class ProductsService {
             ...responseProduct,
             ...{
               availabilityStatus: updateData.availabilityStatus,
-              returnPolicy:updateData.returnPolicy,
-              warrantyInformation:updateData.warrantyInformation,
-              shippingInformation:updateData.shippingInformation
+              returnPolicy: updateData.returnPolicy,
+              warrantyInformation: updateData.warrantyInformation,
+              shippingInformation: updateData.shippingInformation
             }
           };
           responseProduct = addMainImage(responseProduct);
@@ -139,7 +162,7 @@ export class ProductsService {
         // console.log(allowedCategories)
 
         const { shippingOptions, availabilityStatusOptions,
-          returnPolicyOptions, warrantyOptions,brandOptions } = ShippingOptionsFn(this.products());
+          returnPolicyOptions, warrantyOptions, brandOptions } = ShippingOptionsFn(this.products());
 
         this.availabilityStatusOptions.set(availabilityStatusOptions);
         this.shippingOptions.set(shippingOptions);
