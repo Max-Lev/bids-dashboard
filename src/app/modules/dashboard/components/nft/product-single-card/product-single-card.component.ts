@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, input, output } f
 import { RouterModule } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Product } from 'src/app/core/models/products';
+import { StrictUser } from 'src/app/core/models/user.model';
 
 @Component({
   selector: '[app-product-single-card]',
@@ -16,12 +17,14 @@ import { Product } from 'src/app/core/models/products';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductSingleCardComponent {
-  product = input<Product>();
+
+  product = input.required<Product>();
+
   onSelectedImage = output<number>();
 
   constructor(){
     effect(()=>{
-      console.log(this.product())
+      
     })
   }
 

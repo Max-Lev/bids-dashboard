@@ -20,7 +20,6 @@ import {
   effect,
   SimpleChanges,
 } from '@angular/core';
-import { UsersService } from 'src/app/core/services/users.service';
 import { StrictUser } from 'src/app/core/models/user.model';
 import { UserReviewComponent } from 'src/app/shared/components/user-review/user-review.component';
 
@@ -49,7 +48,6 @@ export class ProductComponent implements OnInit, OnChanges {
   currentDialog = { isOpen: false, data: null as DialogData | null };
 
   productsService = inject(ProductsService);
-  usersService = inject(UsersService);
 
   constructor(private dialogService: DialogService) {
     
@@ -93,11 +91,11 @@ export class ProductComponent implements OnInit, OnChanges {
           console.log('productForm: ', productForm);
           return !!productForm;
         }),
-        mergeMap((result) => this.productsService.updateProductById(product, result)),
+        mergeMap((result) => this.productsService.updateProductById(product, result))
       )
       .subscribe({
         next: (response: Product) => {
-          this.product.update((prod) => ({ ...prod, ...response }));
+          this.product.update((state) => ({ ...state, product: { ...state.product, ...response } }));
         },
         error: (err) => {
           console.log(err);

@@ -9,7 +9,7 @@ import { GraphUtilService } from '../utils/graph-util.service';
 import { ChartProducts } from '../models/chart-products.model';
 import { MessageService } from 'src/app/shared/providers/message.service';
 import { SavedFilter } from '../models/saved-filter.model';
-import { addMainImage, ShippingOptionsFn } from '../utils/main-image.util';
+import { addMainImage, GetOptionsFn } from '../utils/main-image.util';
 import { IProductFormData, IProductFormGroup } from 'src/app/core/models/dialog.models';
 import { UsersService } from './users.service';
 import { StrictUser } from '../models/user.model';
@@ -57,6 +57,13 @@ export class ProductsService {
 
   constructor() {
     this.savedFilter();
+    effect(() => {
+      // console.log('shippingOptions', this.shippingOptions());
+      // console.log('availabilityStatusOptions', this.availabilityStatusOptions());
+      // console.log('returnPolicyOptions', this.returnPolicyOptions());
+      // console.log('warrantyOptions', this.warrantyOptions());
+      // console.log('brandOptions', this.brandOptions());
+    })
   }
 
   getProductById(productId: number): Observable<{ product: Product; users: (StrictUser | undefined)[] }> {
@@ -99,21 +106,26 @@ export class ProductsService {
               availabilityStatus: updateData.availabilityStatus,
               returnPolicy: updateData.returnPolicy,
               warrantyInformation: updateData.warrantyInformation,
-              shippingInformation: updateData.shippingInformation
+              shippingInformation: updateData.shippingInformation,
+              stock: updateData.stock
             }
           };
           responseProduct = addMainImage(responseProduct);
 
           if (index !== -1) {
             this.products.update((prods: Product[]) =>
-              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
+              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods))
             );
           }
 
-          console.log('warrantyOptions', this.warrantyOptions());
-          console.log('responseProduct', responseProduct);
+          // console.log('shippingOptions', this.shippingOptions());
+          // console.log('availabilityStatusOptions', this.availabilityStatusOptions());
+          // console.log('returnPolicyOptions', this.returnPolicyOptions());
+          // console.log('warrantyOptions', this.warrantyOptions());
+          // console.log('brandOptions', this.brandOptions());
+          // console.log('responseProduct', responseProduct);
           return responseProduct;
-        }),
+        })
       );
   }
 
@@ -157,7 +169,7 @@ export class ProductsService {
         // console.log(allowedCategories)
 
         const { shippingOptions, availabilityStatusOptions,
-          returnPolicyOptions, warrantyOptions, brandOptions } = ShippingOptionsFn(this.products());
+          returnPolicyOptions, warrantyOptions, brandOptions } = GetOptionsFn(this.products());
 
         this.availabilityStatusOptions.set(availabilityStatusOptions);
         this.shippingOptions.set(shippingOptions);

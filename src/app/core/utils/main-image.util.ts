@@ -8,7 +8,7 @@ export function addMainImage<T extends { images: string[] }>(product: T): T & { 
   };
 }
 
-export function ShippingOptionsFn<T extends Product>(products: T[]): ProductOptionsResult {
+export function GetOptionsFn<T extends Product>(products: T[]): ProductOptionsResult {
   const shippingSet = new Set<string>();
   const availabilitySet = new Set<string>();
   const returnPolicySet = new Set<string>();
@@ -37,12 +37,12 @@ export function ShippingOptionsFn<T extends Product>(products: T[]): ProductOpti
     if (!arr.includes(brand)) {
       arr.push(brand);
     }
-   }
-    
+   }    
   }
-  console.log(brandByCategory)
   
 
+  // This function takes a set of strings as an argument and returns an array of objects
+  // Each object has a key and value property
   const toKeyValueArray = (set: Set<string>) => Array.from(set).map((value, index) => ({ key: index, value }));
 
   return {
