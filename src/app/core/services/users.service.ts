@@ -31,21 +31,13 @@ export class UsersService {
           (`${environment.usersApi}/search?q=${name}`)
             .pipe(
               map((response: { limit: number; skip: number; total: number; users: StrictUser[] }) => {
-                console.log(response);
                 return response.users.find((user)=>{
-                  
                   return nameEmailList.find(nameEmail => nameEmail.email === user.email) ? user : null;
                 })
-              }),
+              })
             );
         }),
         toArray()
       );
- 
-      // .subscribe({
-      //   next: (users:(StrictUser | undefined)[]) => {
-      //     console.log(users);
-      //   },
-      // });
   }
 }

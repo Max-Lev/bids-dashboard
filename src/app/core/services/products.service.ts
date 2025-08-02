@@ -53,7 +53,7 @@ export class ProductsService {
   brandOptions = signal<{ key: number; value: string }[]>([]);
 
   usersService = inject(UsersService);
-  
+
 
   constructor() {
     this.savedFilter();
@@ -63,19 +63,18 @@ export class ProductsService {
     return this.#http.get<Product>(`${environment.productsApi}/${productId}`).pipe(
       concatMap((product) =>
         this.usersService.getUsersByName(product).pipe(
-          map((users) => {
-            console.log('_users', users);
+          map((users: (StrictUser | undefined)[]) => {
             product = addMainImage(product);
             return { product, users };
           })
         )
       ),
-      tap((response) => {
+      tap((response: { product: Product; users: (StrictUser | undefined)[] }) => {
         console.log('response', response);
       })
     );
   }
-  
+
 
   updateProductById(product: Product, updateData: IProductFormData): Observable<Product> {
     const { id } = product;
@@ -91,6 +90,7 @@ export class ProductsService {
           return EMPTY;
         }),
         map((responseProduct: Product) => {
+
           const index = this.products().findIndex((p) => p.id === id);
 
           responseProduct = {
@@ -110,11 +110,6 @@ export class ProductsService {
             );
           }
 
-          if (index !== -1) {
-            this.products.update((prods: Product[]) =>
-              prods.map((_prods) => (_prods.id === id ? responseProduct : _prods)),
-            );
-          }
           console.log('warrantyOptions', this.warrantyOptions());
           console.log('responseProduct', responseProduct);
           return responseProduct;

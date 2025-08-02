@@ -11,4 +11,7 @@
 
 <div class="flex flex-col" app-product-single-card [product]="product().product"></div>
 
-
+<app-user-review 
+[product]="product().product"
+[users]="product().users" 
+[reviews]="product().product.reviews"></app-user-review>

@@ -12,7 +12,7 @@ type Meta = {
   qrCode: string;
 };
 
-type Review = {
+export type Review = {
   // Define the structure of a review based on your data, placeholder below:
   // Example:
   reviewerEmail: string;

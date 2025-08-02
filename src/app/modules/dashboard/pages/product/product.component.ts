@@ -22,6 +22,7 @@ import {
 } from '@angular/core';
 import { UsersService } from 'src/app/core/services/users.service';
 import { StrictUser } from 'src/app/core/models/user.model';
+import { UserReviewComponent } from 'src/app/shared/components/user-review/user-review.component';
 
 @Component({
   selector: 'app-product',
@@ -29,6 +30,7 @@ import { StrictUser } from 'src/app/core/models/user.model';
     NftDualCardComponent,
     // NftSingleCardComponent,
     ProductSingleCardComponent,
+    UserReviewComponent
   ],
   providers: [],
   standalone: true,
@@ -42,19 +44,15 @@ export class ProductComponent implements OnInit, OnChanges {
   activatedRoute = inject(ActivatedRoute);
   destroy$ = inject(DestroyRef);
 
-  // product = signal<Product>(this.activatedRoute.snapshot.data['productResolver'] as Product);
   product = signal<{ product: Product; users: (StrictUser | undefined)[] }>(this.activatedRoute.snapshot.data['productResolver']);
-  //product: Product; users: (StrictUser | undefined)[]
+  
   currentDialog = { isOpen: false, data: null as DialogData | null };
 
   productsService = inject(ProductsService);
   usersService = inject(UsersService);
 
   constructor(private dialogService: DialogService) {
-    // this.dialogService.dialogState$.pipe(takeUntilDestroyed(this.destroy$)).subscribe((state) => {
-    //   console.log('state: ', state);
-    //   this.currentDialog = state;
-    // });
+    
     console.log(this.activatedRoute.snapshot.data['productResolver'])
 
     effect(() => {
