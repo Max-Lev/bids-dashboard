@@ -5,6 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { MenuService } from '../../../services/menu.service';
 import { SaveStateComponent } from 'src/app/shared/components/save-state/save-state.component';
+import { SettingsInjectionProviderComponent } from 'src/app/shared/components/settings-injection-provider/settings-injection-provider.component';
 
 @Component({
   selector: 'app-sidebar-submenu',
@@ -12,7 +13,8 @@ import { SaveStateComponent } from 'src/app/shared/components/save-state/save-st
   styleUrls: ['./sidebar-submenu.component.css'],
   imports: [NgClass, NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, 
     AngularSvgIconModule,
-    SaveStateComponent
+    SaveStateComponent,
+    SettingsInjectionProviderComponent
   ],
 })
 export class SidebarSubmenuComponent implements OnInit, OnChanges {

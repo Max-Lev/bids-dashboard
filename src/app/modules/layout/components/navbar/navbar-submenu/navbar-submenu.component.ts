@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { SaveStateComponent } from 'src/app/shared/components/save-state/save-state.component';
+import { SettingsInjectionProviderComponent } from 'src/app/shared/components/settings-injection-provider/settings-injection-provider.component';
 
 @Component({
   selector: 'div[navbar-submenu]',
@@ -11,7 +12,8 @@ import { SaveStateComponent } from 'src/app/shared/components/save-state/save-st
   styleUrls: ['./navbar-submenu.component.css'],
   imports: [NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, NgIf, 
     AngularSvgIconModule,
-    SaveStateComponent
+    SaveStateComponent,
+    SettingsInjectionProviderComponent
   ],
 })
 export class NavbarSubmenuComponent implements OnInit {

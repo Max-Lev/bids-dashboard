@@ -5,6 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { SubMenuItem } from 'src/app/core/models/menu.model';
 import { MenuService } from 'src/app/modules/layout/services/menu.service';
 import { SaveStateComponent } from 'src/app/shared/components/save-state/save-state.component';
+import { SettingsInjectionProviderComponent } from 'src/app/shared/components/settings-injection-provider/settings-injection-provider.component';
 
 @Component({
   selector: 'app-navbar-mobile-submenu',
@@ -12,7 +13,9 @@ import { SaveStateComponent } from 'src/app/shared/components/save-state/save-st
   styleUrls: ['./navbar-mobile-submenu.component.css'],
   imports: [NgClass, NgFor, NgTemplateOutlet, RouterLinkActive, RouterLink, 
     SaveStateComponent,
-    AngularSvgIconModule],
+    AngularSvgIconModule,
+    SettingsInjectionProviderComponent
+  ],
 })
 export class NavbarMobileSubmenuComponent implements OnInit {
   @Input() public submenu = <SubMenuItem>{};

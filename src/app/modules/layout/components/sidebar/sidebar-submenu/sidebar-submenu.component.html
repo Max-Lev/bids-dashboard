@@ -1,4 +1,5 @@
-<div class="max-h-0 overflow-hidden pt-1 transition-all duration-500 ltr:pl-4 rtl:pr-4"
+<div
+  class="max-h-0 overflow-hidden pt-1 transition-all duration-500 ltr:pl-4 rtl:pr-4"
   [ngClass]="{ hidden: !menuService.showSideBar, 'max-h-screen': submenu.expanded }">
   <ul
     class="border-border text-muted-foreground flex flex-col border-dashed ltr:border-l ltr:pl-2 rtl:border-r rtl:pr-2">
@@ -6,72 +7,59 @@
       <div class="text-muted-foreground hover:text-primary relative flex" (click)="toggleMenu(sub)">
         <!-- Condition -->
 
-        <ng-container [ngTemplateOutlet]="sub.children ? childMenu : parentMenu"
+        <ng-container
+          [ngTemplateOutlet]="sub.children ? childMenu : parentMenu"
           [ngTemplateOutletContext]="{ sub: sub }">
         </ng-container>
 
         <!-- Parent Menu -->
         <ng-template #parentMenu let-sub="sub">
-
           <app-save-state [template]="saveTemplate"></app-save-state>
 
-          <ng-template #saveTemplate let-saveBtnState="saveBtnState" let-click="click"
-            let-settingsBtnState="settingsBtnState" let-settingsClick="settingsClick">
+          <ng-template
+            #saveTemplate
+            let-saveBtnState="saveBtnState"
+            let-click="click">
             @if(sub.label==='Save'){
-            <a (click)="click()" [class.disabled-save]="!saveBtnState.isSaveActive" [routerLink]="sub.route"
-              routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
-              class="hover:text-foreground inline-block w-full rounded-lg px-4 py-2 text-xs cursor-pointer">
-              {{ sub.label }}
-              @if(saveBtnState.count > 0){
-              <span [class.disabled-save]="!saveBtnState.isSaveActive"
-                class="save-num rounded-md text-xs font-semibold text-primary ml-1">
-                {{ saveBtnState.count }}
-              </span>
-              }
-            </a>
-            }
-
-            @else if(sub.label==='Settings'){
-            <a (click)="settingsClick()" [routerLink]="sub.route" routerLinkActive="text-primary"
+            <a
+              (click)="click()"
+              [class.disabled-save]="!saveBtnState.isSaveActive"
+              [routerLink]="sub.route"
+              routerLinkActive="text-primary"
               [routerLinkActiveOptions]="{ exact: true }"
-              class="hover:text-foreground inline-block w-full rounded-lg px-4 py-2 text-xs cursor-pointer">
+              class="hover:text-foreground inline-block w-full cursor-pointer rounded-lg px-4 py-2 text-xs">
               {{ sub.label }}
               @if(saveBtnState.count > 0){
-              <span [class.disabled-save]="!saveBtnState.isSaveActive"
-                class="save-num rounded-md text-xs font-semibold text-primary ml-1">
+              <span
+                [class.disabled-save]="!saveBtnState.isSaveActive"
+                class="save-num text-primary ml-1 rounded-md text-xs font-semibold">
                 {{ saveBtnState.count }}
               </span>
               }
             </a>
-            }
+            } @else if(sub.label==='Settings'){
+            <app-settings-injection-provider [template]="settingsTemplate"></app-settings-injection-provider>
+            <ng-template #settingsTemplate let-click="click">
+              <a
+                (click)="click()"
+                [routerLink]="sub.route"
+                routerLinkActive="text-primary"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="hover:text-foreground inline-block w-full cursor-pointer rounded-lg px-4 py-2 text-xs">
+                {{ sub.label }}
+              </a>
+            </ng-template>
 
-
-            @else {
-            <a [routerLink]="sub.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
+            } @else {
+            <a
+              [routerLink]="sub.route"
+              routerLinkActive="text-primary"
+              [routerLinkActiveOptions]="{ exact: true }"
               class="hover:bg-card inline-block w-full rounded-lg px-4 py-2 text-xs">
               {{ sub.label }}
             </a>
             }
-
           </ng-template>
-
-
-
-          <!-- <ng-template #saveTemplate let-settingsBtnState="settingsBtnState" let-settingsClick="settingsClick">
-            @if(sub.label==='Settings'){
-            <a (settingsClick)="settingsClick()" [class.disabled-save]="!settingsBtnState.isSaveActive"
-              [routerLink]="sub.route" routerLinkActive="text-primary" [routerLinkActiveOptions]="{ exact: true }"
-              class="hover:text-foreground inline-block w-full rounded-lg px-4 py-2 text-xs cursor-pointer">
-              {{ sub.label }}
-              @if(saveBtnState.count > 0){
-              <span [class.disabled-save]="!saveBtnState.isSaveActive"
-                class="save-num rounded-md text-xs font-semibold text-primary ml-1">
-                {{ saveBtnState.count }}
-              </span>
-              }
-            </a>
-            }
-          </ng-template> -->
 
           @if(menuService.isActive(sub.route)){
           <span
@@ -85,7 +73,8 @@
           <a class="inline-block w-full cursor-pointer px-4 py-2 text-xs">
             {{ sub.label }}
           </a>
-          <button [ngClass]="{ hidden: !menuService.showSideBar }"
+          <button
+            [ngClass]="{ hidden: !menuService.showSideBar }"
             class="text-foreground/50 flex cursor-pointer items-center justify-end px-2 transition-all duration-500">
             @if(!sub.expanded){
             <svg-icon src="assets/icons/heroicons/outline/plus.svg" svgClass="h-4 w-4"> </svg-icon>
