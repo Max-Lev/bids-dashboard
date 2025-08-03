@@ -1,6 +1,15 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center p-4" (click)="onBackdropClick()">
-  <div class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
 
+  
+    <div
+    class="absolute inset-0 transition-colors duration-200"
+    [ngClass]="{
+      'bg-black/20 backdrop-blur-sm': showBackDrop(),
+      'bg-transparent backdrop-blur-0': !showBackDrop()
+    }"
+  ></div>  
+  
+    
   <div class="bg-card relative w-full max-w-xl rounded-2xl border shadow-2xl" (click)="$event.stopPropagation()">
     <div class="flex items-center justify-between border-b p-6">
       <h2 class="text-xl text-muted-foreground font-semibold">{{ config.title }}</h2>
