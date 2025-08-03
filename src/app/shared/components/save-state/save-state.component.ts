@@ -8,7 +8,10 @@ import { NgTemplateOutlet } from '@angular/common';
   ],
   template: `
   <ng-container
-    *ngTemplateOutlet="template; context: { saveBtnState: saveBtnState(), click: saveHandler.bind(this) }">
+    *ngTemplateOutlet="template; context: { 
+      saveBtnState: saveBtnState(), click: saveHandler.bind(this) ,
+      settingsBtnState: settingsBtnState(), settingsClick: settingsHandler.bind(this) 
+      }">
   </ng-container>
 `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,9 +20,14 @@ export class SaveStateComponent {
   @Input({ required: true }) template!: TemplateRef<any>;
   #messageService = inject(MessageService);
   saveBtnState = computed(() => this.#messageService.saveBtnState());
+  settingsBtnState = computed(() => this.#messageService.saveBtnState());
 
   constructor(){
 
+  }
+
+  settingsHandler(){
+    console.log('settingsHandler')
   }
 
   saveHandler() {

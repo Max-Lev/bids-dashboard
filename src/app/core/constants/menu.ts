@@ -12,9 +12,15 @@ export class Menu {
           route: '/dashboard',
           children: [
             { label: 'Products', route: '/dashboard/products' },
-            { label: 'Save' }
+            { label: 'Save' },
+            { label: 'Settings' }
           ],
         },
+        // {
+        //   icon: 'assets/icons/heroicons/outline/users.svg',
+        //   label: 'Settings',
+        //   // route: '',
+        // },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
