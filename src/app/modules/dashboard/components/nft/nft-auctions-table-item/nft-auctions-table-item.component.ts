@@ -1,10 +1,11 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgClass, NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, Input, OnInit } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Nft } from '../../../models/nft';
 import { Product } from 'src/app/core/models/products';
 import { DiscountPipe } from 'src/app/core/pipes/discount.pipe';
 import { Router, RouterModule } from '@angular/router';
+import { SettingsDiscountPipe } from 'src/app/shared/pipes/settings-discount.pipe';
 
 @Component({
   selector: '[nft-auctions-table-item]',
@@ -12,7 +13,10 @@ import { Router, RouterModule } from '@angular/router';
   imports: [AngularSvgIconModule, 
     CurrencyPipe,
     DiscountPipe,
-    RouterModule
+    RouterModule,
+    SettingsDiscountPipe,
+    NgStyle,
+    NgClass
   ],
   changeDetection:ChangeDetectionStrategy.OnPush
 })

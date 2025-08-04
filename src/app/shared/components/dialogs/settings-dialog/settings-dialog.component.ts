@@ -1,7 +1,9 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { DialogRef } from '../dialog-ref';
 import { DIALOG_DATA } from '../dialog-tokens';
 import { ButtonComponent } from '../../button/button.component';
+import { SettingsService } from 'src/app/shared/providers/settings.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-settings-dialog',
@@ -12,30 +14,38 @@ import { ButtonComponent } from '../../button/button.component';
   styleUrl: './settings-dialog.component.css'
 })
 export class SettingsDialogComponent {
-private dialogRef = inject(DialogRef);
+  private dialogRef = inject(DialogRef);
   public dialogData = inject(DIALOG_DATA);
-  readonly volume = signal(50);
-  constructor(){
+  settingsService = inject(SettingsService)
+  private _discount = toSignal(this.settingsService.getDiscount())
+  readonly discount = computed(() => this._discount());
+  constructor() {
     // console.log(this.dialogRef,this.dialogData)
     // Optional side effect (e.g., to log or trigger a service)
     effect(() => {
-      // console.log(`Volume changed to ${this.volume()}%`);
+      console.log(`Discount changed to ${this.discount()}%`);
       // this.dialogRef.close({volum:this.volume()});
-      this.dialogRef.emitChange({ volume: this.volume(),volume2: this.volume() });
+      this.dialogRef.emitChange({ volume: this.discount() });
     });
 
-    
+
 
   }
-  
+
   onClose() {
-    this.dialogRef.close({volum:this.volume()});
+    this.dialogRef.close();
   }
 
-  
-  onVolumeChange(event: Event) {
+  onSave(){
+    this.dialogRef.close({ volum: this.discount() });
+  }
+
+
+  onDiscountChange(event: Event) {
     const value = (event.target as HTMLInputElement).valueAsNumber;
-    this.volume.set(value);
+    this.settingsService.setDiscount(value);
+
+
   }
 
 }

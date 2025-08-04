@@ -1,5 +1,5 @@
 import { NgClass, NgComponentOutlet } from '@angular/common';
-import { Component, inject, Type, Injector, HostListener, signal, effect, OnDestroy} from '@angular/core';
+import { Component, inject, Type, Injector, HostListener, signal, effect, OnDestroy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogConfig, DialogRef } from './dialog-ref';
 import { DIALOG_DATA } from './dialog-tokens';
@@ -30,11 +30,10 @@ export class DialogContainer implements OnDestroy {
       ],
     });
 
-    effect(()=>{
-      const _showBackDrop = (this.config.data.showBackDrop===undefined) ? true : false;
+    effect(() => {
+      const _showBackDrop = (this.config.data.showBackDrop === undefined) ? true : false;
       this.showBackDrop.set(_showBackDrop);
     });
-
     
   }
 
@@ -57,5 +56,5 @@ export class DialogContainer implements OnDestroy {
     // Ensure scroll is re-enabled when modal is destroyed
     document.body.style.overflow = '';
   }
-  
+
 }
