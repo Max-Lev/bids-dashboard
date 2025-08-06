@@ -77,7 +77,7 @@ export class ProductsService {
         )
       ),
       tap((response: { product: Product; users: (StrictUser | undefined)[] }) => {
-        console.log('response', response);
+        // console.log('response', response);
       })
     );
   }
@@ -165,7 +165,7 @@ export class ProductsService {
         this.categories.set(allowedCategories);
 
         // console.log('All Products ', this.allProducts());
-        console.log('Filtered Products ', this.products());
+        // console.log('Filtered Products ', this.products());
         // console.log(allowedCategories)
 
         const { shippingOptions, availabilityStatusOptions,

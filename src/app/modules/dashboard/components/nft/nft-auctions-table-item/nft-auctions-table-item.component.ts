@@ -6,6 +6,7 @@ import { Product } from 'src/app/core/models/products';
 import { DiscountPipe } from 'src/app/core/pipes/discount.pipe';
 import { Router, RouterModule } from '@angular/router';
 import { SettingsDiscountPipe } from 'src/app/shared/pipes/settings-discount.pipe';
+import { SettingsColorDirective } from 'src/app/shared/directives/settings-color.directive';
 
 @Component({
   selector: '[nft-auctions-table-item]',
@@ -16,7 +17,8 @@ import { SettingsDiscountPipe } from 'src/app/shared/pipes/settings-discount.pip
     RouterModule,
     SettingsDiscountPipe,
     NgStyle,
-    NgClass
+    NgClass,
+    SettingsColorDirective
   ],
   changeDetection:ChangeDetectionStrategy.OnPush
 })

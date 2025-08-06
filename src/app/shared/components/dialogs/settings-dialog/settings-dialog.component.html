@@ -1,8 +1,10 @@
 <section class="text-foreground">
   <div class="mx-auto w-full max-w-md p-4">
-    <label for="volume" class="mb-2 block text-sm font-medium text-gray-500"> Discount: {{ discount() }}% </label>
+    <label for="discount" class="mb-2 block text-sm font-medium text-gray-500"> Discount: {{ discount() }}% </label>
+    <div class="input-container flex items-center justify-between">
+    <span class="pr-2 text-xs text-muted-foreground">Min.</span>
     <input
-      id="volume"
+      id="discount"
       type="range"
       min="0"
       max="100"
@@ -10,20 +12,42 @@
       [value]="discount()"
       (input)="onDiscountChange($event)"
       class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-500" />
+      <span class="pl-2 text-xs text-muted-foreground">Max.</span>
+    </div>
+  </div>
+</section>
+<section class="text-foreground">
+  <div class="mx-auto w-full max-w-md p-4">
+    <label for="stock" class="mb-2 block text-sm font-medium text-gray-500"> Stock: {{ stock() }} </label>
+    <div class="input-container flex items-center justify-between">
+      <span class="pr-2 text-xs text-muted-foreground">Min.</span>
+      <input
+        id="stock"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        [value]="stock()"
+        (input)="onStockChange($event)"
+        class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-500" />
+      <span class="pl-2 text-xs text-muted-foreground">Max.</span>
+    </div>
   </div>
 </section>
 <div class="flex justify-between gap-3 space-x-2 pt-4">
-    <div class="w-full">
-      <app-button (click)="onClose()" full impact="bold" tone="primary" shape="rounded" size="medium"> Cancel</app-button>
-    </div>
-    <div class="w-full">
-      <app-button (click)="onSave()" full impact="bold" tone="success" shape="rounded"
-        size="medium">
-        <svg class="mr-2 h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-        </svg>
-        Save
-      </app-button>
-    </div>
+  <div class="w-full">
+    <app-button (click)="onClose()" full impact="bold" tone="primary" shape="rounded" size="medium"> Cancel</app-button>
   </div>
+  <div class="w-full">
+    <app-button (click)="onSave()" full impact="bold" tone="success" shape="rounded" size="medium">
+      <svg class="mr-2 h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+      </svg>
+      Save
+    </app-button>
+  </div>
+</div>

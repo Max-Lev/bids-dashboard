@@ -80,7 +80,7 @@ export class SettingsInjectionProviderComponent {
         });
 
         dialogRef.onChange$.subscribe((val) => {
-          console.log('Live volume:', val);
+          console.log('onChange:', val);
           // Update parent component or perform real-time actions
         });
     }

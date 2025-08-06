@@ -17,19 +17,28 @@ export class SettingsDialogComponent {
   private dialogRef = inject(DialogRef);
   public dialogData = inject(DIALOG_DATA);
   settingsService = inject(SettingsService)
+  // Define signals for discount and stock
+  // Using toSignal to convert observables to signals
   private _discount = toSignal(this.settingsService.getDiscount())
   readonly discount = computed(() => this._discount());
+  
+  // Using toSignal to convert observables to signals
+  // Using signal for stock, as it is a BehaviorSubject
+  private _stock = toSignal(this.settingsService.stock$)
+  readonly stock = computed(() => this._stock());
+
+  // isSettingsActive = computed(() => this.settingsService.isSettingsActive.value);
+
+
   constructor() {
-    // console.log(this.dialogRef,this.dialogData)
-    // Optional side effect (e.g., to log or trigger a service)
+    
     effect(() => {
       console.log(`Discount changed to ${this.discount()}%`);
-      // this.dialogRef.close({volum:this.volume()});
-      this.dialogRef.emitChange({ volume: this.discount() });
+      console.log(`Stock changed to ${this.stock()}`);
+      
+      // this.dialogRef.emitChange({ volume: this.discount() });
     });
-
-
-
+    
   }
 
   onClose() {
@@ -37,15 +46,29 @@ export class SettingsDialogComponent {
   }
 
   onSave(){
-    this.dialogRef.close({ volum: this.discount() });
+    this.dialogRef.close({ discount: this.discount(),stock: this.stock() });
   }
 
 
   onDiscountChange(event: Event) {
-    const value = (event.target as HTMLInputElement).valueAsNumber;
+    const value = this.getRangeValue(event)
     this.settingsService.setDiscount(value);
+    
+  }
+  onStockChange(event: Event) {
+    const value = this.getRangeValue(event)
+    this.settingsService.setStock(value);
+    
+  }
 
+  activeControl:{[key:string]:boolean}[] = [];
+  private getRangeValue(event: Event){
+    const {id} = (event.target as HTMLInputElement);
+    this.activeControl.push({ [id]: true });
+    this.settingsService.isSettingsActive.next(this.activeControl);
+    this.settingsService.isActive.next(true);
 
+    return (event.target as HTMLInputElement).valueAsNumber;
   }
 
 }
