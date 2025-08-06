@@ -1,5 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+
+export interface SettingsState {
+  discount: { value: number; isActive: boolean };
+  stock: { value: number; isActive: boolean };
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,19 +16,15 @@ export class SettingsService {
   #stock = new BehaviorSubject<number>(0);
   stock$ = this.#stock.asObservable();
 
-  isSettingsActive = new BehaviorSubject<{[key: string]: boolean}[]>([]);
-  isActive = new BehaviorSubject< boolean>(false);
+  readonly formState = signal<SettingsState>({
+    discount: { value: 0, isActive: false },
+    stock: { value: 0, isActive: false }
+  });
 
   constructor() {}
 
-  getDiscount(): Observable<number> {
-    return this._discount$;
+  setFormState(state: SettingsState) {
+    this.formState.set(state);
   }
-  setDiscount(discount: number) {
-    this._discount$.next(discount);
-  }
-  
-  setStock(discount: number) {
-    this.#stock.next(discount);
-  }
+
 }

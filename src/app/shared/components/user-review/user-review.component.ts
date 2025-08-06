@@ -7,8 +7,7 @@ import { StrictUser } from 'src/app/core/models/user.model';
 @Component({
   selector: 'app-user-review',
   imports: [
-    AngularSvgIconModule,
-    NgClass
+    AngularSvgIconModule
   ],
   templateUrl: './user-review.component.html',
   styleUrl: './user-review.component.css'

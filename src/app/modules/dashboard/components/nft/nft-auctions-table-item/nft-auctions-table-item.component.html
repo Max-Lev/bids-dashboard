@@ -13,7 +13,7 @@
 </td>
 <td class="py-2 pl-2 text-right">
   <!-- <span class="text-muted-foreground text-sm font-semibold">{{ product()?.stock| currency }}</span> -->
-  <span [appStockValue]="product()?.stock ?? 0" class="text-muted-foreground text-sm font-semibold">{{ product()?.stock }}</span>
+  <span [appSettingColor]="'stock'" [value]="product()?.stock ?? 0" class="text-muted-foreground text-sm font-semibold">{{ product()?.stock }}</span>
 </td>
 <td class="py-2 pl-2 text-right">
   <!-- <div class="ml-4 flex items-center justify-start">
@@ -23,7 +23,7 @@
   <!-- <span class="text-muted-foreground text-sm font-semibold"
    [ngClass]="product()!.discountPercentage | settingsDiscount">{{ product()?.discountPercentage }}%</span> -->
   <span class="text-muted-foreground text-sm font-semibold"  
-  [appDiscountValue]="product()?.discountPercentage ?? 0">{{ product()?.discountPercentage }}%</span>
+  [appSettingColor]="'discount'" [value]="product()?.discountPercentage ?? 0">{{ product()?.discountPercentage }}%</span>
 </td>
 <td class="py-2 pl-2 text-right">
   <span class="text-muted-foreground text-sm font-semibold">{{ product()! | discount:product() | currency }}</span>

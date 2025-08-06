@@ -88,7 +88,7 @@
 <div class="bg-background mt-1.5 flex flex h-auto flex-1 rounded-lg p-8 py-2">
   <section class="flex flex-1 flex-col">
     <div class="text-muted-foreground flex items-center justify-between p-3.5 text-sm font-semibold">
-      <p>{{ product()?.description }}</p>
+      <p>{{ product().description || '' }}</p>
     </div>
   </section>
 </div>
