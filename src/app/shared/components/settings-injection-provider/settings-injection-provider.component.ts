@@ -1,12 +1,8 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input, TemplateRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, Input, signal, TemplateRef } from '@angular/core';
 import { DialogService } from 'src/app/core/services/dialog.service';
-import { ProductsDialogComponent } from '../dialogs/products-dialog/products-dialog.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, mergeMap } from 'rxjs';
-import { IProductFormData } from 'src/app/core/models/dialog.models';
-import { Product } from 'src/app/core/models/products';
 import { SettingsDialogComponent } from '../dialogs/settings-dialog/settings-dialog.component';
+import { SettingsService } from '../../providers/settings.service';
 
 @Component({
   selector: 'app-settings-injection-provider',
@@ -19,7 +15,8 @@ import { SettingsDialogComponent } from '../dialogs/settings-dialog/settings-dia
       *ngTemplateOutlet="
         template;
         context: {
-          click: settingsHandler.bind(this)
+          click: settingsHandler.bind(this),
+          isActive: isActive(),
         }
       ">
     </ng-container>
@@ -31,7 +28,20 @@ export class SettingsInjectionProviderComponent {
 
   dialogService = inject(DialogService)
 
+  settingsService = inject(SettingsService);
+
   @Input({ required: true }) template!: TemplateRef<any>;
+
+  isActive = computed(() => {
+    const formState = this.settingsService.formState();
+    return formState.discount.isActive || formState.stock.isActive;
+  });
+
+  constructor(){
+    effect(()=>{
+
+    })
+  }
 
   settingsBtnState(){
     console.log('settingsBtnState handler');
@@ -48,7 +58,6 @@ export class SettingsInjectionProviderComponent {
         title: 'Settings',
         data: {
           showBackDrop:false,
-          stock:1
         //   product,
         //   categories: this.productsService.categories(),
         //   availabilityStatus: this.productsService.availabilityStatusOptions(),
@@ -60,16 +69,7 @@ export class SettingsInjectionProviderComponent {
         // as ProductDialogDataType, // Pass the data here
       });
   
-      dialogRef.afterClosed$
-        // .pipe(
-        //   // takeUntilDestroyed(this.destroy$),
-        //   filter((productForm: IProductFormData) => {
-        //     console.log('productForm: ', productForm);
-        //     return !!productForm;
-        //   }),
-        //   // mergeMap((result) => this.productsService.updateProductById(product, result))
-        // )
-        .subscribe({
+      dialogRef.afterClosed$.subscribe({
           next: (response) => {
             console.log('response: ', response);
             // this.product.update((state) => ({ ...state, product: { ...state.product, ...response } }));
@@ -83,6 +83,11 @@ export class SettingsInjectionProviderComponent {
           console.log('onChange:', val);
           // Update parent component or perform real-time actions
         });
+
+        
+
+      
+
     }
 
 

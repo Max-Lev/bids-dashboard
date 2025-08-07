@@ -65,6 +65,7 @@ export class SettingsDialogComponent implements AfterViewInit, OnDestroy {
           isActive: stockControl?.dirty ?? false,
         },
       });
+      
     });
   }
 

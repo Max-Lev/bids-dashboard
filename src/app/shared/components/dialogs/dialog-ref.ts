@@ -1,4 +1,5 @@
 import { Observable, Subject, throttleTime } from 'rxjs';
+import { signal, Type } from '@angular/core';
 
 export class DialogRef {
   private readonly _afterClosed = new Subject<any>();
@@ -17,7 +18,7 @@ export class DialogRef {
 
 }
 
-import { Type } from '@angular/core';
+
 
 export class DialogConfig<D = any> {
   component!: Type<any>;
