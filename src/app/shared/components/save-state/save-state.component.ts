@@ -27,7 +27,7 @@ export class SaveStateComponent {
   }
 
   settingsHandler(){
-    console.log('settingsHandler')
+    
   }
 
   saveHandler() {

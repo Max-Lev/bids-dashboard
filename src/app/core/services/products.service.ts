@@ -186,8 +186,6 @@ export class ProductsService {
     );
   }
 
-  combineShippingOptions() { }
-
   private excludeCategories(categories: string[], exclude: string[]): string[] {
     const allowedCategories = categories.filter((cat) => !exclude.includes(cat));
     return allowedCategories;
@@ -232,6 +230,8 @@ export class ProductsService {
     }
 
     const _result = result.slice(0, this.itemsSize());
+    
+    console.log('Filtered Products ', _result.length,_result);
     return _result;
   }
   private sortByProperty<T>(products: T[], prop: keyof T, order: 'asc' | 'desc'): T[] {
@@ -321,6 +321,7 @@ export class ProductsService {
           order: this.orderProp().value,
           prop: this.productProperty(),
           categories: this.selectedCategoriesList(),
+          products: this.filteredProducts()
         };
 
         if (this.savedFilterState().length <= 4) {
@@ -334,7 +335,8 @@ export class ProductsService {
             return newMap;
           });
         }
-        // console.log(this.savedFilterMap().entries());
+        console.log('savedFilterState ',this.savedFilterState().entries());
+        console.log('savedFilterMap ',this.savedFilterMap().entries());
 
         // Reset flag
         this.#messageService.notifyProductsHandler(false);

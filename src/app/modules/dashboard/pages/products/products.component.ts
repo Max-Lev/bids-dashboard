@@ -76,8 +76,8 @@ export class ProductsComponent implements OnInit,OnChanges {
       }
     });
     effect(() => {
-      // console.log('filteredProducts ',this.filteredProducts());
-      console.log('filteredProductsCategories ',this.filteredProductsCategories());
+      console.log('savedFilterState ',this.savedFilterState());
+      // console.log('filteredProductsCategories ',this.filteredProductsCategories());
     });
 
   }

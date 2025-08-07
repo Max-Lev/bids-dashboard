@@ -33,13 +33,14 @@
               <div class="flex items-center">
                 <a (click)="click()" [routerLink]="sub.route" routerLinkActive="text-primary"
                   [routerLinkActiveOptions]="{ exact: true }"
-                  class="hover:text-foreground inline-block w-full cursor-pointer rounded-lg px-4 py-2 text-xs">
+                  class="hover:text-foreground w-full cursor-pointer rounded-lg px-4 py-2 text-xs
+                  flex items-baseline">
                   {{ sub.label }}
+                  @if(isActive){
+                    <span class="size-1.5 bg-primary absolute flex items-center rounded-full text-red-500 ml-1.5"
+                      style="position: relative;float: inline-end;"></span>
+                    }
                 </a>
-                @if(isActive){
-                <span class="size-1.5 bg-primary absolute flex items-center rounded-full text-red-500"
-                  style="position: relative;float: inline-end;"></span>
-                }
               </div>
             </ng-template>
 

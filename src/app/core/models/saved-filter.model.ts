@@ -3,7 +3,8 @@ import { Product } from "./products";
 export type SavedFilter = {
     order: string; 
     prop: keyof Product; 
-    categories: string[]
+    categories: string[],
+    products?: Product[];
 }
 
 export type SaveBtnState = {
